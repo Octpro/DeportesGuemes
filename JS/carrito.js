@@ -155,10 +155,11 @@ function consultarCarrito() {
 
     // Codificar mensaje para URL y crear enlace de WhatsApp
     let mensajeCodificado = encodeURIComponent(mensajeWhatsApp);
-    let enlaceWhatsApp = `https://wa.me/?text=${mensajeCodificado}`;
+    let enlaceWhatsApp = `https://api.whatsapp.com/send?phone=5493541665446&text=${mensajeCodificado}`;
 
     // Abrir enlace en nueva pestaña o ventana
-    window.open(enlaceWhatsApp, '_blank');
+    // window.open(enlaceWhatsApp, '_blank');
+    window.open("https://javascript.info/");
 
     // Ahora sí, limpiar y guardar cambios en localStorage
     productosEnCarrito.length = 0;
