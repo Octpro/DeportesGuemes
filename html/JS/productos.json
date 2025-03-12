@@ -1,0 +1,74 @@
+[
+  {
+    "id": "remeras_under_tech_2.0",
+    "titulo": "under tech 2.0",
+    "imagen": "./img/under_1.png",
+    "categoria": {
+      "nombre": "REMERAS",
+      "id": "remeras"
+    },
+    "precio": "22000.0",
+    "es_variante": false,
+    "color": "#fd9144"
+  },
+  {
+    "id": "remeras_under_tech_2.0_variante",
+    "titulo": "under tech 2.0",
+    "imagen": "./img/under_2.png",
+    "categoria": {
+      "nombre": "REMERAS",
+      "id": "remeras"
+    },
+    "precio": "38500.0",
+    "es_variante": true,
+    "color": null
+  },
+  {
+    "id": "accesorios_men1",
+    "titulo": "men1",
+    "imagen": "./img/287290_5.jpg",
+    "categoria": {
+      "nombre": "ACCESORIOS",
+      "id": "accesorios"
+    },
+    "precio": "1000",
+    "es_variante": false,
+    "color": "#a29677"
+  },
+  {
+    "id": "accesorios_men1_1",
+    "titulo": "men1",
+    "imagen": "./img/2709570_11.jpg",
+    "categoria": {
+      "nombre": "ACCESORIOS",
+      "id": "accesorios"
+    },
+    "precio": "2300.0",
+    "es_variante": true,
+    "color": "#1462a7"
+  },
+  {
+    "id": "accesorios_men1_2",
+    "titulo": "men1",
+    "imagen": "./img/2709570_12.jpg",
+    "categoria": {
+      "nombre": "ACCESORIOS",
+      "id": "accesorios"
+    },
+    "precio": "3500",
+    "es_variante": true,
+    "color": "#a25e1a"
+  },
+  {
+    "id": "accesorios_men1_3",
+    "titulo": "men1",
+    "imagen": "./img/escritorio.png",
+    "categoria": {
+      "nombre": "ACCESORIOS",
+      "id": "accesorios"
+    },
+    "precio": "4600.0",
+    "es_variante": true,
+    "color": "#a88c73"
+  }
+]

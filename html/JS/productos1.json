@@ -181,5 +181,8 @@
             "id": "pantalones"
         },
         "precio": 1000
-    }
+    },
+    {"id": "buzo 02", "titulo": "buzo 02", "imagen": "./img/pantalones/287290_5.jpg", "categoria": {"nombre": "Buzos", "id": "Buzos"}, "precio": "213543"},
+    {"id": "buzo 03", "titulo": "buzo 03", "imagen": "C:/Users/octpr/Documents/Negocio Dani/html/img/pantalones/graf.jpg", "categoria": {"nombre": "Buzos", "id": "Buzos"}, "precio": "123"}
 ]
+

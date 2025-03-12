@@ -130,41 +130,11 @@ function actualizarTotal(){
 
 botonConsultar.addEventListener("click", consultarCarrito);
 
-// function consultarCarrito() {
-
-//     productosEnCarrito.length = 0;
-//     localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
-
-//     contenedorCarritoVacio.classList.add("disabled");
-//     contenedorCarritoProductos.classList.add("disabled");
-//     contenedorcarritoAcciones.classList.add("disabled");
-//     contenedorcarritoComprado.classList.remove("disabled");
-
-
-// }
-
 function consultarCarrito() {
-    // Obtener productos del localStorage antes de limpiarz
-    let productosEnCarrito = JSON.parse(localStorage.getItem("productos-en-carrito")) || [];
 
-    // Construir mensaje de WhatsApp
-    let mensajeWhatsApp = "Aquí están tus productos para consultar:\n\n";
-    productosEnCarrito.forEach((producto) => {
-        mensajeWhatsApp += `${producto.titulo} - Cantidad: ${producto.cantidad}, Precio: ${producto.precio * producto.cantidad}\n`;
-    });
-
-    // Codificar mensaje para URL y crear enlace de WhatsApp
-    let mensajeCodificado = encodeURIComponent(mensajeWhatsApp);
-    let enlaceWhatsApp = `https://api.whatsapp.com/send?phone=5493541665446&text=${mensajeCodificado}`; // cambiar el numero de telefono
-
-    // Abrir enlace en nueva pestaña o ventana
-    window.open(enlaceWhatsApp, '_blank');
-
-    // Ahora sí, limpiar y guardar cambios en localStorage
     productosEnCarrito.length = 0;
     localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
 
-    // Ocultar/mostrar elementos según sea necesario
     contenedorCarritoVacio.classList.add("disabled");
     contenedorCarritoProductos.classList.add("disabled");
     contenedorcarritoAcciones.classList.add("disabled");

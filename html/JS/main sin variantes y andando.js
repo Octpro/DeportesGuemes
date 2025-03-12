@@ -44,7 +44,11 @@ botonesCategoria.forEach(boton => {
         if (e.currentTarget.id != "todos") {
             const productoCategoria = productos.find(producto => producto.categoria.id === e.currentTarget.id)
 
-            tituloPrincipal.innerText = productoCategoria.categoria.nombre;
+            if (productoCategoria) {
+                tituloPrincipal.innerText = productoCategoria.categoria.nombre;
+            } else {
+                tituloPrincipal.innerText = "No hay productos";
+            }
 
             const productosBoton = productos.filter(producto => producto.categoria.id === e.currentTarget.id);
             cargarProductos(productosBoton);
