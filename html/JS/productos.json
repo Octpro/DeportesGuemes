@@ -9,7 +9,8 @@
     },
     "precio": "22000.0",
     "es_variante": false,
-    "color": "#fd9144"
+    "color": "#fd9144",
+    "stock": 2
   },
   {
     "id": "remeras_under_tech_2.0_variante",
@@ -21,7 +22,8 @@
     },
     "precio": "38500.0",
     "es_variante": true,
-    "color": null
+    "color": null,
+    "stock": 0
   },
   {
     "id": "accesorios_men1",
@@ -33,7 +35,8 @@
     },
     "precio": "1000",
     "es_variante": false,
-    "color": "#a29677"
+    "color": "#a29677",
+    "stock": 0
   },
   {
     "id": "accesorios_men1_1",
@@ -45,7 +48,8 @@
     },
     "precio": "2300.0",
     "es_variante": true,
-    "color": "#1462a7"
+    "color": "#1462a7",
+    "stock": 0
   },
   {
     "id": "accesorios_men1_2",
@@ -57,7 +61,8 @@
     },
     "precio": "3500",
     "es_variante": true,
-    "color": "#a25e1a"
+    "color": "#a25e1a",
+    "stock": 0
   },
   {
     "id": "accesorios_men1_3",
@@ -69,6 +74,7 @@
     },
     "precio": "4600.0",
     "es_variante": true,
-    "color": "#a88c73"
+    "color": "#a88c73",
+    "stock": 0
   }
 ]

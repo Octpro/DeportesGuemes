@@ -6,8 +6,7 @@
 
 import json
 from tkinter import *
-from tkinter import filedialog, messagebox, colorchooser
-from tkinter import simpledialog
+from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
 import os
 
@@ -82,7 +81,8 @@ def guardar():
 		"categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
 		"precio": precio,
 		"es_variante": es_variante,
-		"color": color_label.cget("bg")
+		"color": color_label.cget("bg"),
+		"stock": 0  # Inicializar el stock a 0
 	}
 	
 	productos.append(producto)
@@ -253,6 +253,7 @@ def aplicar_filtro(ver_frame, productos):
 		color_frame = Frame(frame)
 		color_frame.pack(anchor='w')
 		Label(color_frame, text="Color:").pack(side='left')
+		Label(frame, text=f"Stock: {producto['stock']}").pack(anchor='w')
 		Label(color_frame, text=producto['color'], bg=producto['color']).pack(side='left')
 		
 		mostrar_imagen_producto(frame, producto['imagen'])
@@ -260,6 +261,7 @@ def aplicar_filtro(ver_frame, productos):
 		Button(frame, text="Modificar", command=lambda p=producto: modificar_producto(p, ver_frame)).pack(side='left', padx=5)
 		Button(frame, text="Eliminar", command=lambda p=producto: eliminar_producto(p, ver_frame)).pack(side='left', padx=5)
 		Button(frame, text="Actualizar Precio", command=lambda p=producto: actualizar_precio_producto(p)).pack(side='left', padx=5)
+		Button(frame, text="Actualizar Stock", command=lambda p=producto: actualizar_stock(p)).pack(side='left', padx=5)
 	
 	Button(ver_frame, text="Seleccionar Todos", command=seleccionar_todos).pack(side='left', padx=5, pady=10)
 	Button(ver_frame, text="Deseleccionar Todos", command=deseleccionar_todos).pack(side='left', padx=5, pady=10)
@@ -389,6 +391,50 @@ def eliminar_producto(producto, parent_frame):
 		parent_frame.destroy()
 		ver_productos()
 
+def actualizar_stock(producto):
+    actualizar_frame = Toplevel(tk)
+    actualizar_frame.title("Actualizar Stock")
+
+    Label(actualizar_frame, text=f"Producto: {producto['titulo']}").pack()
+    Label(actualizar_frame, text=f"Stock Actual: {producto.get('stock', 0)}").pack()
+
+    Label(actualizar_frame, text="Cantidad a Ajustar").pack()
+    entry_cantidad = Entry(actualizar_frame)
+    entry_cantidad.pack()
+
+    def aplicar_ajuste():
+        cantidad = entry_cantidad.get()
+        if cantidad:
+            try:
+                cantidad = int(cantidad)
+                producto['stock'] = producto.get('stock', 0) + cantidad
+                with open('html/JS/productos.json', 'w') as archivo:
+                    json.dump(productos, archivo, indent=2)
+                messagebox.showinfo("Información", "Stock actualizado correctamente.")
+                actualizar_frame.destroy()
+            except ValueError:
+                messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido.")
+
+    Button(actualizar_frame, text="Ajustar Stock", command=aplicar_ajuste).pack()
+
+def procesar_codigo_barras(codigo_barras):
+    try:
+        with open('html/JS/productos.json', 'r') as archivo:
+            productos = json.load(archivo)
+    except FileNotFoundError:
+        productos = []
+
+    producto_encontrado = None
+    for producto in productos:
+        if producto['id'] == codigo_barras:
+            producto_encontrado = producto
+            break
+
+    if producto_encontrado:
+        actualizar_stock(producto_encontrado)
+    else:
+        messagebox.showerror("Error", "Producto no encontrado.")
+
 tk = Tk()
 
 Label(tk, text="Nombre Producto").pack()
@@ -419,6 +465,11 @@ Checkbutton(tk, text="Es variante de otro producto", variable=var_es_variante).p
 
 color_label = Label(tk, text="Color", bg="white", width=20)
 color_label.pack(pady=5)
+
+Label(tk, text="Código de Barras").pack()
+entry_codigo_barras = Entry(tk)
+entry_codigo_barras.pack()
+entry_codigo_barras.bind("<Return>", lambda event: procesar_codigo_barras(entry_codigo_barras.get()))
 
 menubar = Menu(tk)
 tk.config(menu=menubar)
