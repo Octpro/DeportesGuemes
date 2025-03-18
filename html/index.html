@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- <meta> "http-equiv="X-UA-Compatible" content = "IE-edge" -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deportes Guemes</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
@@ -54,6 +53,46 @@
 
         <main>
             <h2 class="titulo-principal" id="titulo-principal">Todos los productos</h2>
+            
+            <!-- Formulario de Filtro -->
+            <div id="filtro-widget">
+                <button id="toggle-filtros"><i class="bi bi-filter"></i></button>
+                <div id="filtros" class="modal">
+                    <div class="modal-content">
+                        <input type="text" id="filtro-nombre" placeholder="Nombre">
+                        
+                        <select id="filtro-categoria">
+                            <option value="">Categoría</option>
+                            <option value="remeras">Remeras</option>
+                            <option value="pantalones">Pantalones</option>
+                            <option value="accesorios">Accesorios</option>
+                            <!-- Agrega más opciones según sea necesario -->
+                        </select>
+                        
+                        <input type="number" id="filtro-precio-min" placeholder="Precio Mínimo">
+                        <input type="number" id="filtro-precio-max" placeholder="Precio Máximo">
+                        
+                        <select id="filtro-genero">
+                            <option value="">Género</option>
+                            <option value="femenino">Femenino</option>
+                            <option value="masculino">Masculino</option>
+                            <!-- Agrega más opciones según sea necesario -->
+                        </select>
+                        
+                        <select id="filtro-talle">
+                            <option value="">Talle</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <!-- Agrega más opciones según sea necesario -->
+                        </select>
+                        
+                        <button id="aplicar-filtro">Aplicar Filtro</button>
+                    </div>
+                </div>
+            </div>
+            
             <div id="contenedor-productos" class="contenedor-productos">
                 <!-- esto se va a rellenar con JS -->
             </div>

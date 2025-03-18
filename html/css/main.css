@@ -184,6 +184,21 @@
     color: var(--clr-white);
  }
 
+.sin-stock {
+opacity: 0.5;
+pointer-events: none;
+}
+
+.producto.sin-stock {
+    opacity: 0.5;
+    pointer-events: none; /* Deshabilita la interacción con el producto */
+}
+
+.producto.sin-stock .producto-consultar {
+    background-color: grey;
+    cursor: not-allowed;
+}
+
 /** CARRITO **/
 .contenedor-carrito {
     display: flex;
@@ -272,6 +287,31 @@
     border-bottom-right-radius: 1rem;
 }
 
+
+/* Estilos para el selector de talles en el carrito */
+.carrito-producto-talles {
+   width: 5%;
+   padding: 10px;
+   margin-top: 10px;
+   border: 1px solid var(--clr-main);
+   border-radius: 4px;
+   background-color: var(--clr-gray);
+   font-size: 13px;
+   color: var(--clr-main-light);
+}
+
+.carrito-producto-talles option {
+   padding: 8px;
+   background-color: var(--clr-gray);
+   color: var(--clr-main-light);
+}
+
+.carrito-producto-talles:focus {
+   border-color: #6749e0;
+   box-shadow: 0 0 5px rgba(103, 73, 224, 0.5);
+   outline: none;
+}
+
 .header-movile {
    display: none;
 }
@@ -284,6 +324,105 @@
     display: none;
 }
 
+#filtro-widget {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#toggle-filtros{
+   padding: 0.5rem;
+   margin-bottom: 10px;
+   border-radius: 0.5rem;
+   border: 2px solid var(--clr-main);
+   background-color: var(--clr-white);
+   color: var(--clr-main);
+   font-size: 0.85rem; /* Tamaño de fuente más pequeño */
+   font-weight: 600;
+   cursor: pointer;
+   transition: background-color 0.2s, color 0.2s;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    transition: opacity 0.3s ease-out;
+}
+
+.modal-content {
+    background-color: var(--clr-white);
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid var(--clr-main);
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 500px;
+    border-radius: 10px;
+}
+
+.modal.show {
+    display: block;
+    opacity: 1;
+}
+
+#filtros {
+    display: none;
+    margin-top: 10px;
+    max-width: 300px;
+    overflow: hidden;
+}
+
+.filtros-mostrados {
+    opacity: 1;
+    max-height: 1000px; /* Ajusta este valor según sea necesario */
+}
+
+.filtros-ocultos {
+   display: none;
+   opacity: 0;
+   max-height: 0;
+}
+
+#filtros input,
+#filtros select,
+#filtros button {
+   width: 100%;
+   padding: 0.5rem;
+   margin-bottom: 10px;
+   border-radius: 0.5rem;
+   border: 2px solid var(--clr-main);
+   background-color: var(--clr-white);
+   color: var(--clr-main);
+   font-size: 0.85rem; /* Tamaño de fuente más pequeño */
+   font-weight: 600;
+   cursor: pointer;
+   transition: background-color 0.2s, color 0.2s;
+}
+
+#filtros input:focus,
+#filtros select:focus,
+#filtros button:focus,
+#toggle-filtros:focus {
+    outline: none;
+    border-color: var(--clr-main-light);
+}
+
+#filtros button {
+    background-color: var(--clr-main);
+    color: var(--clr-white);
+}
+
+#filtros button:hover {
+    background-color: var(--clr-main-light);
+    color: var(--clr-white);
+}
 
 /* MEDIA QUERIES */
 
