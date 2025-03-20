@@ -19,7 +19,8 @@
       "S",
       "M",
       "L"
-    ]
+    ],
+    "codigo_barras": "1234567890123"
   },
   {
     "id": "remeras_under_tech_2.0_variante",
@@ -37,7 +38,8 @@
       "femenino": false,
       "masculino": false
     },
-    "talle": "No"
+    "talle": "No",
+    "codigo_barras": "1234567890124"
   },
   {
     "id": "accesorios_men1",
@@ -55,7 +57,8 @@
       "femenino": false,
       "masculino": false
     },
-    "talle": "No"
+    "talle": "No",
+    "codigo_barras": "1234567890125"
   },
   {
     "id": "accesorios_men1_1",
@@ -73,7 +76,8 @@
       "femenino": false,
       "masculino": false
     },
-    "talle": "No"
+    "talle": "No",
+    "codigo_barras": "1234567890126"
   },
   {
     "id": "accesorios_men1_2",
@@ -91,7 +95,8 @@
       "femenino": false,
       "masculino": false
     },
-    "talle": "No"
+    "talle": "No",
+    "codigo_barras": "1234567890127"
   },
   {
     "id": "accesorios_men1_3",
@@ -109,223 +114,8 @@
       "femenino": false,
       "masculino": false
     },
-    "talle": "No"
-  },
-  {
-    "id": "remeras_under_tech_2.0",
-    "titulo": "under tech 2.0",
-    "imagen": "./img/under_1.png",
-    "categoria": {
-      "nombre": "REMERAS",
-      "id": "remeras"
-    },
-    "precio": "25000",
-    "es_variante": false,
-    "color": "#fd9144",
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
-  },
-  {
-    "id": "remeras_under_tech_2.0_variante",
-    "titulo": "under tech 2.0",
-    "imagen": "./img/under_2.png",
-    "categoria": {
-      "nombre": "REMERAS",
-      "id": "remeras"
-    },
-    "precio": "38500.0",
-    "es_variante": true,
-    "color": null,
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
-  },
-  {
-    "id": "accesorios_men1",
-    "titulo": "men1",
-    "imagen": "./img/287290_5.jpg",
-    "categoria": {
-      "nombre": "ACCESORIOS",
-      "id": "accesorios"
-    },
-    "precio": "1000",
-    "es_variante": false,
-    "color": "#a29677",
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
-  },
-  {
-    "id": "accesorios_men1_1",
-    "titulo": "men1",
-    "imagen": "./img/2709570_11.jpg",
-    "categoria": {
-      "nombre": "ACCESORIOS",
-      "id": "accesorios"
-    },
-    "precio": "2300.0",
-    "es_variante": true,
-    "color": "#1462a7",
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
-  },
-  {
-    "id": "accesorios_men1_2",
-    "titulo": "men1",
-    "imagen": "./img/2709570_12.jpg",
-    "categoria": {
-      "nombre": "ACCESORIOS",
-      "id": "accesorios"
-    },
-    "precio": "3500",
-    "es_variante": true,
-    "color": "#a25e1a",
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
-  },
-  {
-    "id": "accesorios_men1_3",
-    "titulo": "men1",
-    "imagen": "./img/escritorio.png",
-    "categoria": {
-      "nombre": "ACCESORIOS",
-      "id": "accesorios"
-    },
-    "precio": "4600.0",
-    "es_variante": true,
-    "color": "#a88c73",
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
-  },
-  {
-    "id": "remeras_under_tech_2.0",
-    "titulo": "under tech 2.0",
-    "imagen": "./img/under_1.png",
-    "categoria": {
-      "nombre": "REMERAS",
-      "id": "remeras"
-    },
-    "precio": "25000",
-    "es_variante": false,
-    "color": "#fd9144",
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
-  },
-  {
-    "id": "remeras_under_tech_2.0_variante",
-    "titulo": "under tech 2.0",
-    "imagen": "./img/under_2.png",
-    "categoria": {
-      "nombre": "REMERAS",
-      "id": "remeras"
-    },
-    "precio": "38500.0",
-    "es_variante": true,
-    "color": null,
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
-  },
-  {
-    "id": "accesorios_men1",
-    "titulo": "men1",
-    "imagen": "./img/287290_5.jpg",
-    "categoria": {
-      "nombre": "ACCESORIOS",
-      "id": "accesorios"
-    },
-    "precio": "1000",
-    "es_variante": false,
-    "color": "#a29677",
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
-  },
-  {
-    "id": "accesorios_men1_1",
-    "titulo": "men1",
-    "imagen": "./img/2709570_11.jpg",
-    "categoria": {
-      "nombre": "ACCESORIOS",
-      "id": "accesorios"
-    },
-    "precio": "2300.0",
-    "es_variante": true,
-    "color": "#1462a7",
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
-  },
-  {
-    "id": "accesorios_men1_2",
-    "titulo": "men1",
-    "imagen": "./img/2709570_12.jpg",
-    "categoria": {
-      "nombre": "ACCESORIOS",
-      "id": "accesorios"
-    },
-    "precio": "3500",
-    "es_variante": true,
-    "color": "#a25e1a",
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
-  },
-  {
-    "id": "accesorios_men1_3",
-    "titulo": "men1",
-    "imagen": "./img/escritorio.png",
-    "categoria": {
-      "nombre": "ACCESORIOS",
-      "id": "accesorios"
-    },
-    "precio": "4600.0",
-    "es_variante": true,
-    "color": "#a88c73",
-    "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No"
+    "talle": "No",
+    "codigo_barras": "1234567890128"
   },
   {
     "id": "remeras_u",
@@ -337,7 +127,7 @@
     },
     "precio": "12000",
     "es_variante": false,
-    "genero": "G\u00e9nero",
+    "genero": "G\u00c3\u00a9nero",
     "talles": [
       "S",
       "M",
@@ -345,7 +135,8 @@
       "XL"
     ],
     "color": "Gris",
-    "stock": 1
+    "stock": 1,
+    "codigo_barras": "1234567890129"
   },
   {
     "id": "remeras_u_1",
@@ -357,9 +148,27 @@
     },
     "precio": "9000",
     "es_variante": true,
-    "genero": "G\u00e9nero",
+    "genero": "G\u00c3\u00a9nero",
     "talles": [],
     "color": "Naranja",
-    "stock": 1
+    "stock": 1,
+    "codigo_barras": "1234567890130"
+  },
+  {
+    "id": "accesorios_prueba",
+    "titulo": "prueba",
+    "imagen": "./img/escritorio.png",
+    "categoria": {
+      "nombre": "ACCESORIOS",
+      "id": "accesorios"
+    },
+    "precio": "8000",
+    "es_variante": false,
+    "genero": "G\u00c3\u00a9nero",
+    "talles": [],
+    "color": "Oliva",
+    "disciplina": "Musculaci\u00c3\u00b3n",
+    "stock": 1,
+    "codigo_barras": "7792052180702"
   }
 ]
