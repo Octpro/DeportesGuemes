@@ -18,15 +18,16 @@ const color_hex_map = {
     "Azul Marino": "#000080"
 };
 
+// Modificar la carga inicial de productos
 let productos = [];
 
 fetch('JS/productos.json')
     .then(response => response.json())
     .then(data => {
         productos = data;
-        console.log(productos); // Verifica que los productos se carguen correctamente
-        mostrarProductos(productos);
-    });
+        cargarProductos(productos); // Cargar productos inmediatamente después de obtenerlos
+    })
+    .catch(error => console.error('Error:', error));
 
 const contenedorProductos = document.querySelector("#contenedor-productos");
 const botonesCategoria = document.querySelectorAll(".boton-categoria");
@@ -199,25 +200,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Asegurarse de que los productos se carguen cuando se cambia de categoría
     botonesCategoria.forEach(boton => {
         boton.addEventListener("click", (e) => {
             botonesCategoria.forEach(boton => boton.classList.remove("active"));
             e.currentTarget.classList.add("active");
 
-            if (e.currentTarget.id != "todos") {
+            if (e.currentTarget.id !== "todos") {
                 const productosBoton = productos.filter(producto => {
                     if (e.currentTarget.id === "indumentaria") {
-                        return ["indumentaria", "remeras", "pantalones", "abrigos"].includes(producto.categoria_general);
+                        return producto.categoria_general === "indumentaria";
+                    } else if (e.currentTarget.id === "accesorios") {
+                        return producto.categoria_general === "accesorios";
                     } else {
-                        return producto.categoria_general === e.currentTarget.id;
+                        return producto.categoria.id === e.currentTarget.id;
                     }
                 });
 
-                if (productosBoton.length > 0) {
-                    tituloPrincipal.innerText = e.currentTarget.id.charAt(0).toUpperCase() + e.currentTarget.id.slice(1);
-                } else {
-                    tituloPrincipal.innerText = "No hay productos";
-                }
+                tituloPrincipal.innerText = productosBoton.length > 0 
+                    ? e.currentTarget.id.charAt(0).toUpperCase() + e.currentTarget.id.slice(1)
+                    : "No hay productos";
 
                 cargarProductos(productosBoton);
             } else {
@@ -226,6 +228,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Simular un clic en el botón "todos" para cargar todos los productos al inicio
+    const botonTodos = document.querySelector("#todos");
+    if (botonTodos) {
+        botonTodos.click();
+    }
 });
 
 function aplicarFiltro() {
@@ -292,35 +300,31 @@ function cargarProductos(productos) {
             const select = div.querySelector(`#variantes-${idSanitizado}`);
             const variantes = productos.filter(p => p.titulo === producto.titulo && p.es_variante);
 
-            if (variantes.length > 0) {
-                variantes.forEach(variante => {
-                    const option = document.createElement('option');
-                    option.value = variante.id;
-                    option.text = variante.color;
-                    option.style.backgroundColor = color_hex_map[variante.color];
-                    option.style.color = 'white';
-                    if (variante.stock === 0) {
-                        option.disabled = true;
-                    }
-                    select.append(option);
-                });
+            variantes.forEach(variante => {
+                const option = document.createElement('option');
+                option.value = variante.id;
+                option.text = variante.color;
+                option.style.backgroundColor = color_hex_map[variante.color];
+                option.style.color = 'white';
+                if (variante.stock === 0) {
+                    option.disabled = true;
+                }
+                select.append(option);
+            });
 
-                select.addEventListener('change', (e) => {
-                    const varianteSeleccionada = productos.find(p => p.id === e.target.value);
-                    if (varianteSeleccionada) {
-                        div.querySelector('.producto-img').src = varianteSeleccionada.imagen;
-                        div.querySelector('.producto-precio').innerText = `$${varianteSeleccionada.precio}`;
-                        div.querySelector('.producto-talles').innerText = `Talles: ${varianteSeleccionada.talles ? varianteSeleccionada.talles.join(', ') : 'No disponible'}`;
-                        div.querySelector('.producto-consultar').id = varianteSeleccionada.id;
-                        div.querySelector('.producto-consultar').disabled = varianteSeleccionada.stock === 0;
-                        select.style.backgroundColor = color_hex_map[varianteSeleccionada.color];
-                    } 
-                });
+            select.addEventListener('change', (e) => {
+                const varianteSeleccionada = productos.find(p => p.id === e.target.value);
+                if (varianteSeleccionada) {
+                    div.querySelector('.producto-img').src = varianteSeleccionada.imagen;
+                    div.querySelector('.producto-precio').innerText = `$${varianteSeleccionada.precio}`;
+                    div.querySelector('.producto-talles').innerText = `Talles: ${varianteSeleccionada.talles ? varianteSeleccionada.talles.join(', ') : 'No disponible'}`;
+                    div.querySelector('.producto-consultar').id = varianteSeleccionada.id;
+                    div.querySelector('.producto-consultar').disabled = varianteSeleccionada.stock === 0;
+                    select.style.backgroundColor = color_hex_map[varianteSeleccionada.color];
+                } 
+            });
 
-                select.style.backgroundColor = color_hex_map[productoAMostrar.color];
-            } else {
-                select.style.display = 'none';
-            }
+            select.style.backgroundColor = color_hex_map[productoAMostrar.color];
 
             // Si el producto no tiene stock, añadir clase para estilo gris y deshabilitar botón
             if (productoAMostrar.stock === 0) {

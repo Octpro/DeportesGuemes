@@ -1,11 +1,20 @@
-#que se pueda seleccionar mas de un talle por producto
-#accesorios por disciplina
+#validar entrada de datos
+#si pones cargar producto desde modo venta, que quede en el entry el codigo de barras
+#verificar si pones que no es variante que cargue correctamente el producto
+#que cargue bien los talles
 
 import json
 from tkinter import *
 from tkinter import filedialog, messagebox, ttk
 from PIL import Image, ImageTk
 import os
+import unicodedata
+
+def eliminar_acentos(cadena):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', cadena)
+        if unicodedata.category(c) != 'Mn'
+    )
 
 def select_image():
 	file_path = filedialog.askopenfilename(
@@ -238,17 +247,21 @@ def mostrar_imagen_producto(frame, imagen_ruta):
 def filtrar_productos(productos, nombre=None, categoria=None, precio_min=None, precio_max=None, disciplina=None, genero=None):
     filtrados = productos
     if nombre:
-        filtrados = [p for p in filtrados if nombre.lower() in p['titulo'].lower()]
+        nombre = eliminar_acentos(nombre.lower())
+        filtrados = [p for p in filtrados if nombre in eliminar_acentos(p['titulo'].lower())]
     if categoria and categoria != "Todas":
-        filtrados = [p for p in filtrados if categoria.lower() in p['categoria']['nombre'].lower()]
+        categoria = eliminar_acentos(categoria.lower())
+        filtrados = [p for p in filtrados if categoria in eliminar_acentos(p['categoria_general'].lower()) or categoria in eliminar_acentos(p['categoria']['id'])]
     if precio_min is not None:
         filtrados = [p for p in filtrados if float(p['precio']) >= float(precio_min)]
     if precio_max is not None:
         filtrados = [p for p in filtrados if float(p['precio']) <= float(precio_max)]
-    if disciplina:
-        filtrados = [p for p in filtrados if disciplina.lower() in p['disciplina'].lower()]
+    if disciplina and disciplina != "Todas":
+        disciplina = eliminar_acentos(disciplina.lower())
+        filtrados = [p for p in filtrados if disciplina in eliminar_acentos(p.get('disciplina', '').lower())]
     if genero and genero != "Todos":
-        filtrados = [p for p in filtrados if genero.lower() in (p['genero'] or "").lower()]
+        genero = eliminar_acentos(genero.lower())
+        filtrados = [p for p in filtrados if genero in eliminar_acentos((p['genero'] or "").lower())]
     return filtrados
 
 def aplicar_filtro_evento(event):
@@ -256,71 +269,71 @@ def aplicar_filtro_evento(event):
 
 
 def ver_productos():
+    global productos
+    try:
+        with open('html/JS/productos.json', 'r') as archivo:
+            productos = json.load(archivo)
+    except FileNotFoundError:
+        productos = []
+    
+    global ver_frame
+    ver_frame = Toplevel(tk)
+    ver_frame.grid_rowconfigure(0, weight=0) 
+    ver_frame.grid_rowconfigure(1, weight=1) 
+    ver_frame.grid_columnconfigure(0, weight=1)  
 
-	global productos
-	try:
-		with open('html/JS/productos.json', 'r') as archivo:
-			productos = json.load(archivo)
-	except FileNotFoundError:
-		productos = []
-	
-	global ver_frame
-	ver_frame = Toplevel(tk)
-	ver_frame.grid_rowconfigure(0, weight=0) 
-	ver_frame.grid_rowconfigure(1, weight=1) 
-	ver_frame.grid_columnconfigure(0, weight=1)  
+    global filtro_frame
+    filtro_frame = Frame(ver_frame)
+    filtro_frame.grid(row=0, column=0, sticky="ew", pady=(0, 5))
+    filtro_frame.grid_columnconfigure(6, weight=1)  
 
-	global filtro_frame
-	filtro_frame = Frame(ver_frame)
-	filtro_frame.grid(row=0, column=0, sticky="ew", pady=(0, 5))
-	filtro_frame.grid_columnconfigure(6, weight=1)  
+    for i in range(12):  # Ajustar el número de columnas según sea necesario
+        filtro_frame.grid_columnconfigure(i, weight=1)
 
-	for i in range(filtro_frame.grid_size()[0]):
-		filtro_frame.grid_columnconfigure(i, weight=1)
+    Label(filtro_frame, text="Nombre").grid(row=0, column=0, pady=5, padx=5)
+    global filtro_nombre
+    filtro_nombre = Entry(filtro_frame)
+    filtro_nombre.grid(row=0, column=1, pady=5, padx=5)
+    filtro_nombre.bind("<Return>", aplicar_filtro_evento)
+    
+    Label(filtro_frame, text="Categoría").grid(row=0, column=2, pady=5, padx=5)
+    global filtro_categoria
+    filtro_categoria = StringVar(filtro_frame)
+    filtro_categoria.set("Todas")
+    categorias = ["Todas", "Todas", "Indumentaria", "Accesorios", "Remeras", "Pantalones", "Abrigos"]
+    ttk.OptionMenu(filtro_frame, filtro_categoria, *categorias).grid(row=0, column=3, pady=5, padx=5)
+    
+    Label(filtro_frame, text="Precio Mínimo").grid(row=0, column=4, pady=5, padx=5)
+    global filtro_precio_min
+    filtro_precio_min = Entry(filtro_frame)
+    filtro_precio_min.grid(row=0, column=5, pady=5, padx=5)
+    filtro_precio_min.bind("<Return>", aplicar_filtro_evento)
+    
+    Label(filtro_frame, text="Precio Máximo").grid(row=0, column=6, pady=5, padx=5)
+    global filtro_precio_max
+    filtro_precio_max = Entry(filtro_frame)
+    filtro_precio_max.grid(row=0, column=7, pady=5, padx=5)
+    filtro_precio_max.bind("<Return>", aplicar_filtro_evento)
 
-	Label(filtro_frame, text="Nombre").grid(row=0, column=0, pady=5)
-	global filtro_nombre
-	filtro_nombre = Entry(filtro_frame)
-	filtro_nombre.grid(row=0, column=1, pady=5)
-	filtro_nombre.bind("<Return>", aplicar_filtro_evento)
-	
-	Label(filtro_frame, text="Categoría").grid(row=0, column=2, pady=5)
-	global filtro_categoria
-	filtro_categoria = StringVar(filtro_frame)
-	filtro_categoria.set("Todas")
-	categorias = ["Todas", "Indumentaria", "Accesorios"]
-	OptionMenu(filtro_frame, filtro_categoria, *categorias).grid(row=0, column=3, pady=5)
-	
-	Label(filtro_frame, text="Precio Mínimo").grid(row=0, column=4, pady=5)
-	global filtro_precio_min
-	filtro_precio_min = Entry(filtro_frame)
-	filtro_precio_min.grid(row=0, column=5, pady=5)
-	filtro_precio_min.bind("<Return>", aplicar_filtro_evento)
-	
-	Label(filtro_frame, text="Precio Máximo").grid(row=0, column=6, pady=5)
-	global filtro_precio_max
-	filtro_precio_max = Entry(filtro_frame)
-	filtro_precio_max.grid(row=0, column=7, pady=5)
-	filtro_precio_max.bind("<Return>", aplicar_filtro_evento)
+    Label(filtro_frame, text="Disciplina").grid(row=0, column=8, pady=5, padx=5)
+    global filtro_disciplina
+    filtro_disciplina = StringVar(filtro_frame)
+    filtro_disciplina.set("Todas")
+    disciplinas = ["Todas", "Todas" ,"Fútbol", "Básquet", "Tenis", "Natación", "Running", "Boxeo", "Vóley", "Rugby", "Hockey", "Yoga", "Fitness", "Musculación"]
+    ttk.OptionMenu(filtro_frame, filtro_disciplina, *disciplinas).grid(row=0, column=9, pady=5, padx=5)
 
-	Label(filtro_frame, text="Disciplina").grid(row=0, column=8, pady=5)
-	global filtro_disciplina
-	filtro_disciplina = Entry(filtro_frame)
-	filtro_disciplina.grid(row=0, column=9, pady=5)
-	filtro_disciplina.bind("<Return>", aplicar_filtro_evento)
+    Label(filtro_frame, text="Género").grid(row=0, column=10, pady=5, padx=5)
+    global filtro_genero
+    filtro_genero = StringVar(filtro_frame)
+    filtro_genero.set("Todos")
+    generos = ["Todos", "Todos","Femenino", "Masculino", "Niño", "Niña", "Unisex", "No"]
+    ttk.OptionMenu(filtro_frame, filtro_genero, *generos).grid(row=0, column=11, pady=5, padx=5)
 
-	Label(filtro_frame, text="Género").grid(row=0, column=10, pady=5)
-	global filtro_genero
-	filtro_genero = StringVar(filtro_frame)
-	filtro_genero.set("Todos")
-	generos = ["Todos", "Femenino", "Masculino", "Niño", "Niña", "Unisex","No"]
-	OptionMenu(filtro_frame, filtro_genero, *generos).grid(row=0, column=11, pady=5)
-
-	Button(filtro_frame, text="Seleccionar Todos", command=seleccionar_todos).grid(row=1, column=0, padx=5, pady=5)
-	Button(filtro_frame, text="Deseleccionar Todos", command=deseleccionar_todos).grid(row=1, column=1, padx=5, pady=5)
-	Button(filtro_frame, text="Actualizar Precios Seleccionados", command=actualizar_precios_seleccionados).grid(row=1, column=2, padx=5, pady=5)
-	Button(filtro_frame, text="Actualizar Stock Seleccionados", command=actualizar_stock_seleccionados).grid(row=1, column=3, padx=5, pady=5)
-	aplicar_filtro(ver_frame, productos)
+    Button(filtro_frame, text="Seleccionar Todos", command=seleccionar_todos).grid(row=1, column=0, padx=5, pady=5)
+    Button(filtro_frame, text="Deseleccionar Todos", command=deseleccionar_todos).grid(row=1, column=1, padx=5, pady=5)
+    Button(filtro_frame, text="Actualizar Precios Seleccionados", command=actualizar_precios_seleccionados).grid(row=1, column=2, padx=5, pady=5)
+    Button(filtro_frame, text="Actualizar Stock Seleccionados", command=actualizar_stock_seleccionados).grid(row=1, column=3, padx=5, pady=5)
+    aplicar_filtro(ver_frame, productos)
 
 def aplicar_filtro(ver_frame, productos):
     nombre = filtro_nombre.get()

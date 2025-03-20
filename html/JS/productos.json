@@ -51,7 +51,7 @@
     "precio": "1000",
     "es_variante": false,
     "color": "#a29677",
-    "stock": 0,
+    "stock": 1,
     "genero": "No",
     "talles": [
       "No"
@@ -70,7 +70,7 @@
     "precio": "2300.0",
     "es_variante": true,
     "color": "#1462a7",
-    "stock": 0,
+    "stock": 1,
     "genero": "No",
     "talles": [
       "No"
@@ -89,7 +89,7 @@
     "precio": "3500",
     "es_variante": true,
     "color": "#a25e1a",
-    "stock": 0,
+    "stock": 1,
     "genero": "No",
     "talles": [
       "No"
@@ -108,7 +108,7 @@
     "precio": "4600.0",
     "es_variante": true,
     "color": "#a88c73",
-    "stock": 0,
+    "stock": 1,
     "genero": "No",
     "talles": [
       "No"
@@ -126,7 +126,7 @@
     "categoria_general": "indumentaria",
     "precio": "12000",
     "es_variante": false,
-    "genero": "Género",
+    "genero": "G\u00c3\u00a9nero",
     "talles": [
       "S",
       "M",
@@ -148,28 +148,53 @@
     "categoria_general": "indumentaria",
     "precio": "9000",
     "es_variante": true,
-    "genero": "Género",
+    "genero": "G\u00c3\u00a9nero",
     "talles": [],
     "color": "Naranja",
     "stock": 10,
     "codigo_barras": "1234567890130"
   },
   {
-    "id": "accesorios_prueba",
-    "titulo": "prueba",
-    "imagen": "./img/escritorio.png",
+    "id": "abrigos_mesi",
+    "titulo": "mesi",
+    "imagen": "./img/2709570_11.jpg",
     "categoria": {
-      "nombre": "ACCESORIOS",
-      "id": "accesorios"
+      "nombre": "ABRIGOS",
+      "id": "abrigos"
     },
-    "categoria_general": "accesorios",
-    "precio": "8000",
+    "categoria_general": "indumentaria",
+    "precio": "123456789",
     "es_variante": false,
-    "genero": "Género",
-    "talles": [],
-    "color": "Oliva",
-    "disciplina": "Musculación",
-    "stock": 1,
+    "genero": "Unisex",
+    "talles": [
+      "S",
+      "M"
+    ],
+    "color": "Verde Azulado",
+    "disciplina": "Running",
+    "stock": 0,
     "codigo_barras": "7792052180702"
+  },
+  {
+    "id": "pantalones_mesi1",
+    "titulo": "mesi1",
+    "imagen": "./img/graf.jpg",
+    "categoria": {
+      "nombre": "PANTALONES",
+      "id": "pantalones"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "76213",
+    "es_variante": false,
+    "genero": "Masculino",
+    "talles": [
+      "S",
+      "M",
+      "L"
+    ],
+    "color": "Gris",
+    "disciplina": "Running",
+    "stock": 1,
+    "codigo_barras": "6178253"
   }
 ]
