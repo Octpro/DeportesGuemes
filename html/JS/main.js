@@ -1,3 +1,23 @@
+const color_hex_map = {
+    "Negro": "#000000",
+    "Blanco": "#FFFFFF",
+    "Rojo": "#FF0000",
+    "Verde": "#00FF00",
+    "Azul": "#0000FF",
+    "Amarillo": "#FFFF00",
+    "Naranja": "#FFA500",
+    "Cian": "#00FFFF",
+    "Magenta": "#FF00FF",
+    "Plata": "#C0C0C0",
+    "Gris": "#808080",
+    "Marron": "#800000",
+    "Oliva": "#808000",
+    "Verde Oscuro": "#008000",
+    "Violeta": "#800080",
+    "Verde Azulado": "#008080",
+    "Azul Marino": "#000080"
+};
+
 let productos = [];
 
 fetch('JS/productos.json')
@@ -46,7 +66,7 @@ function mostrarProductos(productos) {
                 <p class="producto-precio">$${productoAMostrar.precio}</p>
                 <p class="producto-talles">Talles: ${productoAMostrar.talles ? productoAMostrar.talles.join(', ') : 'No disponible'}</p>
                 <select class="producto-variantes" id="variantes-${idSanitizado}">
-                    <option value="${productoAMostrar.id}" style="background-color: ${productoAMostrar.color}; color: white;" selected>${productoAMostrar.color}</option>
+                    <option value="${productoAMostrar.id}" style="background-color: ${color_hex_map[productoAMostrar.color]}; color: white;" selected>${productoAMostrar.color}</option>
                 </select>
                 <button class="producto-consultar" id="${productoAMostrar.id}" ${productoAMostrar.stock === 0 ? 'disabled' : ''}>Consultar</button>
             </div>
@@ -61,7 +81,7 @@ function mostrarProductos(productos) {
                     const option = document.createElement('option');
                     option.value = variante.id;
                     option.text = variante.color;
-                    option.style.backgroundColor = variante.color;
+                    option.style.backgroundColor = color_hex_map[variante.color];
                     option.style.color = 'white';
                     if (variante.stock === 0) {
                         option.disabled = true;
@@ -77,11 +97,11 @@ function mostrarProductos(productos) {
                         div.querySelector('.producto-talles').innerText = `Talles: ${varianteSeleccionada.talles ? varianteSeleccionada.talles.join(', ') : 'No disponible'}`;
                         div.querySelector('.producto-consultar').id = varianteSeleccionada.id;
                         div.querySelector('.producto-consultar').disabled = varianteSeleccionada.stock === 0;
-                        select.style.backgroundColor = varianteSeleccionada.color;
+                        select.style.backgroundColor = color_hex_map[varianteSeleccionada.color];
                     } 
                 });
 
-                select.style.backgroundColor = productoAMostrar.color;
+                select.style.backgroundColor = color_hex_map[productoAMostrar.color];
             } else {
                 select.style.display = 'none';
             }
@@ -152,25 +172,25 @@ document.addEventListener('DOMContentLoaded', function() {
         if (filtros.classList.contains('filtros-ocultos')) {
             filtros.classList.remove('filtros-ocultos');
             filtros.classList.add('filtros-mostrados');
-            filtros.style.display = 'block'; // Asegúrate de que los filtros se muestren
         } else {
             filtros.classList.remove('filtros-mostrados');
             filtros.classList.add('filtros-ocultos');
-            filtros.style.display = 'none'; // Asegúrate de que los filtros se oculten
         }
     });
 
-    // Close the modal when clicking outside of the modal content
-    window.addEventListener('click', function(event) {
+    // Close the filters when clicking outside of the filters area
+    document.addEventListener('click', function(event) {
         const filtros = document.getElementById('filtros');
-        if (event.target === filtros) {
-            filtros.style.display = 'none';
+        const toggleFiltros = document.getElementById('toggle-filtros');
+        if (!filtros.contains(event.target) && !toggleFiltros.contains(event.target)) {
+            filtros.classList.remove('filtros-mostrados');
+            filtros.classList.add('filtros-ocultos');
         }
     });
 
     document.getElementById('aplicar-filtro').addEventListener('click', aplicarFiltro);
 
-    const filtros = document.querySelectorAll('#filtro-nombre, #filtro-categoria, #filtro-precio-min, #filtro-precio-max, #filtro-genero, #filtro-talle');
+    const filtros = document.querySelectorAll('#filtro-nombre, #filtro-categoria, #filtro-precio-min, #filtro-precio-max, #filtro-genero, #filtro-talle, #filtro-disciplina');
     filtros.forEach(filtro => {
         filtro.addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
@@ -179,48 +199,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-botonesCategoria.forEach(boton => {
-    boton.addEventListener("click", (e) => {
-        botonesCategoria.forEach(boton => boton.classList.remove("active"));
-        e.currentTarget.classList.add("active");
+    botonesCategoria.forEach(boton => {
+        boton.addEventListener("click", (e) => {
+            botonesCategoria.forEach(boton => boton.classList.remove("active"));
+            e.currentTarget.classList.add("active");
 
-        if (e.currentTarget.id != "todos") {
-            const productoCategoria = productos.find(producto => producto.categoria.id === e.currentTarget.id);
+            if (e.currentTarget.id != "todos") {
+                const productoCategoria = productos.find(producto => producto.categoria.id === e.currentTarget.id);
 
-            if (productoCategoria) {
-                tituloPrincipal.innerText = productoCategoria.categoria.nombre;
+                if (productoCategoria) {
+                    tituloPrincipal.innerText = productoCategoria.categoria.nombre;
+                } else {
+                    tituloPrincipal.innerText = "No hay productos";
+                }
+
+                const productosBoton = productos.filter(producto => producto.categoria.id === e.currentTarget.id);
+                cargarProductos(productosBoton);
             } else {
-                tituloPrincipal.innerText = "No hay productos";
+                tituloPrincipal.innerText = "Todos los productos";
+                cargarProductos(productos);
             }
-
-            const productosBoton = productos.filter(producto => producto.categoria.id === e.currentTarget.id);
-            cargarProductos(productosBoton);
-        } else {
-            tituloPrincipal.innerText = "Todos los productos";
-            cargarProductos(productos);
-        }
+        });
     });
 });
 
 function aplicarFiltro() {
     const nombre = document.getElementById('filtro-nombre').value.toLowerCase();
-    const categoria = document.getElementById('filtro-categoria').value;
+    const categoria = document.getElementById('filtro-categoria').value.toLowerCase();
     const precioMin = parseFloat(document.getElementById('filtro-precio-min').value) || 0;
     const precioMax = parseFloat(document.getElementById('filtro-precio-max').value) || Infinity;
-    const genero = document.getElementById('filtro-genero').value;
-    const talle = document.getElementById('filtro-talle').value;
+    const genero = document.getElementById('filtro-genero').value.toLowerCase();
+    const talle = document.getElementById('filtro-talle').value.toLowerCase();
+    const disciplina = document.getElementById('filtro-disciplina').value.toLowerCase();
 
     const productosFiltrados = productos.filter(producto => {
         const nombreMatch = producto.titulo.toLowerCase().includes(nombre);
-        const categoriaMatch = categoria === "" || producto.categoria.id === categoria;
+        const categoriaMatch = categoria === "" || producto.categoria.nombre.toLowerCase().includes(categoria);
         const precioMatch = producto.precio >= precioMin && producto.precio <= precioMax;
-        const generoMatch = genero === "" || (genero === "femenino" && producto.genero.femenino) || (genero === "masculino" && producto.genero.masculino);
-        const talleMatch = talle === "" || producto.talles.includes(talle);
-        return nombreMatch && categoriaMatch && precioMatch && generoMatch && talleMatch;
+        const generoMatch = genero === "" || producto.genero.toLowerCase() === genero;
+        const talleMatch = talle === "" || (producto.talles && producto.talles.map(t => t.toLowerCase()).includes(talle));
+        const disciplinaMatch = disciplina === "" || producto.disciplina.toLowerCase() === disciplina;
+        return nombreMatch && categoriaMatch && precioMatch && generoMatch && talleMatch && disciplinaMatch;
     });
 
     mostrarProductos(productosFiltrados);
-}});
+}
 
 function cargarProductos(productos) {
     contenedorProductos.innerHTML = '';
@@ -247,7 +270,7 @@ function cargarProductos(productos) {
                 <p class="producto-precio">$${productoAMostrar.precio}</p>
                 <p class="producto-talles">Talles: ${productoAMostrar.talles ? productoAMostrar.talles.join(', ') : 'No disponible'}</p>
                 <select class="producto-variantes" id="variantes-${idSanitizado}">
-                    <option value="${productoAMostrar.id}" style="background-color: ${productoAMostrar.color}; color: white;" selected>${productoAMostrar.color}</option>
+                    <option value="${productoAMostrar.id}" style="background-color: ${color_hex_map[productoAMostrar.color]}; color: white;" selected>${productoAMostrar.color}</option>
                 </select>
                 <button class="producto-consultar" id="${productoAMostrar.id}" ${productoAMostrar.stock === 0 ? 'disabled' : ''}>Consultar</button>
             </div>
@@ -262,7 +285,7 @@ function cargarProductos(productos) {
                     const option = document.createElement('option');
                     option.value = variante.id;
                     option.text = variante.color;
-                    option.style.backgroundColor = variante.color;
+                    option.style.backgroundColor = color_hex_map[variante.color];
                     option.style.color = 'white';
                     if (variante.stock === 0) {
                         option.disabled = true;
@@ -278,11 +301,11 @@ function cargarProductos(productos) {
                         div.querySelector('.producto-talles').innerText = `Talles: ${varianteSeleccionada.talles ? varianteSeleccionada.talles.join(', ') : 'No disponible'}`;
                         div.querySelector('.producto-consultar').id = varianteSeleccionada.id;
                         div.querySelector('.producto-consultar').disabled = varianteSeleccionada.stock === 0;
-                        select.style.backgroundColor = varianteSeleccionada.color;
+                        select.style.backgroundColor = color_hex_map[varianteSeleccionada.color];
                     } 
                 });
 
-                select.style.backgroundColor = productoAMostrar.color;
+                select.style.backgroundColor = color_hex_map[productoAMostrar.color];
             } else {
                 select.style.display = 'none';
             }

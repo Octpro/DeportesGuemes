@@ -62,9 +62,11 @@ function cargarProductosCarrito() {
                     const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
                     const cantidadSeleccionada = selectedOptions.length;
                     producto.cantidad = cantidadSeleccionada;
+                    producto.tallesSeleccionados = selectedOptions; // Guardar los talles seleccionados en el objeto producto
                     div.querySelector('.carrito-producto-cantidad p').innerText = cantidadSeleccionada;
                     div.querySelector('.carrito-producto-subtotal p').innerText = producto.precio * cantidadSeleccionada;
                     actualizarTotal();
+                    localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito)); // Guardar cambios en localStorage
                 });
             }
 
@@ -150,18 +152,53 @@ function vaciarCarrito() {
 function actualizarTotal() {
     const totalCalculado = productosEnCarrito.reduce((acc, producto) => acc + (producto.precio * producto.cantidad), 0);
     contenedorTotal.innerText = `$${totalCalculado}`;
-
 }
 
 botonConsultar.addEventListener("click", consultarCarrito);
 
 function consultarCarrito() {
+    let productosEnCarrito = JSON.parse(localStorage.getItem("productos-en-carrito")) || [];
 
-    productosEnCarrito.length = 0;
-    localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
+    let mensajeWhatsApp = "Hola!. Queria consultar sobre:\n\n";
 
-    contenedorCarritoVacio.classList.add("disabled");
-    contenedorCarritoProductos.classList.add("disabled");
-    contenedorcarritoAcciones.classList.add("disabled");
-    contenedorcarritoComprado.classList.remove("disabled");
+    productosEnCarrito.forEach((producto) => {
+        let tallesSeleccionados = producto.tallesSeleccionados || [];
+        console.log(`Producto: ${producto.titulo}`);
+        console.log(`Talles seleccionados: ${tallesSeleccionados}`);
+        const cantidadSeleccionada = tallesSeleccionados.length > 0 ? tallesSeleccionados.length : producto.cantidad;
+        console.log(`Cantidad seleccionada: ${cantidadSeleccionada}`);
+        console.log(`Precio unitario: ${producto.precio}`);
+        console.log(`Subtotal: ${producto.precio * cantidadSeleccionada}`);
+        mensajeWhatsApp += `- Producto: ${producto.titulo}\n`;
+        mensajeWhatsApp += `- Cantidad: ${cantidadSeleccionada}\n`;
+        mensajeWhatsApp += `- Precio: ${producto.precio * cantidadSeleccionada}\n`;
+        if (tallesSeleccionados.length > 0) {
+            mensajeWhatsApp += `- Talles: ${tallesSeleccionados.join(", ")}\n`;
+        } else if (producto.talles && producto.talles.length > 0) {
+            mensajeWhatsApp += `- Talles: ${producto.talles.join(", ")}\n`;
+        }
+        if (producto.genero) {
+            mensajeWhatsApp += `- Género: ${producto.genero}\n`;
+        }
+        mensajeWhatsApp += `\n`;
+    });
+
+    console.log(`Mensaje WhatsApp: ${mensajeWhatsApp}`);
+
+    // Codificar mensaje para URL y crear enlace de WhatsApp
+    let mensajeCodificado = encodeURIComponent(mensajeWhatsApp);
+    let enlaceWhatsApp = `https://api.whatsapp.com/send?phone=5493541665446&text=${mensajeCodificado}`; // cambiar el numero de telefono
+
+    // Abrir enlace en nueva pestaña o ventana
+    window.open(enlaceWhatsApp, '_blank');
+
+    // Ahora sí, limpiar y guardar cambios en localStorage
+    // productosEnCarrito.length = 0;
+    // localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
+
+    // Ocultar/mostrar elementos según sea necesario
+    // contenedorCarritoVacio.classList.add("disabled");
+    // contenedorCarritoProductos.classList.add("disabled");
+    // contenedorcarritoAcciones.classList.add("disabled");
+    // contenedorcarritoComprado.classList.remove("disabled");
 }

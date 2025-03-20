@@ -57,7 +57,7 @@
             <!-- Formulario de Filtro -->
             <div id="filtro-widget">
                 <button id="toggle-filtros"><i class="bi bi-filter"></i></button>
-                <div id="filtros" class="modal">
+                <div id="filtros" class="modal filtros-ocultos">
                     <div class="modal-content">
                         <input type="text" id="filtro-nombre" placeholder="Nombre">
                         
@@ -74,8 +74,11 @@
                         
                         <select id="filtro-genero">
                             <option value="">Género</option>
-                            <option value="femenino">Femenino</option>
-                            <option value="masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Niño">Niño</option>
+                            <option value="Niña">Niña</option>
+                            <option value="No">No</option>
                             <!-- Agrega más opciones según sea necesario -->
                         </select>
                         
@@ -85,6 +88,23 @@
                             <option value="M">M</option>
                             <option value="L">L</option>
                             <option value="XL">XL</option>
+                            <!-- Agrega más opciones según sea necesario -->
+                        </select>
+
+                        <select id="filtro-disciplina">
+                            <option value="">Disciplina</option>
+                            <option value="Fútbol">Fútbol</option>
+                            <option value="Básquet">Básquet</option>
+                            <option value="Tenis">Tenis</option>
+                            <option value="Natación">Natación</option>
+                            <option value="Running">Running</option>
+                            <option value="Boxeo">Boxeo</option>
+                            <option value="Vóley">Vóley</option>
+                            <option value="Rugby">Rugby</option>
+                            <option value="Hockey">Hockey</option>
+                            <option value="Yoga">Yoga</option>
+                            <option value="Fitness">Fitness</option>
+                            <option value="Musculación">Musculación</option>
                             <!-- Agrega más opciones según sea necesario -->
                         </select>
                         

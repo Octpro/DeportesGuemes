@@ -1,5 +1,5 @@
 #que se pueda seleccionar mas de un talle por producto
-
+#accesorios por disciplina
 
 import json
 from tkinter import *
@@ -24,15 +24,60 @@ def display_image(file_path):
 	photo = ImageTk.PhotoImage(img)
 	image_label.config(image=photo)
 	image_label.image = photo
+	image_label.bind("<Button-1>", get_color)
+
+color_hex_map = {
+    "Negro": "#000000",
+    "Blanco": "#FFFFFF",
+    "Rojo": "#FF0000",
+    "Verde": "#00FF00",
+    "Azul": "#0000FF",
+    "Amarillo": "#FFFF00",
+    "Naranja": "#FFA500",
+    "Cian": "#00FFFF",
+    "Magenta": "#FF00FF",
+    "Plata": "#C0C0C0",
+    "Gris": "#808080",
+    "Marron": "#800000",
+    "Oliva": "#808000",
+    "Verde Oscuro": "#008000",
+    "Violeta": "#800080",
+    "Verde Azulado": "#008080",
+    "Azul Marino": "#000080"
+}
+	
+def closest_color(rgb):
+    colors = {
+        "Negro": (0, 0, 0),
+        "Blanco": (255, 255, 255),
+        "Rojo": (255, 0, 0),
+        "Verde": (0, 255, 0),
+        "Azul": (0, 0, 255),
+        "Amarillo": (255, 255, 0),
+        "Naranja": (255, 165, 0),
+        "Cian": (0, 255, 255),
+        "Magenta": (255, 0, 255),
+        "Plata": (192, 192, 192),
+        "Gris": (128, 128, 128),
+        "Marron": (128, 0, 0),
+        "Oliva": (128, 128, 0),
+        "Verde Oscuro": (0, 128, 0),
+        "Violeta": (128, 0, 128),
+        "Verde Azulado": (0, 128, 128),
+        "Azul Marino": (0, 0, 128)
+    }
+    closest_color_name = min(colors, key=lambda color: sum((sc - rc) ** 2 for sc, rc in zip(colors[color], rgb)))
+    return closest_color_name, colors[closest_color_name]
 
 def get_color(event):
-	x, y = event.x, y = event.y
-	if img:
-		rgb = img.getpixel((x, y))
-		color_code = f'#{rgb[0]:02x}{rgb[1]:02x}{rgb[2]:02x}'
-		color_label.config(bg=color_code)
-		return color_code
-	return None
+    x, y = event.x, event.y
+    if img:
+        rgb = img.getpixel((x, y))
+        color_name, color_rgb = closest_color(rgb)
+        color_hex = color_hex_map[color_name]
+        color_label.config(bg=color_hex, text=color_name)
+        return color_name
+    return None
 
 def reset_image():
 	global selected_image_path
@@ -50,60 +95,62 @@ def generate_unique_id(base_id, productos):
 	return unique_id
 
 def guardar():
-	nombre_producto = Entry_1.get()
-	categoria_producto = variable_unidad.get()
-	precio = Entry_3.get()
-	es_variante = var_es_variante.get()
-	genero = variable_gen.get()
-	talles = [listbox_talles.get(i) for i in listbox_talles.curselection()]
-	
-	try:
-		with open('html/JS/productos.json', 'r') as archivo:
-			contenido = archivo.read().strip()
-			if contenido:
-				productos = json.loads(contenido)
-			else:
-				productos = []
-	except FileNotFoundError:
-		productos = []
-	except json.JSONDecodeError:
-		productos = []
-	
-	base_id = f"{categoria_producto.lower()}_{nombre_producto.replace(' ', '_').lower()}"
-	id_producto = generate_unique_id(base_id, productos)
-	
-	imagen_ruta = selected_image_path
-	if imagen_ruta:
-		imagen_nombre = os.path.basename(imagen_ruta)
-		imagen_ruta = f"./img/{imagen_nombre}"
-	else:
-		imagen_ruta = ""
-	
-	producto = {
-		"id": id_producto,
-		"titulo": nombre_producto,
-		"imagen": imagen_ruta,
-		"categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
-		"precio": precio,
-		"es_variante": es_variante,
-		"genero": genero,
-		"talles": talles,
-		"color": color_label.cget("bg"),
-		"stock": 0  # Inicializar el stock a 0
-	}
-	
-	productos.append(producto)
-	
-	with open('html/JS/productos.json', 'w') as archivo:
-		json.dump(productos, archivo, indent=2)
+    nombre_producto = Entry_1.get()
+    categoria_producto = variable_unidad.get()
+    precio = Entry_3.get()
+    es_variante = var_es_variante.get()
+    genero = variable_gen.get()
+    talles = [listbox_talles.get(i) for i in listbox_talles.curselection()]
+    disciplina = variable_disciplina.get()  # Obtener la disciplina seleccionada
+    
+    try:
+        with open('html/JS/productos.json', 'r') as archivo:
+            contenido = archivo.read().strip()
+            if contenido:
+                productos = json.loads(contenido)
+            else:
+                productos = []
+    except FileNotFoundError:
+        productos = []
+    except json.JSONDecodeError:
+        productos = []
+    
+    base_id = f"{categoria_producto.lower()}_{nombre_producto.replace(' ', '_').lower()}"
+    id_producto = generate_unique_id(base_id, productos)
+    
+    imagen_ruta = selected_image_path
+    if imagen_ruta:
+        imagen_nombre = os.path.basename(imagen_ruta)
+        imagen_ruta = f"./img/{imagen_nombre}"
+    else:
+        imagen_ruta = ""
+    
+    producto = {
+        "id": id_producto,
+        "titulo": nombre_producto,
+        "imagen": imagen_ruta,
+        "categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
+        "precio": precio,
+        "es_variante": es_variante,
+        "genero": genero,
+        "talles": talles,
+        "color": color_label.cget("text"),  # Usar el nombre del color en lugar del código hexadecimal
+        "disciplina": disciplina,  # Agregar la disciplina al producto
+        "stock": 0  # Inicializar el stock a 0
+    }
+    
+    productos.append(producto)
+    
+    with open('html/JS/productos.json', 'w') as archivo:
+        json.dump(productos, archivo, indent=2)
 
-	reset_image()
-	color_label.config(bg="white")
-	
-	messagebox.showinfo("Información", "Producto agregado correctamente.")
-	
-	if es_variante:
-		agregar_variante(nombre_producto, categoria_producto, precio)
+    reset_image()
+    color_label.config(bg="white", text="Color")
+    
+    messagebox.showinfo("Información", "Producto agregado correctamente.")
+    
+    if es_variante:
+        agregar_variante(nombre_producto, categoria_producto, precio)
 
 def agregar_variante(nombre_producto, categoria_producto, precio):
 	if messagebox.askyesno("Agregar Variante", "¿Desea agregar una variante?"):
@@ -118,46 +165,49 @@ def agregar_variante(nombre_producto, categoria_producto, precio):
 		messagebox.showinfo("Información", "No se agregó ninguna variante.")
 
 def guardar_variante(nombre_producto, categoria_producto, precio, color):
-	global selected_image_path
-	talles = [listbox_talles.get(i) for i in listbox_talles.curselection()],
-	
-	try:
-		with open('html/JS/productos.json', 'r') as archivo:
-			productos = json.load(archivo)
-	except FileNotFoundError:
-		productos = []
-	
-	base_id = f"{categoria_producto.lower()}_{nombre_producto.replace(' ', '_').lower()}_variante"
-	id_producto = generate_unique_id(base_id, productos)
-	
-	imagen_ruta = selected_image_path
-	if imagen_ruta:
-		imagen_nombre = os.path.basename(imagen_ruta)
-		imagen_ruta = f"./img/{imagen_nombre}"
-	else:
-		imagen_ruta = ""
-	
-	producto = {
-		"id": id_producto,
-		"titulo": nombre_producto,
-		"imagen": imagen_ruta,
-		"categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
-		"precio": precio,
-		"es_variante": True,
-		"genero": variable_gen.get(),
-		"talle": talles,
-		"color": color
-	}
-	
-	productos.append(producto)
-	
-	with open('html/JS/productos.json', 'w') as archivo:
-		json.dump(productos, archivo, indent=2)
-	
-	reset_image()
-	color_label.config(bg="white")
-	
-	messagebox.showinfo("Información", "Variante agregada correctamente.")
+    global selected_image_path
+    talles = [listbox_talles.get(i) for i in listbox_talles.curselection()]
+    disciplina = variable_disciplina.get()  # Obtener la disciplina seleccionada
+    
+    try:
+        with open('html/JS/productos.json', 'r') as archivo:
+            productos = json.load(archivo)
+    except FileNotFoundError:
+        productos = []
+    
+    base_id = f"{categoria_producto.lower()}_{nombre_producto.replace(' ', '_').lower()}_variante"
+    id_producto = generate_unique_id(base_id, productos)
+    
+    imagen_ruta = selected_image_path
+    if imagen_ruta:
+        imagen_nombre = os.path.basename(imagen_ruta)
+        imagen_ruta = f"./img/{imagen_nombre}"
+    else:
+        imagen_ruta = ""
+    
+    producto = {
+        "id": id_producto,
+        "titulo": nombre_producto,
+        "imagen": imagen_ruta,
+        "categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
+        "precio": precio,
+        "es_variante": True,
+        "genero": variable_gen.get(),
+        "talles": talles,
+        "color": color,
+        "disciplina": disciplina,  # Agregar la disciplina al producto
+        "stock": 0  # Inicializar el stock a 0
+    }
+    
+    productos.append(producto)
+    
+    with open('html/JS/productos.json', 'w') as archivo:
+        json.dump(productos, archivo, indent=2)
+    
+    reset_image()
+    color_label.config(bg="white")
+    
+    messagebox.showinfo("Información", "Variante agregada correctamente.")
 
 def mostrar_imagen_producto(frame, imagen_ruta):
 	# Ajustar la ruta relativa para que busque en la carpeta html/img
@@ -173,147 +223,155 @@ def mostrar_imagen_producto(frame, imagen_ruta):
 		except Exception as e:
 			print(f"Error al cargar la imagen {imagen_ruta}: {e}")
 
-def filtrar_productos(productos, nombre=None,categoria=None, precio_min=None, precio_max=None):
-	filtrados = productos
-	if nombre:
-		filtrados = [p for p in filtrados if nombre.lower() in p['titulo'].lower()]
-	if categoria:
-		filtrados = [p for p in filtrados if categoria.lower() in p['categoria']['nombre'].lower()]
-	if precio_min is not None:
-		filtrados = [p for p in filtrados if float(p['precio']) >= float(precio_min)]
-	if precio_max is not None:
-		filtrados = [p for p in filtrados if float(p['precio']) <= float(precio_max)]
-	return filtrados
+def filtrar_productos(productos, nombre=None, categoria=None, precio_min=None, precio_max=None, disciplina=None):
+    filtrados = productos
+    if nombre:
+        filtrados = [p for p in filtrados if nombre.lower() in p['titulo'].lower()]
+    if categoria:
+        filtrados = [p for p in filtrados if categoria.lower() in p['categoria']['nombre'].lower()]
+    if precio_min is not None:
+        filtrados = [p for p in filtrados if float(p['precio']) >= float(precio_min)]
+    if precio_max is not None:
+        filtrados = [p for p in filtrados if float(p['precio']) <= float(precio_max)]
+    if disciplina:
+        filtrados = [p for p in filtrados if disciplina.lower() in p['disciplina'].lower()]
+    return filtrados
 
 def aplicar_filtro_evento(event):
 	aplicar_filtro(ver_frame, productos)
 
+
 def ver_productos():
 
-	global productos
-	try:
-		with open('html/JS/productos.json', 'r') as archivo:
-			productos = json.load(archivo)
-	except FileNotFoundError:
-		productos = []
-	
-	global ver_frame
-	ver_frame = Toplevel(tk)
-	ver_frame.grid_rowconfigure(0, weight=0) 
-	ver_frame.grid_rowconfigure(1, weight=1) 
-	ver_frame.grid_columnconfigure(0, weight=1)  
+    global productos
+    try:
+        with open('html/JS/productos.json', 'r') as archivo:
+            productos = json.load(archivo)
+    except FileNotFoundError:
+        productos = []
+    
+    global ver_frame
+    ver_frame = Toplevel(tk)
+    ver_frame.grid_rowconfigure(0, weight=0) 
+    ver_frame.grid_rowconfigure(1, weight=1) 
+    ver_frame.grid_columnconfigure(0, weight=1)  
 
-	global filtro_frame
-	filtro_frame = Frame(ver_frame)
-	filtro_frame.grid(row=0, column=0, sticky="ew", pady=(0, 5))
-	filtro_frame.grid_columnconfigure(6, weight=1)  
+    global filtro_frame
+    filtro_frame = Frame(ver_frame)
+    filtro_frame.grid(row=0, column=0, sticky="ew", pady=(0, 5))
+    filtro_frame.grid_columnconfigure(6, weight=1)  
 
-	for i in range(filtro_frame.grid_size()[0]):
-		filtro_frame.grid_columnconfigure(i, weight=1)
+    for i in range(filtro_frame.grid_size()[0]):
+        filtro_frame.grid_columnconfigure(i, weight=1)
 
-	Label(filtro_frame, text="Nombre").grid(row=0, column=0, pady=5)
-	global filtro_nombre
-	filtro_nombre = Entry(filtro_frame)
-	filtro_nombre.grid(row=0, column=1, pady=5)
-	filtro_nombre.bind("<Return>", aplicar_filtro_evento)
-	
-	Label(filtro_frame, text="Categoría").grid(row=0, column=2, pady=5)
-	global filtro_categoria
-	filtro_categoria = Entry(filtro_frame)
-	filtro_categoria.grid(row=0, column=3, pady=5)
-	filtro_categoria.bind("<Return>", aplicar_filtro_evento)
-	
-	Label(filtro_frame, text="Precio Mínimo").grid(row=0, column=4, pady=5)
-	global filtro_precio_min
-	filtro_precio_min = Entry(filtro_frame)
-	filtro_precio_min.grid(row=0, column=5, pady=5)
-	filtro_precio_min.bind("<Return>", aplicar_filtro_evento)
-	
-	Label(filtro_frame, text="Precio Máximo").grid(row=0, column=6, pady=5)
-	global filtro_precio_max
-	filtro_precio_max = Entry(filtro_frame)
-	filtro_precio_max.grid(row=0, column=7, pady=5)
-	filtro_precio_max.bind("<Return>", aplicar_filtro_evento)
+    Label(filtro_frame, text="Nombre").grid(row=0, column=0, pady=5)
+    global filtro_nombre
+    filtro_nombre = Entry(filtro_frame)
+    filtro_nombre.grid(row=0, column=1, pady=5)
+    filtro_nombre.bind("<Return>", aplicar_filtro_evento)
+    
+    Label(filtro_frame, text="Categoría").grid(row=0, column=2, pady=5)
+    global filtro_categoria
+    filtro_categoria = Entry(filtro_frame)
+    filtro_categoria.grid(row=0, column=3, pady=5)
+    filtro_categoria.bind("<Return>", aplicar_filtro_evento)
+    
+    Label(filtro_frame, text="Precio Mínimo").grid(row=0, column=4, pady=5)
+    global filtro_precio_min
+    filtro_precio_min = Entry(filtro_frame)
+    filtro_precio_min.grid(row=0, column=5, pady=5)
+    filtro_precio_min.bind("<Return>", aplicar_filtro_evento)
+    
+    Label(filtro_frame, text="Precio Máximo").grid(row=0, column=6, pady=5)
+    global filtro_precio_max
+    filtro_precio_max = Entry(filtro_frame)
+    filtro_precio_max.grid(row=0, column=7, pady=5)
+    filtro_precio_max.bind("<Return>", aplicar_filtro_evento)
 
-	Button(filtro_frame, text="Seleccionar Todos", command=seleccionar_todos).grid(row=1, column=0, padx=5, pady=5)
-	Button(filtro_frame, text="Deseleccionar Todos", command=deseleccionar_todos).grid(row=1, column=1, padx=5, pady=5)
-	Button(filtro_frame, text="Actualizar Precios Seleccionados", command=actualizar_precios_seleccionados).grid(row=1, column=2, padx=5, pady=5)
-	Button(filtro_frame, text="Actualizar Stock Seleccionados", command=actualizar_stock_seleccionados).grid(row=1, column=3, padx=5, pady=5)
-	aplicar_filtro(ver_frame, productos)
+    Label(filtro_frame, text="Disciplina").grid(row=0, column=8, pady=5)
+    global filtro_disciplina
+    filtro_disciplina = Entry(filtro_frame)
+    filtro_disciplina.grid(row=0, column=9, pady=5)
+    filtro_disciplina.bind("<Return>", aplicar_filtro_evento)
+
+    Button(filtro_frame, text="Seleccionar Todos", command=seleccionar_todos).grid(row=1, column=0, padx=5, pady=5)
+    Button(filtro_frame, text="Deseleccionar Todos", command=deseleccionar_todos).grid(row=1, column=1, padx=5, pady=5)
+    Button(filtro_frame, text="Actualizar Precios Seleccionados", command=actualizar_precios_seleccionados).grid(row=1, column=2, padx=5, pady=5)
+    Button(filtro_frame, text="Actualizar Stock Seleccionados", command=actualizar_stock_seleccionados).grid(row=1, column=3, padx=5, pady=5)
+    aplicar_filtro(ver_frame, productos)
 
 def aplicar_filtro(ver_frame, productos):
-	nombre = filtro_nombre.get()
-	categoria = filtro_categoria.get()
-	precio_min = filtro_precio_min.get()
-	precio_max = filtro_precio_max.get()
-	
-	if precio_min == "":
-		precio_min = None
-	if precio_max == "":
-		precio_max = None
-	
-	productos_filtrados = filtrar_productos(productos,nombre ,categoria, precio_min, precio_max)
-	
-	for widget in ver_frame.winfo_children():
-		if widget != filtro_frame:
-			widget.destroy()
-	
-	global productos_seleccionados
-	productos_seleccionados = []
+    nombre = filtro_nombre.get()
+    categoria = filtro_categoria.get()
+    precio_min = filtro_precio_min.get()
+    precio_max = filtro_precio_max.get()
+    disciplina = filtro_disciplina.get()
+    
+    if precio_min == "":
+        precio_min = None
+    if precio_max == "":
+        precio_max = None
+    
+    productos_filtrados = filtrar_productos(productos, nombre, categoria, precio_min, precio_max, disciplina)
+    
+    for widget in ver_frame.winfo_children():
+        if widget != filtro_frame:
+            widget.destroy()
+    
+    global productos_seleccionados
+    productos_seleccionados = []
 
-	productos_frame = Frame(ver_frame)
-	productos_frame.grid(row=1, column=0, sticky="nsew", pady=(5, 0))
-	productos_frame.grid_rowconfigure(0, weight=1)
-	productos_frame.grid_columnconfigure(0, weight=1)
+    productos_frame = Frame(ver_frame)
+    productos_frame.grid(row=1, column=0, sticky="nsew", pady=(5, 0))
+    productos_frame.grid_rowconfigure(0, weight=1)
+    productos_frame.grid_columnconfigure(0, weight=1)
 
-	canvas = Canvas(ver_frame)
-	scrollbar = Scrollbar(ver_frame, orient="vertical", command=canvas.yview)
-	scrollable_frame = Frame(canvas)
-	canvas.bind_all("<MouseWheel>", lambda event: canvas.yview_scroll(int(-1*(event.delta/120)), "units"))
-	scrollable_frame.bind(
-		"<Configure>",
-		lambda e: canvas.configure(
-			scrollregion=canvas.bbox("all")
-		)
-	)
-	canvas.create_window((0, 0), window=scrollable_frame, anchor="n")
-	canvas.configure(yscrollcommand=scrollbar.set)
+    canvas = Canvas(ver_frame)
+    scrollbar = Scrollbar(ver_frame, orient="vertical", command=canvas.yview)
+    scrollable_frame = Frame(canvas)
+    canvas.bind_all("<MouseWheel>", lambda event: canvas.yview_scroll(int(-1*(event.delta/120)), "units"))
+    scrollable_frame.bind(
+        "<Configure>",
+        lambda e: canvas.configure(
+            scrollregion=canvas.bbox("all")
+        )
+    )
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="n")
+    canvas.configure(yscrollcommand=scrollbar.set)
 
-	canvas.grid(row=1, column=0, sticky="nsew")
-	scrollbar.grid(row=1, column=1, sticky="ns")
+    canvas.grid(row=1, column=0, sticky="nsew")
+    scrollbar.grid(row=1, column=1, sticky="ns")
 
-	ver_frame.grid_rowconfigure(1, weight=1)
-	ver_frame.grid_columnconfigure(0, weight=1)
+    ver_frame.grid_rowconfigure(1, weight=1)
+    ver_frame.grid_columnconfigure(0, weight=1)
 
-	for i, producto in enumerate(productos_filtrados):
+    for i, producto in enumerate(productos_filtrados):
 
-		frame = Frame(scrollable_frame, borderwidth=2, relief="groove")
-		frame.grid(row=i//5, column=i%5, padx=5, pady=5, sticky="nsew")
+        frame = Frame(scrollable_frame, borderwidth=2, relief="groove")
+        frame.grid(row=i//5, column=i%5, padx=5, pady=5, sticky="nsew")
 
-		select_frame = Frame(frame)
-		select_frame.pack(anchor='nw')
-		Label(select_frame, text="Seleccionar").pack(side='left')
-		var = BooleanVar()
-		Checkbutton(select_frame, variable=var).pack(side='right')
-		productos_seleccionados.append((producto, var))
-		
-		Label(frame, text=f"Nombre: {producto['titulo']}").pack(anchor='w')
-		Label(frame, text=f"Categoría: {producto['categoria']['nombre']}").pack(anchor='w')
-		Label(frame, text=f"Precio: {producto['precio']}").pack(anchor='w')
-		color_frame = Frame(frame)
-		color_frame.pack(anchor='w')
-		Label(color_frame, text="Color:").pack(side='left')
-		Label(frame, text=f"Stock: {producto['stock']}").pack(anchor='w')
-		Label(color_frame, text=producto['color'], bg=producto['color']).pack(side='left')
-		
-		mostrar_imagen_producto(frame, producto['imagen'])
-		
-		Button(frame, text="Modificar", command=lambda p=producto: modificar_producto(p, ver_frame)).pack(side='left', padx=5)
-		Button(frame, text="Eliminar", command=lambda p=producto: eliminar_producto(p, ver_frame)).pack(side='left', padx=5)
-		Button(frame, text="Actualizar Stock", command=lambda p=producto: actualizar_stock(p,ver_frame)).pack(side='left', padx=5)
-
-
-
+        select_frame = Frame(frame)
+        select_frame.pack(anchor='nw')
+        Label(select_frame, text="Seleccionar").pack(side='left')
+        var = BooleanVar()
+        Checkbutton(select_frame, variable=var).pack(side='right')
+        productos_seleccionados.append((producto, var))
+        
+        Label(frame, text=f"Nombre: {producto['titulo']}").pack(anchor='w')
+        Label(frame, text=f"Categoría: {producto['categoria']['nombre']}").pack(anchor='w')
+        Label(frame, text=f"Precio: {producto['precio']}").pack(anchor='w')
+        color_frame = Frame(frame)
+        color_frame.pack(anchor='w')
+        Label(color_frame, text="Color:").pack(side='left')
+        Label(frame, text=f"Stock: {producto['stock']}").pack(anchor='w')
+        color_hex = color_hex_map.get(producto['color'], "#FFFFFF")
+        Label(color_frame, text=producto['color'], bg=color_hex).pack(side='left')
+        
+        mostrar_imagen_producto(frame, producto['imagen'])
+        
+        Button(frame, text="Modificar", command=lambda p=producto: modificar_producto(p, ver_frame)).pack(side='left', padx=5)
+        Button(frame, text="Eliminar", command=lambda p=producto: eliminar_producto(p, ver_frame)).pack(side='left', padx=5)
+        Button(frame, text="Actualizar Stock", command=lambda p=producto: actualizar_stock(p, ver_frame)).pack(side='left', padx=5)
 
 def seleccionar_todos():
 	for producto, var in productos_seleccionados:
@@ -516,57 +574,63 @@ class PlaceholderEntry(ttk.Entry):
 			self["style"] = "Placeholder.TEntry"
 
 def ingresar_nuevo_producto():
-	global image_label, color_label, variable_unidad, Entry_1, Entry_3, var_es_variante, variable_gen, listbox_talles, entry_codigo_barras
+    global image_label, color_label, variable_unidad, Entry_1, Entry_3, var_es_variante, variable_gen, listbox_talles, entry_codigo_barras, variable_disciplina
 
-	nuevo_producto_frame = Toplevel(tk)
-	nuevo_producto_frame.title("Ingresar Nuevo Producto")
+    nuevo_producto_frame = Toplevel(tk)
+    nuevo_producto_frame.title("Ingresar Nuevo Producto")
 
-	ttk.Label(nuevo_producto_frame, text="Nombre Producto").pack()
-	Entry_1 = ttk.Entry(nuevo_producto_frame)
-	Entry_1.pack()
+    ttk.Label(nuevo_producto_frame, text="Nombre Producto").pack()
+    Entry_1 = ttk.Entry(nuevo_producto_frame)
+    Entry_1.pack()
 
-	button = ttk.Button(nuevo_producto_frame, text="Seleccionar Imagen", command=select_image)
-	button.pack(pady=10)
-	image_label = Label(nuevo_producto_frame)
-	image_label.pack()
-	image_label.bind("<Button-1>", get_color)
+    button = ttk.Button(nuevo_producto_frame, text="Seleccionar Imagen", command=select_image)
+    button.pack(pady=10)
+    image_label = Label(nuevo_producto_frame)
+    image_label.pack()
+    image_label.bind("<Button-1>", get_color)
 
-	opciones_unidades = [
-		"Categoria Producto", "Remeras", "Buzos", "Pantalones",
-		"Accesorios"
-	]
-	variable_unidad = StringVar(nuevo_producto_frame)
-	variable_unidad.set(opciones_unidades[0])
-	ttk.OptionMenu(nuevo_producto_frame, variable_unidad, *opciones_unidades).pack()
+    opciones_unidades = [
+        "Categoria Producto", "Remeras", "Buzos", "Pantalones",
+        "Accesorios"
+    ]
+    variable_unidad = StringVar(nuevo_producto_frame)
+    variable_unidad.set(opciones_unidades[0])
+    ttk.OptionMenu(nuevo_producto_frame, variable_unidad, *opciones_unidades).pack()
 
-	Label(nuevo_producto_frame, text="Precio").pack()
-	Entry_3 = ttk.Entry(nuevo_producto_frame)
-	Entry_3.pack()
+    Label(nuevo_producto_frame, text="Precio").pack()
+    Entry_3 = ttk.Entry(nuevo_producto_frame)
+    Entry_3.pack()
 
-	opciones_gen = ["Género", "Femenino", "Masculino", "No"]
-	variable_gen = StringVar(nuevo_producto_frame)
-	variable_gen.set(opciones_gen[0])
-	ttk.OptionMenu(nuevo_producto_frame, variable_gen, *opciones_gen).pack()
+    opciones_gen = ["Género", "Femenino", "Masculino", "Niño", "Niña", "No"]
+    variable_gen = StringVar(nuevo_producto_frame)
+    variable_gen.set(opciones_gen[0]) 
+    ttk.OptionMenu(nuevo_producto_frame, variable_gen, *opciones_gen).pack()
 
-	Label(nuevo_producto_frame, text="Talles").pack()
-	listbox_talles = Listbox(nuevo_producto_frame, selectmode=MULTIPLE)
-	talles = ["S", "M", "L", "XL"]
-	for talle in talles:
-		listbox_talles.insert(END, talle)
-	listbox_talles.pack()
+    Label(nuevo_producto_frame, text="Talles").pack()
+    talles = ["S", "M", "L", "XL"]
+    listbox_talles = Listbox(nuevo_producto_frame, selectmode=MULTIPLE, height=len(talles))
+    for talle in talles:
+        listbox_talles.insert(END, talle)
+    listbox_talles.pack()
 
-	color_label = Label(nuevo_producto_frame, text="Color", bg="white", width=20)
-	color_label.pack(pady=5)
+    Label(nuevo_producto_frame, text="Disciplina").pack()
+    opciones_disciplinas = ["Deportes", "Fútbol", "Básquet", "Tenis", "Natación", "Running", "Boxeo", "Vóley", "Rugby", "Hockey", "Yoga", "Fitness", "Musculación"]
+    variable_disciplina = StringVar(nuevo_producto_frame)
+    variable_disciplina.set(opciones_disciplinas[0])
+    ttk.OptionMenu(nuevo_producto_frame, variable_disciplina, *opciones_disciplinas).pack()
 
-	var_es_variante = BooleanVar()
-	ttk.Checkbutton(nuevo_producto_frame, text="Es variante de otro producto", variable=var_es_variante).pack()
+    color_label = Label(nuevo_producto_frame, text="Color", bg="white", width=20)
+    color_label.pack(pady=5)
 
-	ttk.Label(nuevo_producto_frame, text="Código de Barras").pack()
-	entry_codigo_barras = ttk.Entry(nuevo_producto_frame)
-	entry_codigo_barras.pack()
-	entry_codigo_barras.bind("<Return>", lambda event: procesar_codigo_barras(entry_codigo_barras.get()))
+    var_es_variante = BooleanVar()
+    ttk.Checkbutton(nuevo_producto_frame, text="Es variante de otro producto", variable=var_es_variante).pack()
 
-	ttk.Button(nuevo_producto_frame, text="Guardar", command=guardar).pack()
+    ttk.Label(nuevo_producto_frame, text="Código de Barras").pack()
+    entry_codigo_barras = ttk.Entry(nuevo_producto_frame)
+    entry_codigo_barras.pack()
+    entry_codigo_barras.bind("<Return>", lambda event: procesar_codigo_barras(entry_codigo_barras.get()))
+
+    ttk.Button(nuevo_producto_frame, text="Guardar", command=guardar).pack()
 
 def set_background_image(frame, image_path):
 	img = Image.open(image_path)
@@ -591,3 +655,4 @@ productos_menu.add_command(label="Ingresar Nuevo Producto", command=ingresar_nue
 productos_menu.add_command(label="Ver Productos", command=ver_productos)
 
 tk.mainloop()
+
