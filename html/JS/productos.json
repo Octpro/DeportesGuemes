@@ -4,9 +4,10 @@
     "titulo": "under tech 2.0",
     "imagen": "./img/under_1.png",
     "categoria": {
-      "nombre": "INDUMENTARIA",
-      "id": "indumentaria"
+      "nombre": "REMERAS",
+      "id": "remeras"
     },
+    "categoria_general": "indumentaria",
     "precio": "25000",
     "es_variante": false,
     "color": "#fd9144",
@@ -24,9 +25,10 @@
     "titulo": "under tech 2.0",
     "imagen": "./img/under_2.png",
     "categoria": {
-      "nombre": "INDUMENTARIA",
-      "id": "indumentaria"
+      "nombre": "REMERAS",
+      "id": "remeras"
     },
+    "categoria_general": "indumentaria",
     "precio": "38500.0",
     "es_variante": true,
     "color": null,
@@ -45,6 +47,7 @@
       "nombre": "ACCESORIOS",
       "id": "accesorios"
     },
+    "categoria_general": "accesorios",
     "precio": "1000",
     "es_variante": false,
     "color": "#a29677",
@@ -63,6 +66,7 @@
       "nombre": "ACCESORIOS",
       "id": "accesorios"
     },
+    "categoria_general": "accesorios",
     "precio": "2300.0",
     "es_variante": true,
     "color": "#1462a7",
@@ -81,6 +85,7 @@
       "nombre": "ACCESORIOS",
       "id": "accesorios"
     },
+    "categoria_general": "accesorios",
     "precio": "3500",
     "es_variante": true,
     "color": "#a25e1a",
@@ -99,6 +104,7 @@
       "nombre": "ACCESORIOS",
       "id": "accesorios"
     },
+    "categoria_general": "accesorios",
     "precio": "4600.0",
     "es_variante": true,
     "color": "#a88c73",
@@ -114,12 +120,13 @@
     "titulo": "u",
     "imagen": "./img/under_2.png",
     "categoria": {
-      "nombre": "INDUMENTARIA",
-      "id": "indumentaria"
+      "nombre": "REMERAS",
+      "id": "remeras"
     },
+    "categoria_general": "indumentaria",
     "precio": "12000",
     "es_variante": false,
-    "genero": "G\u00c3\u00a9nero",
+    "genero": "Género",
     "talles": [
       "S",
       "M",
@@ -135,12 +142,13 @@
     "titulo": "u",
     "imagen": "./img/under_1.png",
     "categoria": {
-      "nombre": "INDUMENTARIA",
-      "id": "indumentaria"
+      "nombre": "REMERAS",
+      "id": "remeras"
     },
+    "categoria_general": "indumentaria",
     "precio": "9000",
     "es_variante": true,
-    "genero": "G\u00c3\u00a9nero",
+    "genero": "Género",
     "talles": [],
     "color": "Naranja",
     "stock": 10,
@@ -154,12 +162,13 @@
       "nombre": "ACCESORIOS",
       "id": "accesorios"
     },
+    "categoria_general": "accesorios",
     "precio": "8000",
     "es_variante": false,
-    "genero": "G\u00c3\u00a9nero",
+    "genero": "Género",
     "talles": [],
     "color": "Oliva",
-    "disciplina": "Musculaci\u00c3\u00b3n",
+    "disciplina": "Musculación",
     "stock": 1,
     "codigo_barras": "7792052180702"
   }

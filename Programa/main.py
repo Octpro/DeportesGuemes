@@ -117,10 +117,7 @@ def guardar():
 		productos = []
 	
 	# Clasificar las categorías correctamente
-	if categoria_producto.lower() in ["remeras", "pantalones", "abrigos"]:
-		categoria_producto = "Indumentaria"
-	elif categoria_producto.lower() == "accesorios":
-		categoria_producto = "Accesorios"
+	categoria_general = "Indumentaria" if categoria_producto.lower() in ["remeras", "pantalones", "abrigos"] else "Accesorios"
 	
 	base_id = f"{categoria_producto.lower()}_{nombre_producto.replace(' ', '_').lower()}"
 	id_producto = generate_unique_id(base_id, productos)
@@ -137,6 +134,7 @@ def guardar():
 		"titulo": nombre_producto,
 		"imagen": imagen_ruta,
 		"categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
+		 "categoria_general": categoria_general.lower(),
 		"precio": precio,
 		"es_variante": es_variante,
 		"genero": genero,
@@ -173,57 +171,55 @@ def agregar_variante(nombre_producto, categoria_producto, precio):
 		messagebox.showinfo("Información", "No se agregó ninguna variante.")
 
 def guardar_variante(nombre_producto, categoria_producto, precio, color):
-	global selected_image_path
-	talles = [listbox_talles.get(i) for i in listbox_talles.curselection()]
-	disciplina = variable_disciplina.get()  # Obtener la disciplina seleccionada
-	codigo_barras = entry_codigo_barras.get()  # Obtener el código de barras
-	
-	try:
-		with open('html/JS/productos.json', 'r') as archivo:
-			productos = json.load(archivo)
-	except FileNotFoundError:
-		productos = []
-	
-	# Clasificar las categorías correctamente
-	if categoria_producto.lower() in ["remeras", "pantalones", "abrigos"]:
-		categoria_producto = "Indumentaria"
-	elif categoria_producto.lower() == "accesorios":
-		categoria_producto = "Accesorios"
-	
-	base_id = f"{categoria_producto.lower()}_{nombre_producto.replace(' ', '_').lower()}_variante"
-	id_producto = generate_unique_id(base_id, productos)
-	
-	imagen_ruta = selected_image_path
-	if imagen_ruta:
-		imagen_nombre = os.path.basename(imagen_ruta)
-		imagen_ruta = f"./img/{imagen_nombre}"
-	else:
-		imagen_ruta = ""
-	
-	producto = {
-		"id": id_producto,
-		"titulo": nombre_producto,
-		"imagen": imagen_ruta,
-		"categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
-		"precio": precio,
-		"es_variante": True,
-		"genero": variable_gen.get(),
-		"talles": talles,
-		"color": color,
-		"disciplina": disciplina,  # Agregar la disciplina al producto
-		"stock": 0,  # Inicializar el stock a 0
-		"codigo_barras": codigo_barras  # Agregar el código de barras al producto
-	}
-	
-	productos.append(producto)
-	
-	with open('html/JS/productos.json', 'w') as archivo:
-		json.dump(productos, archivo, indent=2)
-	
-	reset_image()
-	color_label.config(bg="white")
-	
-	messagebox.showinfo("Información", "Variante agregada correctamente.")
+    global selected_image_path
+    talles = [listbox_talles.get(i) for i in listbox_talles.curselection()]
+    disciplina = variable_disciplina.get()  # Obtener la disciplina seleccionada
+    codigo_barras = entry_codigo_barras.get()  # Obtener el código de barras
+    
+    try:
+        with open('html/JS/productos.json', 'r') as archivo:
+            productos = json.load(archivo)
+    except FileNotFoundError:
+        productos = []
+    
+    # Clasificar las categorías correctamente
+    categoria_general = "Indumentaria" if categoria_producto.lower() in ["remeras", "pantalones", "abrigos"] else "Accesorios"
+    
+    base_id = f"{categoria_producto.lower()}_{nombre_producto.replace(' ', '_').lower()}_variante"
+    id_producto = generate_unique_id(base_id, productos)
+    
+    imagen_ruta = selected_image_path
+    if imagen_ruta:
+        imagen_nombre = os.path.basename(imagen_ruta)
+        imagen_ruta = f"./img/{imagen_nombre}"
+    else:
+        imagen_ruta = ""
+    
+    producto = {
+        "id": id_producto,
+        "titulo": nombre_producto,
+        "imagen": imagen_ruta,
+        "categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
+        "categoria_general": categoria_general.lower(),
+        "precio": precio,
+        "es_variante": True,
+        "genero": variable_gen.get(),
+        "talles": talles,
+        "color": color,
+        "disciplina": disciplina,  # Agregar la disciplina al producto
+        "stock": 0,  # Inicializar el stock a 0
+        "codigo_barras": codigo_barras  # Agregar el código de barras al producto
+    }
+    
+    productos.append(producto)
+    
+    with open('html/JS/productos.json', 'w') as archivo:
+        json.dump(productos, archivo, indent=2)
+    
+    reset_image()
+    color_label.config(bg="white")
+    
+    messagebox.showinfo("Información", "Variante agregada correctamente.")
 
 def mostrar_imagen_producto(frame, imagen_ruta):
 	# Ajustar la ruta relativa para que busque en la carpeta html/img

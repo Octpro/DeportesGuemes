@@ -207,9 +207,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.currentTarget.id != "todos") {
                 const productosBoton = productos.filter(producto => {
                     if (e.currentTarget.id === "indumentaria") {
-                        return ["indumentaria", "remeras", "pantalones", "abrigos"].includes(producto.categoria.id);
+                        return ["indumentaria", "remeras", "pantalones", "abrigos"].includes(producto.categoria_general);
                     } else {
-                        return producto.categoria.id === e.currentTarget.id;
+                        return producto.categoria_general === e.currentTarget.id;
                     }
                 });
 
@@ -237,9 +237,15 @@ function aplicarFiltro() {
     const talle = document.getElementById('filtro-talle').value.toLowerCase();
     const disciplina = document.getElementById('filtro-disciplina').value.toLowerCase();
 
+    // Obtener la categoría seleccionada en la pestaña
+    const categoriaSeleccionada = document.querySelector('.boton-categoria.active').id;
+
     const productosFiltrados = productos.filter(producto => {
         const nombreMatch = producto.titulo.toLowerCase().includes(nombre);
-        const categoriaMatch = categoria === "" || producto.categoria.nombre.toLowerCase().includes(categoria);
+        const categoriaMatch = (categoriaSeleccionada === "todos" || 
+            (categoriaSeleccionada === "indumentaria" && ["indumentaria", "remeras", "pantalones", "abrigos"].includes(producto.categoria_general)) ||
+            producto.categoria_general === categoriaSeleccionada) &&
+            (categoria === "" || producto.categoria.nombre.toLowerCase().includes(categoria));
         const precioMatch = producto.precio >= precioMin && producto.precio <= precioMax;
         const generoMatch = genero === "" || producto.genero.toLowerCase() === genero;
         const talleMatch = talle === "" || (producto.talles && producto.talles.map(t => t.toLowerCase()).includes(talle));
@@ -251,6 +257,7 @@ function aplicarFiltro() {
 }
 
 function cargarProductos(productos) {
+    const contenedorProductos = document.getElementById('contenedor-productos');
     contenedorProductos.innerHTML = '';
 
     productos.forEach(producto => {
