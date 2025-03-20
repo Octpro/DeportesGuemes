@@ -4,17 +4,14 @@
     "titulo": "under tech 2.0",
     "imagen": "./img/under_1.png",
     "categoria": {
-      "nombre": "REMERAS",
-      "id": "remeras"
+      "nombre": "INDUMENTARIA",
+      "id": "indumentaria"
     },
     "precio": "25000",
     "es_variante": false,
     "color": "#fd9144",
     "stock": 1,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
+    "genero": "No",
     "talles": [
       "S",
       "M",
@@ -27,18 +24,17 @@
     "titulo": "under tech 2.0",
     "imagen": "./img/under_2.png",
     "categoria": {
-      "nombre": "REMERAS",
-      "id": "remeras"
+      "nombre": "INDUMENTARIA",
+      "id": "indumentaria"
     },
     "precio": "38500.0",
     "es_variante": true,
     "color": null,
     "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No",
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
     "codigo_barras": "1234567890124"
   },
   {
@@ -53,11 +49,10 @@
     "es_variante": false,
     "color": "#a29677",
     "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No",
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
     "codigo_barras": "1234567890125"
   },
   {
@@ -72,11 +67,10 @@
     "es_variante": true,
     "color": "#1462a7",
     "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No",
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
     "codigo_barras": "1234567890126"
   },
   {
@@ -91,11 +85,10 @@
     "es_variante": true,
     "color": "#a25e1a",
     "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No",
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
     "codigo_barras": "1234567890127"
   },
   {
@@ -110,11 +103,10 @@
     "es_variante": true,
     "color": "#a88c73",
     "stock": 0,
-    "genero": {
-      "femenino": false,
-      "masculino": false
-    },
-    "talle": "No",
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
     "codigo_barras": "1234567890128"
   },
   {
@@ -122,8 +114,8 @@
     "titulo": "u",
     "imagen": "./img/under_2.png",
     "categoria": {
-      "nombre": "REMERAS",
-      "id": "remeras"
+      "nombre": "INDUMENTARIA",
+      "id": "indumentaria"
     },
     "precio": "12000",
     "es_variante": false,
@@ -135,7 +127,7 @@
       "XL"
     ],
     "color": "Gris",
-    "stock": 1,
+    "stock": 10,
     "codigo_barras": "1234567890129"
   },
   {
@@ -143,15 +135,15 @@
     "titulo": "u",
     "imagen": "./img/under_1.png",
     "categoria": {
-      "nombre": "REMERAS",
-      "id": "remeras"
+      "nombre": "INDUMENTARIA",
+      "id": "indumentaria"
     },
     "precio": "9000",
     "es_variante": true,
     "genero": "G\u00c3\u00a9nero",
     "talles": [],
     "color": "Naranja",
-    "stock": 1,
+    "stock": 10,
     "codigo_barras": "1234567890130"
   },
   {

@@ -205,15 +205,20 @@ document.addEventListener('DOMContentLoaded', function() {
             e.currentTarget.classList.add("active");
 
             if (e.currentTarget.id != "todos") {
-                const productoCategoria = productos.find(producto => producto.categoria.id === e.currentTarget.id);
+                const productosBoton = productos.filter(producto => {
+                    if (e.currentTarget.id === "indumentaria") {
+                        return ["indumentaria", "remeras", "pantalones", "abrigos"].includes(producto.categoria.id);
+                    } else {
+                        return producto.categoria.id === e.currentTarget.id;
+                    }
+                });
 
-                if (productoCategoria) {
-                    tituloPrincipal.innerText = productoCategoria.categoria.nombre;
+                if (productosBoton.length > 0) {
+                    tituloPrincipal.innerText = e.currentTarget.id.charAt(0).toUpperCase() + e.currentTarget.id.slice(1);
                 } else {
                     tituloPrincipal.innerText = "No hay productos";
                 }
 
-                const productosBoton = productos.filter(producto => producto.categoria.id === e.currentTarget.id);
                 cargarProductos(productosBoton);
             } else {
                 tituloPrincipal.innerText = "Todos los productos";

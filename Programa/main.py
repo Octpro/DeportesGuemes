@@ -116,6 +116,12 @@ def guardar():
 	except json.JSONDecodeError:
 		productos = []
 	
+	# Clasificar las categorías correctamente
+	if categoria_producto.lower() in ["remeras", "pantalones", "abrigos"]:
+		categoria_producto = "Indumentaria"
+	elif categoria_producto.lower() == "accesorios":
+		categoria_producto = "Accesorios"
+	
 	base_id = f"{categoria_producto.lower()}_{nombre_producto.replace(' ', '_').lower()}"
 	id_producto = generate_unique_id(base_id, productos)
 	
@@ -178,6 +184,12 @@ def guardar_variante(nombre_producto, categoria_producto, precio, color):
 	except FileNotFoundError:
 		productos = []
 	
+	# Clasificar las categorías correctamente
+	if categoria_producto.lower() in ["remeras", "pantalones", "abrigos"]:
+		categoria_producto = "Indumentaria"
+	elif categoria_producto.lower() == "accesorios":
+		categoria_producto = "Accesorios"
+	
 	base_id = f"{categoria_producto.lower()}_{nombre_producto.replace(' ', '_').lower()}_variante"
 	id_producto = generate_unique_id(base_id, productos)
 	
@@ -227,19 +239,21 @@ def mostrar_imagen_producto(frame, imagen_ruta):
 		except Exception as e:
 			print(f"Error al cargar la imagen {imagen_ruta}: {e}")
 
-def filtrar_productos(productos, nombre=None, categoria=None, precio_min=None, precio_max=None, disciplina=None):
-	filtrados = productos
-	if nombre:
-		filtrados = [p for p in filtrados if nombre.lower() in p['titulo'].lower()]
-	if categoria:
-		filtrados = [p for p in filtrados if categoria.lower() in p['categoria']['nombre'].lower()]
-	if precio_min is not None:
-		filtrados = [p for p in filtrados if float(p['precio']) >= float(precio_min)]
-	if precio_max is not None:
-		filtrados = [p for p in filtrados if float(p['precio']) <= float(precio_max)]
-	if disciplina:
-		filtrados = [p for p in filtrados if disciplina.lower() in p['disciplina'].lower()]
-	return filtrados
+def filtrar_productos(productos, nombre=None, categoria=None, precio_min=None, precio_max=None, disciplina=None, genero=None):
+    filtrados = productos
+    if nombre:
+        filtrados = [p for p in filtrados if nombre.lower() in p['titulo'].lower()]
+    if categoria and categoria != "Todas":
+        filtrados = [p for p in filtrados if categoria.lower() in p['categoria']['nombre'].lower()]
+    if precio_min is not None:
+        filtrados = [p for p in filtrados if float(p['precio']) >= float(precio_min)]
+    if precio_max is not None:
+        filtrados = [p for p in filtrados if float(p['precio']) <= float(precio_max)]
+    if disciplina:
+        filtrados = [p for p in filtrados if disciplina.lower() in p['disciplina'].lower()]
+    if genero and genero != "Todos":
+        filtrados = [p for p in filtrados if genero.lower() in (p['genero'] or "").lower()]
+    return filtrados
 
 def aplicar_filtro_evento(event):
 	aplicar_filtro(ver_frame, productos)
@@ -276,9 +290,10 @@ def ver_productos():
 	
 	Label(filtro_frame, text="Categoría").grid(row=0, column=2, pady=5)
 	global filtro_categoria
-	filtro_categoria = Entry(filtro_frame)
-	filtro_categoria.grid(row=0, column=3, pady=5)
-	filtro_categoria.bind("<Return>", aplicar_filtro_evento)
+	filtro_categoria = StringVar(filtro_frame)
+	filtro_categoria.set("Todas")
+	categorias = ["Todas", "Indumentaria", "Accesorios"]
+	OptionMenu(filtro_frame, filtro_categoria, *categorias).grid(row=0, column=3, pady=5)
 	
 	Label(filtro_frame, text="Precio Mínimo").grid(row=0, column=4, pady=5)
 	global filtro_precio_min
@@ -298,6 +313,13 @@ def ver_productos():
 	filtro_disciplina.grid(row=0, column=9, pady=5)
 	filtro_disciplina.bind("<Return>", aplicar_filtro_evento)
 
+	Label(filtro_frame, text="Género").grid(row=0, column=10, pady=5)
+	global filtro_genero
+	filtro_genero = StringVar(filtro_frame)
+	filtro_genero.set("Todos")
+	generos = ["Todos", "Femenino", "Masculino", "Niño", "Niña", "Unisex","No"]
+	OptionMenu(filtro_frame, filtro_genero, *generos).grid(row=0, column=11, pady=5)
+
 	Button(filtro_frame, text="Seleccionar Todos", command=seleccionar_todos).grid(row=1, column=0, padx=5, pady=5)
 	Button(filtro_frame, text="Deseleccionar Todos", command=deseleccionar_todos).grid(row=1, column=1, padx=5, pady=5)
 	Button(filtro_frame, text="Actualizar Precios Seleccionados", command=actualizar_precios_seleccionados).grid(row=1, column=2, padx=5, pady=5)
@@ -305,77 +327,78 @@ def ver_productos():
 	aplicar_filtro(ver_frame, productos)
 
 def aplicar_filtro(ver_frame, productos):
-	nombre = filtro_nombre.get()
-	categoria = filtro_categoria.get()
-	precio_min = filtro_precio_min.get()
-	precio_max = filtro_precio_max.get()
-	disciplina = filtro_disciplina.get()
-	
-	if precio_min == "":
-		precio_min = None
-	if precio_max == "":
-		precio_max = None
-	
-	productos_filtrados = filtrar_productos(productos, nombre, categoria, precio_min, precio_max, disciplina)
-	
-	for widget in ver_frame.winfo_children():
-		if widget != filtro_frame:
-			widget.destroy()
-	
-	global productos_seleccionados
-	productos_seleccionados = []
+    nombre = filtro_nombre.get()
+    categoria = filtro_categoria.get()
+    precio_min = filtro_precio_min.get()
+    precio_max = filtro_precio_max.get()
+    disciplina = filtro_disciplina.get()
+    genero = filtro_genero.get()
+    
+    if precio_min == "":
+        precio_min = None
+    if precio_max == "":
+        precio_max = None
+    
+    productos_filtrados = filtrar_productos(productos, nombre, categoria, precio_min, precio_max, disciplina, genero)
+    
+    for widget in ver_frame.winfo_children():
+        if widget != filtro_frame:
+            widget.destroy()
+    
+    global productos_seleccionados
+    productos_seleccionados = []
 
-	productos_frame = Frame(ver_frame)
-	productos_frame.grid(row=1, column=0, sticky="nsew", pady=(5, 0))
-	productos_frame.grid_rowconfigure(0, weight=1)
-	productos_frame.grid_columnconfigure(0, weight=1)
+    productos_frame = Frame(ver_frame)
+    productos_frame.grid(row=1, column=0, sticky="nsew", pady=(5, 0))
+    productos_frame.grid_rowconfigure(0, weight=1)
+    productos_frame.grid_columnconfigure(0, weight=1)
 
-	canvas = Canvas(ver_frame)
-	scrollbar = Scrollbar(ver_frame, orient="vertical", command=canvas.yview)
-	scrollable_frame = Frame(canvas)
-	canvas.bind_all("<MouseWheel>", lambda event: canvas.yview_scroll(int(-1*(event.delta/120)), "units"))
-	scrollable_frame.bind(
-		"<Configure>",
-		lambda e: canvas.configure(
-			scrollregion=canvas.bbox("all")
-		)
-	)
-	canvas.create_window((0, 0), window=scrollable_frame, anchor="n")
-	canvas.configure(yscrollcommand=scrollbar.set)
+    canvas = Canvas(ver_frame)
+    scrollbar = Scrollbar(ver_frame, orient="vertical", command=canvas.yview)
+    scrollable_frame = Frame(canvas)
+    canvas.bind_all("<MouseWheel>", lambda event: canvas.yview_scroll(int(-1*(event.delta/120)), "units"))
+    scrollable_frame.bind(
+        "<Configure>",
+        lambda e: canvas.configure(
+            scrollregion=canvas.bbox("all")
+        )
+    )
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="n")
+    canvas.configure(yscrollcommand=scrollbar.set)
 
-	canvas.grid(row=1, column=0, sticky="nsew")
-	scrollbar.grid(row=1, column=1, sticky="ns")
+    canvas.grid(row=1, column=0, sticky="nsew")
+    scrollbar.grid(row=1, column=1, sticky="ns")
 
-	ver_frame.grid_rowconfigure(1, weight=1)
-	ver_frame.grid_columnconfigure(0, weight=1)
+    ver_frame.grid_rowconfigure(1, weight=1)
+    ver_frame.grid_columnconfigure(0, weight=1)
 
-	for i, producto in enumerate(productos_filtrados):
+    for i, producto in enumerate(productos_filtrados):
 
-		frame = Frame(scrollable_frame, borderwidth=2, relief="groove")
-		frame.grid(row=i//5, column=i%5, padx=5, pady=5, sticky="nsew")
+        frame = Frame(scrollable_frame, borderwidth=2, relief="groove")
+        frame.grid(row=i//5, column=i%5, padx=5, pady=5, sticky="nsew")
 
-		select_frame = Frame(frame)
-		select_frame.pack(anchor='nw')
-		Label(select_frame, text="Seleccionar").pack(side='left')
-		var = BooleanVar()
-		Checkbutton(select_frame, variable=var).pack(side='right')
-		productos_seleccionados.append((producto, var))
-		
-		Label(frame, text=f"Nombre: {producto['titulo']}").pack(anchor='w')
-		Label(frame, text=f"Categoría: {producto['categoria']['nombre']}").pack(anchor='w')
-		Label(frame, text=f"Precio: {producto['precio']}").pack(anchor='w')
-		color_frame = Frame(frame)
-		color_frame.pack(anchor='w')
-		Label(color_frame, text="Color:").pack(side='left')
-		Label(frame, text=f"Stock: {producto['stock']}").pack(anchor='w')
-		color_hex = color_hex_map.get(producto['color'], "#FFFFFF")
-		Label(color_frame, text=producto['color'], bg=color_hex).pack(side='left')
-		
-		mostrar_imagen_producto(frame, producto['imagen'])
-		
-		Button(frame, text="Modificar", command=lambda p=producto: modificar_producto(p, ver_frame)).pack(side='left', padx=5)
-		Button(frame, text="Eliminar", command=lambda p=producto: eliminar_producto(p, ver_frame)).pack(side='left', padx=5)
-		Button(frame, text="Actualizar Stock", command=lambda p=producto: actualizar_stock(p, ver_frame)).pack(side='left', padx=5)
+        select_frame = Frame(frame)
+        select_frame.pack(anchor='nw')
+        Label(select_frame, text="Seleccionar").pack(side='left')
+        var = BooleanVar()
+        Checkbutton(select_frame, variable=var).pack(side='right')
+        productos_seleccionados.append((producto, var))
+        
+        Label(frame, text=f"Nombre: {producto['titulo']}").pack(anchor='w')
+        Label(frame, text=f"Categoría: {producto['categoria']['nombre']}").pack(anchor='w')
+        Label(frame, text=f"Precio: {producto['precio']}").pack(anchor='w')
+        color_frame = Frame(frame)
+        color_frame.pack(anchor='w')
+        Label(color_frame, text="Color:").pack(side='left')
+        Label(frame, text=f"Stock: {producto['stock']}").pack(anchor='w')
+        color_hex = color_hex_map.get(producto['color'], "#FFFFFF")
+        Label(color_frame, text=producto['color'], bg=color_hex).pack(side='left')
+        
+        mostrar_imagen_producto(frame, producto['imagen'])
+        
+        Button(frame, text="Modificar", command=lambda p=producto: modificar_producto(p, ver_frame)).pack(side='left', padx=5)
+        Button(frame, text="Eliminar", command=lambda p=producto: eliminar_producto(p, ver_frame)).pack(side='left', padx=5)
+        Button(frame, text="Actualizar Stock", command=lambda p=producto: actualizar_stock(p, ver_frame)).pack(side='left', padx=5)
 
 def seleccionar_todos():
 	for producto, var in productos_seleccionados:
@@ -576,7 +599,7 @@ def ingresar_nuevo_producto():
 	image_label.bind("<Button-1>", get_color)
 
 	opciones_unidades = [
-		"Categoria Producto", "Remeras", "Buzos", "Pantalones",
+		"Categoria Producto", "Remeras", "Abrigos", "Pantalones",
 		"Accesorios"
 	]
 	variable_unidad = StringVar(nuevo_producto_frame)
@@ -587,7 +610,7 @@ def ingresar_nuevo_producto():
 	Entry_3 = ttk.Entry(nuevo_producto_frame)
 	Entry_3.pack()
 
-	opciones_gen = ["Género", "Femenino", "Masculino", "Niño", "Niña", "No"]
+	opciones_gen = ["Género", "Femenino", "Masculino", "Niño", "Niña", "Unisex" ,"No"]
 	variable_gen = StringVar(nuevo_producto_frame)
 	variable_gen.set(opciones_gen[0]) 
 	ttk.OptionMenu(nuevo_producto_frame, variable_gen, *opciones_gen).pack()
