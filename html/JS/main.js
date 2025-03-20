@@ -234,6 +234,32 @@ document.addEventListener('DOMContentLoaded', function() {
     if (botonTodos) {
         botonTodos.click();
     }
+
+    // Agregar eventos para los filtros de texto y número
+    const filtroNombre = document.getElementById('filtro-nombre');
+    const filtroPrecioMin = document.getElementById('filtro-precio-min');
+    const filtroPrecioMax = document.getElementById('filtro-precio-max');
+    const filtroTalle = document.getElementById('filtro-talle');
+
+    // Función para manejar eventos de teclado
+    const handleKeyEvent = (event) => {
+        aplicarFiltro();
+    };
+
+    // Agregar eventos keyup para aplicar filtros automáticamente
+    filtroNombre.addEventListener('keyup', handleKeyEvent);
+    filtroPrecioMin.addEventListener('keyup', handleKeyEvent);
+    filtroPrecioMax.addEventListener('keyup', handleKeyEvent);
+    filtroTalle.addEventListener('keyup', handleKeyEvent);
+
+    // Agregar eventos change para los selectores
+    const filtroCategoria = document.getElementById('filtro-categoria');
+    const filtroDisciplina = document.getElementById('filtro-disciplina');
+    const filtroGenero = document.getElementById('filtro-genero');
+
+    filtroCategoria.addEventListener('change', aplicarFiltro);
+    filtroDisciplina.addEventListener('change', aplicarFiltro);
+    filtroGenero.addEventListener('change', aplicarFiltro);
 });
 
 function aplicarFiltro() {
