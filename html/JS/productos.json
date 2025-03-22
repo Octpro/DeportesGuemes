@@ -48,10 +48,10 @@
       "id": "accesorios"
     },
     "categoria_general": "accesorios",
-    "precio": "1000",
+    "precio": "1100",
     "es_variante": false,
     "color": "#a29677",
-    "stock": 1,
+    "stock": 10,
     "genero": "No",
     "talles": [
       "No"
@@ -89,7 +89,7 @@
     "precio": "3500",
     "es_variante": true,
     "color": "#a25e1a",
-    "stock": 1,
+    "stock": -199,
     "genero": "No",
     "talles": [
       "No"
@@ -196,5 +196,67 @@
     "disciplina": "Running",
     "stock": 1,
     "codigo_barras": "6178253"
+  },
+  {
+    "id": "remeras_sad",
+    "titulo": "sad",
+    "imagen": "./img/images.jpg",
+    "categoria": {
+      "nombre": "REMERAS",
+      "id": "remeras"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "123123",
+    "es_variante": false,
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
+    "color": "Color",
+    "disciplina": "Deportes",
+    "stock": 0,
+    "codigo_barras": "1"
+  },
+  {
+    "id": "accesorios_manco",
+    "titulo": "manco",
+    "imagen": "./img/images.jpg",
+    "categoria": {
+      "nombre": "ACCESORIOS",
+      "id": "accesorios"
+    },
+    "categoria_general": "accesorios",
+    "precio": "2",
+    "es_variante": false,
+    "genero": "Genero",
+    "talles": [
+      "S",
+      "M"
+    ],
+    "color": "Plata",
+    "disciplina": "Musculacion",
+    "stock": 0,
+    "codigo_barras": "2"
+  },
+  {
+    "id": "pantalones_oaa",
+    "titulo": "oaa",
+    "imagen": "./img/2709570_11.jpg",
+    "categoria": {
+      "nombre": "PANTALONES",
+      "id": "pantalones"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "2020",
+    "es_variante": false,
+    "genero": "Nino",
+    "talles": [
+      "M",
+      "XL"
+    ],
+    "color": "Verde Azulado",
+    "disciplina": "Musculacion",
+    "stock": 0,
+    "codigo_barras": "23"
   }
 ]

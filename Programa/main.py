@@ -1,7 +1,17 @@
 #validar entrada de datos
-#si pones cargar producto desde modo venta, que quede en el entry el codigo de barras
+#si pones cargar producto desde modo venta, que quede en el entry el codigo de barras ✅
 #verificar si pones que no es variante que cargue correctamente el producto
 #que cargue bien los talles
+#seria obligatorio cargar imagen (por ahora) ✅
+#si la imagen no esta en la carpeta imagen que la copie ahi ✅
+#el stock no debe ser menor a 0 ✅
+#entry precio modificar solo numeros ✅
+#redondear el precio a numero superior ✅
+#todo pajero
+#que las ventanas se abran a pestaña completa ✅
+#si seleccionas ponerle variante y no hay un producto cargado con ese nombre q cargue como otro producto principal ✅
+#entry codigo de barras solo numeros ✅
+#sacar TILDES al cargar al json ✅
 
 import json
 from tkinter import *
@@ -9,6 +19,8 @@ from tkinter import filedialog, messagebox, ttk
 from PIL import Image, ImageTk
 import os
 import unicodedata
+import shutil 
+import math  # Agregar al inicio del archivo
 
 def eliminar_acentos(cadena):
 	return ''.join(
@@ -103,10 +115,38 @@ def generate_unique_id(base_id, productos):
 		counter += 1
 	return unique_id
 
+def redondear_precio(precio):
+    """Redondea el precio al número superior"""
+    try:
+        # Convertir a float y redondear hacia arriba
+        return str(math.ceil(float(precio)))
+    except ValueError:
+        return precio
+
+def normalizar_texto(texto):
+    """Elimina tildes y caracteres especiales de un texto"""
+    if not isinstance(texto, str):
+        return texto
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', texto)
+        if unicodedata.category(c) != 'Mn'
+    )
+
+def normalizar_diccionario(diccionario):
+    """Normaliza todas las cadenas de texto en un diccionario"""
+    for key, value in diccionario.items():
+        if isinstance(value, dict):
+            diccionario[key] = normalizar_diccionario(value)
+        elif isinstance(value, list):
+            diccionario[key] = [normalizar_texto(item) if isinstance(item, str) else item for item in value]
+        elif isinstance(value, str):
+            diccionario[key] = normalizar_texto(value)
+    return diccionario
+
 def guardar():
 	nombre_producto = Entry_1.get()
 	categoria_producto = variable_unidad.get()
-	precio = Entry_3.get()
+	precio = redondear_precio(Entry_3.get())
 	es_variante = var_es_variante.get()
 	genero = variable_gen.get()
 	talles = [listbox_talles.get(i) for i in listbox_talles.curselection()]
@@ -131,12 +171,23 @@ def guardar():
 	base_id = f"{categoria_producto.lower()}_{nombre_producto.replace(' ', '_').lower()}"
 	id_producto = generate_unique_id(base_id, productos)
 	
-	imagen_ruta = selected_image_path
-	if imagen_ruta:
-		imagen_nombre = os.path.basename(imagen_ruta)
+	imagen_ruta = ""
+	if selected_image_path:
+		imagen_nombre = os.path.basename(selected_image_path)
+		destino = os.path.join('html', 'img', imagen_nombre)
+		
+		# Verificar si la imagen ya está en la carpeta destino
+		if not os.path.exists(destino):
+			try:
+				# Crear la carpeta img si no existe
+				os.makedirs(os.path.join('html', 'img'), exist_ok=True)
+				# Copiar la imagen al directorio destino
+				shutil.copy2(selected_image_path, destino)
+			except Exception as e:
+				messagebox.showerror("Error", f"No se pudo copiar la imagen: {str(e)}")
+				return
+				
 		imagen_ruta = f"./img/{imagen_nombre}"
-	else:
-		imagen_ruta = ""
 	
 	producto = {
 		"id": id_producto,
@@ -144,7 +195,7 @@ def guardar():
 		"imagen": imagen_ruta,
 		"categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
 		 "categoria_general": categoria_general.lower(),
-		"precio": precio,
+		"precio": precio,  # Precio redondeado
 		"es_variante": es_variante,
 		"genero": genero,
 		"talles": talles,
@@ -153,6 +204,18 @@ def guardar():
 		"stock": 0,  # Inicializar el stock a 0
 		"codigo_barras": codigo_barras  # Agregar el código de barras al producto
 	}
+	
+	# Normalizar el producto antes de guardarlo
+	producto = normalizar_diccionario(producto)
+	
+	# Verificar si es variante y si existe un producto principal
+	if es_variante:
+		producto_principal_existe = any(p['titulo'] == nombre_producto and not p['es_variante'] for p in productos)
+		if not producto_principal_existe:
+			# Si no existe un producto principal, cargar como producto principal
+			es_variante = False
+			producto['es_variante'] = False
+			messagebox.showinfo("Información", "No existe un producto principal con ese nombre. Se cargará como producto principal.")
 	
 	productos.append(producto)
 	
@@ -172,14 +235,15 @@ def agregar_variante(nombre_producto, categoria_producto, precio):
 		select_image()
 		
 		# Actualizar el texto de los widgets existentes para cambiar el precio y el color
-		Entry_1.delete(0, END)
-		Entry_1.insert(0, nombre_producto)
-		Entry_3.delete(0, END)
-		Entry_3.insert(0, precio)
+		# Entry_1.delete(0, END)
+		# Entry_1.insert(0, nombre_producto)
+		# Entry_3.delete(0, END)
+		# Entry_3.insert(0, precio)
 	else:
 		messagebox.showinfo("Información", "No se agregó ninguna variante.")
 
 def guardar_variante(nombre_producto, categoria_producto, precio, color):
+	precio = redondear_precio(precio)
 	global selected_image_path
 	talles = [listbox_talles.get(i) for i in listbox_talles.curselection()]
 	disciplina = variable_disciplina.get()  # Obtener la disciplina seleccionada
@@ -210,7 +274,7 @@ def guardar_variante(nombre_producto, categoria_producto, precio, color):
 		"imagen": imagen_ruta,
 		"categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
 		"categoria_general": categoria_general.lower(),
-		"precio": precio,
+		"precio": precio,  # Precio redondeado
 		"es_variante": True,
 		"genero": variable_gen.get(),
 		"talles": talles,
@@ -219,6 +283,9 @@ def guardar_variante(nombre_producto, categoria_producto, precio, color):
 		"stock": 0,  # Inicializar el stock a 0
 		"codigo_barras": codigo_barras  # Agregar el código de barras al producto
 	}
+	
+	# Normalizar el producto antes de guardarlo
+	producto = normalizar_diccionario(producto)
 	
 	productos.append(producto)
 	
@@ -278,9 +345,8 @@ def ver_productos():
 	
 	global ver_frame
 	ver_frame = Toplevel(tk)
-	ver_frame.grid_rowconfigure(0, weight=0) 
-	ver_frame.grid_rowconfigure(1, weight=1) 
-	ver_frame.grid_columnconfigure(0, weight=1)  
+	ver_frame.title("Ver Productos")
+	configurar_ventana_completa(ver_frame)
 
 	global filtro_frame
 	filtro_frame = Frame(ver_frame)
@@ -307,17 +373,13 @@ def ver_productos():
 	
 	Label(filtro_frame, text="Precio Mínimo").grid(row=0, column=4, pady=5, padx=5)
 	global filtro_precio_min
-	filtro_precio_min = Entry(filtro_frame)
+	filtro_precio_min = NumericEntry(filtro_frame)  # Cambiar aquí
 	filtro_precio_min.grid(row=0, column=5, pady=5, padx=5)
-	filtro_precio_min.bind("<Return>", aplicar_filtro_evento)
-	filtro_precio_min.bind("<BackSpace>", aplicar_filtro_evento)
 	
 	Label(filtro_frame, text="Precio Máximo").grid(row=0, column=6, pady=5, padx=5)
 	global filtro_precio_max
-	filtro_precio_max = Entry(filtro_frame)
+	filtro_precio_max = NumericEntry(filtro_frame)  # Cambiar aquí
 	filtro_precio_max.grid(row=0, column=7, pady=5, padx=5)
-	filtro_precio_max.bind("<Return>", aplicar_filtro_evento)
-	filtro_precio_max.bind("<BackSpace>", aplicar_filtro_evento)
 
 	Label(filtro_frame, text="Disciplina").grid(row=0, column=8, pady=5, padx=5)
 	global filtro_disciplina
@@ -426,6 +488,7 @@ def deseleccionar_todos():
 def actualizar_stock_seleccionados():
 	actualizar_frame = Toplevel(tk)
 	actualizar_frame.title("Actualizar Stock Seleccionados")
+	configurar_ventana_completa(actualizar_frame)
 
 	Label(actualizar_frame, text="Cantidad stock agregado").pack()
 	entry_cantidad = Entry(actualizar_frame)
@@ -448,9 +511,28 @@ def actualizar_stock_seleccionados():
 		if cantidad:
 			try:
 				cantidad = int(cantidad)
+				error_productos = []
+				
+				# Verificar primero si algún producto quedaría con stock negativo
+				for producto, var in productos_seleccionados:
+					if var.get():
+						nuevo_stock = producto.get('stock', 0) + cantidad
+						if nuevo_stock < 0:
+							error_productos.append(producto['titulo'])
+				
+				if error_productos:
+					messagebox.showerror(
+						"Error", 
+						"Los siguientes productos quedarían con stock negativo:\n" + 
+						"\n".join(error_productos)
+					)
+					return
+				
+				# Si ningún producto quedaría con stock negativo, proceder con la actualización
 				for producto, var in productos_seleccionados:
 					if var.get():
 						producto['stock'] = producto.get('stock', 0) + cantidad
+				
 				with open('html/JS/productos.json', 'w') as archivo:
 					json.dump(productos, archivo, indent=2)
 				messagebox.showinfo("Información", "Stock actualizado correctamente.")
@@ -462,10 +544,10 @@ def actualizar_stock_seleccionados():
 
 	Button(actualizar_frame, text="Actualizar", command=aplicar_ajuste).pack()
 
-
 def actualizar_precios_seleccionados():
 	actualizar_frame = Toplevel(tk)
 	actualizar_frame.title("Actualizar Precios Seleccionados")
+	configurar_ventana_completa(actualizar_frame)
 
 	Label(actualizar_frame, text="Tipo de Actualización").pack()
 	tipo_actualizacion = StringVar(value="porcentaje")
@@ -484,9 +566,10 @@ def actualizar_precios_seleccionados():
 				for producto, var in productos_seleccionados:
 					if var.get():
 						if tipo_actualizacion.get() == "porcentaje":
-							producto['precio'] = str(float(producto['precio']) * (1 + valor / 100))
+							precio = float(producto['precio']) * (1 + valor / 100)
 						elif tipo_actualizacion.get() == "monto":
-							producto['precio'] = str(float(producto['precio']) + valor)
+							precio = float(producto['precio']) + valor
+						producto['precio'] = redondear_precio(str(precio))
 				with open('html/JS/productos.json', 'w') as archivo:
 					json.dump(productos, archivo, indent=2)
 				messagebox.showinfo("Información", "Precios actualizados correctamente.")
@@ -502,6 +585,7 @@ def actualizar_precios_seleccionados():
 def modificar_producto(producto, parent_frame):
 	modificar_frame = Toplevel(tk)
 	modificar_frame.title("Modificar Producto")
+	configurar_ventana_completa(modificar_frame)
 	style = ttk.Style(modificar_frame)
 	style.configure("Placeholder.TEntry", foreground="#d5d5d5")
 		
@@ -515,7 +599,7 @@ def modificar_producto(producto, parent_frame):
 
 	def guardar_cambios():
 		producto['titulo'] = entry_nombre.get()
-		producto['precio'] = entry_precio.get()
+		producto['precio'] = redondear_precio(entry_precio.get())
 		
 		with open('html/JS/productos.json', 'r') as archivo:
 			productos = json.load(archivo)
@@ -549,35 +633,41 @@ def eliminar_producto(producto, parent_frame):
 		ver_productos()
 
 def actualizar_stock(producto, parent_frame):
-	actualizar_frame = Toplevel(tk)
-	actualizar_frame.title("Actualizar Stock")
+    actualizar_frame = Toplevel(tk)
+    actualizar_frame.title("Actualizar Stock")
+    configurar_ventana_completa(actualizar_frame)
 
-	Label(actualizar_frame, text=f"Producto: {producto['titulo']}").pack()
-	Label(actualizar_frame, text=f"Stock Actual: {producto.get('stock', 0)}").pack()
+    Label(actualizar_frame, text=f"Producto: {producto['titulo']}").pack()
+    Label(actualizar_frame, text=f"Stock Actual: {producto.get('stock', 0)}").pack()
 
-	Label(actualizar_frame, text="Cantidad stock agregado").pack()
-	entry_cantidad = Entry(actualizar_frame)
-	entry_cantidad.pack()
+    Label(actualizar_frame, text="Cantidad stock agregado").pack()
+    entry_cantidad = Entry(actualizar_frame)
+    entry_cantidad.pack()
 
-	def aplicar_ajuste():
-		cantidad = entry_cantidad.get()
-		if cantidad:
-			try:
-				cantidad = int(cantidad)
-				producto['stock'] = producto.get('stock', 0) + cantidad
-				with open('html/JS/productos.json', 'w') as archivo:
-					json.dump(productos, archivo, indent=2)
-				messagebox.showinfo("Información", "Stock actualizado correctamente.")
-				actualizar_frame.destroy()
-			except ValueError:
-				messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido.")
-		
-		actualizar_frame.destroy()
-		parent_frame.destroy()
-		ver_productos()
+    def aplicar_ajuste():
+        cantidad = entry_cantidad.get()
+        if cantidad:
+            try:
+                cantidad = int(cantidad)
+                nuevo_stock = producto.get('stock', 0) + cantidad
+                # Verificar que el nuevo stock no sea menor a 0
+                if nuevo_stock < 0:
+                    messagebox.showerror("Error", "El stock no puede ser menor a 0")
+                    return
+                
+                producto['stock'] = nuevo_stock
+                with open('html/JS/productos.json', 'w') as archivo:
+                    json.dump(productos, archivo, indent=2)
+                messagebox.showinfo("Información", "Stock actualizado correctamente.")
+                actualizar_frame.destroy()
+            except ValueError:
+                messagebox.showerror("Error", "Por favor, ingrese un valor numérico válido.")
+        
+        actualizar_frame.destroy()
+        parent_frame.destroy()
+        ver_productos()
 
-
-	Button(actualizar_frame, text="Ajustar Stock", command=aplicar_ajuste).pack()
+    Button(actualizar_frame, text="Ajustar Stock", command=aplicar_ajuste).pack()
 
 class PlaceholderEntry(ttk.Entry):
 	def __init__(self, container, placeholder, *args, **kwargs):
@@ -597,11 +687,35 @@ class PlaceholderEntry(ttk.Entry):
 			self.insert("0", self.placeholder)
 			self["style"] = "Placeholder.TEntry"
 
-def ingresar_nuevo_producto():
+class NumericEntry(ttk.Entry):
+    def __init__(self, container, *args, **kwargs):
+        super().__init__(container, *args, **kwargs)
+        self.bind('<KeyRelease>', self._validate)
+        vcmd = (self.register(self._validate_char), '%S')
+        self.configure(validate="key", validatecommand=vcmd)
+
+    def _validate_char(self, char):
+        # Permitir dígitos y punto decimal
+        return char.isdigit() or char == "."
+
+    def _validate(self, event=None):
+        # Asegurar que solo haya un punto decimal
+        value = self.get()
+        if value.count('.') > 1:
+            value = value[:value.rfind('.')]
+            self.delete(0, 'end')
+            self.insert(0, value)
+        # Remover caracteres no numéricos
+        value = ''.join([c for c in value if c.isdigit() or c == '.'])
+        self.delete(0, 'end')
+        self.insert(0, value)
+
+def ingresar_nuevo_producto(codigo_barras=None):  # Agregar parámetro opcional
 	global image_label, color_label, variable_unidad, Entry_1, Entry_3, var_es_variante, variable_gen, listbox_talles, entry_codigo_barras, variable_disciplina
 
 	nuevo_producto_frame = Toplevel(tk)
 	nuevo_producto_frame.title("Ingresar Nuevo Producto")
+	configurar_ventana_completa(nuevo_producto_frame)
 
 	ttk.Label(nuevo_producto_frame, text="Nombre Producto").pack()
 	Entry_1 = ttk.Entry(nuevo_producto_frame)
@@ -622,10 +736,10 @@ def ingresar_nuevo_producto():
 	ttk.OptionMenu(nuevo_producto_frame, variable_unidad, *opciones_unidades).pack()
 
 	Label(nuevo_producto_frame, text="Precio").pack()
-	Entry_3 = ttk.Entry(nuevo_producto_frame)
+	Entry_3 = NumericEntry(nuevo_producto_frame)  # Cambiar aquí
 	Entry_3.pack()
 
-	opciones_gen = ["Género", "Femenino", "Masculino", "Niño", "Niña", "Unisex" ,"No"]
+	opciones_gen = ["Genero", "Femenino", "Masculino", "Niño", "Niña", "Unisex" ,"No"]
 	variable_gen = StringVar(nuevo_producto_frame)
 	variable_gen.set(opciones_gen[0]) 
 	ttk.OptionMenu(nuevo_producto_frame, variable_gen, *opciones_gen).pack()
@@ -638,7 +752,7 @@ def ingresar_nuevo_producto():
 	listbox_talles.pack()
 
 	Label(nuevo_producto_frame, text="Disciplina").pack()
-	opciones_disciplinas = ["Deportes", "Fútbol", "Básquet", "Tenis", "Natación", "Running", "Boxeo", "Vóley", "Rugby", "Hockey", "Yoga", "Fitness", "Musculación"]
+	opciones_disciplinas = ["Deportes", "Futbol", "Basquet", "Tenis", "Natacion", "Running", "Boxeo", "Voley", "Rugby", "Hockey", "Yoga", "Fitness", "Musculacion"]
 	variable_disciplina = StringVar(nuevo_producto_frame)
 	variable_disciplina.set(opciones_disciplinas[0])
 	ttk.OptionMenu(nuevo_producto_frame, variable_disciplina, *opciones_disciplinas).pack()
@@ -650,19 +764,46 @@ def ingresar_nuevo_producto():
 	ttk.Checkbutton(nuevo_producto_frame, text="Es variante de otro producto", variable=var_es_variante).pack()
 
 	ttk.Label(nuevo_producto_frame, text="Código de Barras").pack()
-	entry_codigo_barras = ttk.Entry(nuevo_producto_frame)
+	entry_codigo_barras = NumericEntry(nuevo_producto_frame)  # Cambiar aquí
 	entry_codigo_barras.pack()
 	entry_codigo_barras.bind("<Return>", lambda event: procesar_codigo_barras(entry_codigo_barras.get()))
+	
+	# Si se proporciona un código de barras, insertarlo en el entry
+	if codigo_barras:
+		entry_codigo_barras.insert(0, codigo_barras)
 
 	ttk.Button(nuevo_producto_frame, text="Guardar", command=guardar).pack()
 
 def set_background_image(frame, image_path):
-	img = Image.open(image_path)
-	photo = ImageTk.PhotoImage(img)
-	background_label = Label(frame, image=photo)
-	background_label.image = photo  # Keep a reference to avoid garbage collection
-	background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    def resize_background(event=None):
+        # Obtener nuevas dimensiones
+        width = frame.winfo_width()
+        height = frame.winfo_height()
+        
+        if width > 1 and height > 1:  # Evitar redimensionamiento con valores inválidos
+            # Redimensionar la imagen
+            resized_img = Image.open(image_path)
+            resized_img = resized_img.resize((width, height), Image.Resampling.LANCZOS)
+            photo = ImageTk.PhotoImage(resized_img)
+            
+            # Actualizar la imagen de fondo
+            background_label = frame.background_label
+            background_label.configure(image=photo)
+            background_label.image = photo  # Mantener referencia
 
+    # Crear el label inicial
+    img = Image.open(image_path)
+    img = img.resize((frame.winfo_screenwidth(), frame.winfo_screenheight()))
+    photo = ImageTk.PhotoImage(img)
+    background_label = Label(frame, image=photo)
+    background_label.image = photo
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    
+    # Guardar referencia al label
+    frame.background_label = background_label
+    
+    # Vincular evento de redimensionamiento
+    frame.bind('<Configure>', resize_background)
 
 def procesar_codigo_barras(codigo_barras, venta_frame):
 	try:
@@ -694,7 +835,8 @@ def procesar_codigo_barras(codigo_barras, venta_frame):
 		if modo_venta.get():
 			respuesta = messagebox.askyesno("Producto no encontrado", "El producto no está cargado. ¿Desea cargarlo?")
 			if respuesta:
-				ingresar_nuevo_producto()
+				venta_frame.destroy()  # Cerrar ventana de venta
+				ingresar_nuevo_producto(codigo_barras)  # Pasar el código de barras
 		else:
 			messagebox.showerror("Error", "Producto no encontrado.")
 
@@ -704,17 +846,28 @@ def toggle_modo_venta(venta_frame=None):
 		venta_frame.title("Modo Venta")
 
 		Label(venta_frame, text="Ingrese Código de Barras").pack()
-		entry_codigo_barras_venta = Entry(venta_frame)
+		entry_codigo_barras_venta = NumericEntry(venta_frame)  # ← Modificar esta línea
 		entry_codigo_barras_venta.pack()
 		entry_codigo_barras_venta.bind("<Return>", lambda event: procesar_codigo_barras(entry_codigo_barras_venta.get(), venta_frame))
 
+def configurar_ventana_completa(ventana):
+    """Configura una ventana para que se abra a pantalla completa"""
+    # Obtener dimensiones de la pantalla
+    ancho_pantalla = ventana.winfo_screenwidth()
+    alto_pantalla = ventana.winfo_screenheight()
+    
+    # Configurar geometría
+    ventana.geometry(f"{ancho_pantalla}x{alto_pantalla}+0+0")
+    
+    # Hacer que la ventana sea redimensionable
+    ventana.resizable(True, True)
 
 tk = Tk()
 tk.geometry(f"{tk.winfo_screenwidth()}x{tk.winfo_screenheight()}")
 style = ttk.Style()
 style.configure("Placeholder.TEntry", foreground="#d5d5d5")
 
-set_background_image(tk, "html/img/287290_5.jpg")
+set_background_image(tk, "html/img/Logo.jpeg")
 
 menubar = Menu(tk)
 tk.config(menu=menubar)
@@ -730,4 +883,3 @@ modo_venta = BooleanVar()
 ttk.Checkbutton(tk, text="Modo Venta", variable=modo_venta, command=toggle_modo_venta).pack()
 
 tk.mainloop()
-
