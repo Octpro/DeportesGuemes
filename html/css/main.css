@@ -51,6 +51,7 @@
  .logo {
     font-weight: 400;
     font-size: 1.3rem;
+    color: var(--clr-white);
  }
  
  .menu{
@@ -504,7 +505,18 @@ pointer-events: none;
 
    .header-movile .logo {
       color: var(--clr-gray);
+      text-decoration: none;
    }
+.logo{
+   color: var(--clr-main);
+   font-size: 1.5rem;
+   font-weight: 600;
+}
+
+.logo:hover {
+   color: white;
+
+}
 
    .open-menu,
    .close-menu{

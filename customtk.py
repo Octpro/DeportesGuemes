@@ -7,6 +7,7 @@ import os
 import unicodedata
 import shutil 
 import math  # Agregar al inicio del archivo
+from datetime import datetime  # Importar datetime para registrar acciones
 
 def eliminar_acentos(cadena):
 	return ''.join(
@@ -76,7 +77,7 @@ color_hex_map = {
 def closest_color(rgb):
 	colors = {
 		"Negro": (0, 0, 0),
-		"Blanco": (255, 255, 255),
+			"Blanco": (255, 255, 255),
 		"Rojo": (255, 0, 0),
 		"Verde": (0, 255, 0),
 		"Azul": (0, 0, 255),
@@ -181,181 +182,257 @@ def filtrar_productos(productos, nombre=None, categoria=None, precio_min=None, p
 
 # Crear una clase gestora de datos:
 class DataManager:
-    def __init__(self):
-        self.file_path = 'html/JS/productos.json'
-        self.productos = []
-        self.load_data()
+	def __init__(self):
+		self.file_path = 'html/JS/productos.json'
+		self.productos = []
+		self.load_data()
 
-    def load_data(self):
-        try:
-            with open(self.file_path, 'r') as file:
-                self.productos = json.load(file)
-        except FileNotFoundError:
-            self.productos = []
+	def load_data(self):
+		try:
+			with open(self.file_path, 'r') as file:
+				self.productos = json.load(file)
+		except FileNotFoundError:
+			self.productos = []
 
-    def save_data(self):
-        with open(self.file_path, 'w') as file:
-            json.dump(self.productos, file, indent=2)
+	def save_data(self):
+		with open(self.file_path, 'w') as file:
+			json.dump(self.productos, file, indent=2)
 
 # Configurar tema y color
 ctk.set_appearance_mode("dark")  # Temas: "dark", "light", "system"
 ctk.set_default_color_theme("blue")  # Temas: "blue", "dark-blue", "green"
 
 class App(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-        
-        # Configurar ventana principal
-        self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}")
-        self.title("Deportes Güemes")
-        
-        # Variable para controlar el tema
-        self.tema_actual = "dark"
-        
-        # Configurar fuentes
-        self.font_title = ("Helvetica", 16, "bold")
-        self.font_normal = ("Helvetica", 12)
-        self.font_small = ("Helvetica", 10)
-        
-        # Crear menú primero (para que aparezca arriba)
-        self.create_menu()
-        
-        # Modo venta switch
-        self.modo_venta = ctk.CTkSwitch(
-            self, 
-            text="Modo Venta",
-            command=self.toggle_modo_venta,
-            font=self.font_normal
-        )
-        self.modo_venta.pack(pady=10)
-        
-        # Crear frame principal para el fondo
-        self.background_frame = ctk.CTkFrame(self)
-        self.background_frame.pack(fill="both", expand=True)
-        
-        # Cargar imagen de fondo
-        try:
-            self.original_image = Image.open("html/img/Logo.jpeg")
-            self.actualizar_imagen_fondo()
-            self.bind('<Configure>', self.on_resize)
-        except Exception as e:
-            print(f"Error al cargar la imagen de fondo: {e}")
+	def __init__(self):
+		super().__init__()
+		
+		# Inicializar como no admin
+		self.is_admin = False
+		self.is_empleado = False
+		
+		# Configurar ventana principal
+		self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}")
+		self.title("Deportes Güemes")
+		
+		# Variable para controlar el tema
+		self.tema_actual = "dark"
+		
+		# Configurar fuentes primero
+		self.font_title = ("Helvetica", 16, "bold")
+		self.font_normal = ("Helvetica", 12)
+		self.font_small = ("Helvetica", 10)
+		
+		# Crear menú antes de cualquier otro elemento
+		self.create_menu()
+		
+		# Crear frame principal para el fondo
+		self.background_frame = ctk.CTkFrame(self)
+		self.background_frame.pack(fill="both", expand=True)
+		
+		# Cargar imagen de fondo
+		try:
+			self.original_image = Image.open("html/img/Logo.jpeg")
+			self.actualizar_imagen_fondo()
+			self.bind('<Configure>', self.on_resize)
+		except Exception as e:
+			print(f"Error al cargar la imagen de fondo: {e}")
+		
+		# Mostrar login al inicio (mover al final)
+		self.show_login()
 
-    def actualizar_imagen_fondo(self):
-        window_width = self.winfo_width()
-        window_height = self.winfo_height()
-        
-        if window_width > 1 and window_height > 1:
-            imagen_fondo = self.original_image.copy()
-            imagen_fondo.thumbnail((window_width, window_height))
-            
-            self.bg_image = ctk.CTkImage(
-                light_image=imagen_fondo,
-                dark_image=imagen_fondo,
-                size=(window_width, window_height)
-            )
-            
-            if hasattr(self, 'bg_label'):
-                self.bg_label.configure(image=self.bg_image)
-            else:
-                self.bg_label = ctk.CTkLabel(
-                    self.background_frame, 
-                    image=self.bg_image,
-                    text=""
-                )
-                self.bg_label.place(relx=0.5, rely=0.5, anchor="center")
+	def actualizar_imagen_fondo(self):
+		window_width = self.winfo_width()
+		window_height = self.winfo_height()
+		
+		if window_width > 1 and window_height > 1:
+			imagen_fondo = self.original_image.copy()
+			imagen_fondo.thumbnail((window_width, window_height))
+			
+			self.bg_image = ctk.CTkImage(
+				light_image=imagen_fondo,
+				dark_image=imagen_fondo,
+				size=(window_width, window_height)
+			)
+			
+			if hasattr(self, 'bg_label'):
+				self.bg_label.configure(image=self.bg_image)
+			else:
+				self.bg_label = ctk.CTkLabel(
+					self.background_frame, 
+					image=self.bg_image,
+					text=""
+				)
+				self.bg_label.place(relx=0.5, rely=0.5, anchor="center")
 
-    def on_resize(self, event=None):
-        if event.widget == self:
-            self.actualizar_imagen_fondo()
+	def on_resize(self, event=None):
+		if event.widget == self:
+			self.actualizar_imagen_fondo()
 
-    def create_menu(self):
-        menu_frame = ctk.CTkFrame(self)
-        menu_frame.pack(side="top", fill="x", pady=10)
-        
-        ctk.CTkButton(
-            menu_frame,
-            text="Ingresar Nuevo Producto",
-            command=self.show_nuevo_producto,
-            font=self.font_normal
-        ).pack(side="left", padx=5)
-        
-        ctk.CTkButton(
-            menu_frame,
-            text="Ver Productos",
-            command=self.show_ver_productos,
-            font=self.font_normal
-        ).pack(side="left", padx=5)
-        
-        ctk.CTkButton(
-            menu_frame,
-            text="Lista de Precios",
-            command=self.show_lista_precios,
-            font=self.font_normal
-        ).pack(side="left", padx=5)
-        
-        ctk.CTkButton(
-            menu_frame,
-            text="Cambiar Tema",
-            command=self.toggle_tema,
-            fg_color="gray40"
-        ).pack(side="right", padx=5)
+	def create_menu(self):
+		# Destruir el menú anterior si existe
+		if hasattr(self, 'menu_frame'):
+			self.menu_frame.destroy()
 
-    def toggle_tema(self):
-        if self.tema_actual == "dark":
-            ctk.set_appearance_mode("light")
-            self.tema_actual = "light"
-        else:
-            ctk.set_appearance_mode("dark")
-            self.tema_actual = "dark"
+		# Crear un único frame para los botones
+		self.menu_frame = ctk.CTkFrame(self)
+		self.menu_frame.pack(side="top", fill="x", pady=10)
+		
+		# Crear un frame contenedor para los botones del lado izquierdo
+		left_buttons_frame = ctk.CTkFrame(self.menu_frame, fg_color="transparent")
+		left_buttons_frame.pack(side="left", fill="x", expand=True)
+		
+		# Botones siempre disponibles para ambos tipos de usuario
+		ctk.CTkButton(
+			left_buttons_frame,
+			text="Lista de Precios",
+			command=self.show_lista_precios,
+			font=self.font_normal
+		).pack(side="left", padx=5)
 
-    def show_nuevo_producto(self):
-        dialog = ProductoDialog(self)
-        dialog.grab_set()
+		ctk.CTkButton(
+			left_buttons_frame,
+			text="Ver Productos",
+			command=self.show_ver_productos,
+			font=self.font_normal
+		).pack(side="left", padx=5)
+		
+		# Switch de modo venta para empleado y admin
+		self.modo_venta = ctk.CTkSwitch(
+			left_buttons_frame,
+			text="Modo Venta",
+			command=self.toggle_modo_venta,
+			font=self.font_normal
+		)
+		self.modo_venta.pack(side="left", padx=5)
+		
+		# Botones adicionales solo para admin
+		if self.is_admin:
+			ctk.CTkButton(
+				left_buttons_frame,
+				text="Ingresar Nuevo Producto",
+				command=self.show_nuevo_producto,
+				font=self.font_normal
+			).pack(side="left", padx=5)
+			
+			ctk.CTkButton(
+				left_buttons_frame,
+				text="Historial",
+				command=self.show_historial,
+				font=self.font_normal
+			).pack(side="left", padx=5)
+			
+			# Habilitar el switch de modo venta para admin
+			self.modo_venta.configure(state="normal")
+		else:
+			# Deshabilitar el switch de modo venta para empleado
+			self.modo_venta.configure(state="disabled")
+		
+		# Botón de cerrar sesión en el lado derecho
+		ctk.CTkButton(
+			self.menu_frame,
+			text="Cerrar Sesión",
+			command=self.logout,
+			fg_color="red"
+		).pack(side="right", padx=5)
 
-    def show_ver_productos(self):
-        dialog = VerProductosDialog(self)
-        dialog.grab_set()
-            
-    def toggle_modo_venta(self):
-        if self.modo_venta.get():
-            dialog = ModoVentaDialog(self)
-            dialog.grab_set()
+	def logout(self):
+		self.is_admin = False
+		self.update_interface()
+		self.menu_frame.destroy()  # Destruir el menú actual
+		self.show_login()
 
-    def show_lista_precios(self):
-        dialog = ListaPreciosDialog(self)
-        dialog.grab_set()
+	def toggle_tema(self):
+		if self.tema_actual == "dark":
+			ctk.set_appearance_mode("light")
+			self.tema_actual = "light"
+		else:
+			ctk.set_appearance_mode("dark")
+			self.tema_actual = "dark"
+
+	def show_nuevo_producto(self):
+		if not self.is_admin:
+			messagebox.showerror("Error", "Acceso denegado. Se requieren permisos de administrador.")
+			return
+		dialog = ProductoDialog(self)
+		dialog.grab_set()
+
+	def show_ver_productos(self):
+		dialog = VerProductosDialog(self)
+		dialog.grab_set()
+			
+	def toggle_modo_venta(self):
+		if self.modo_venta.get():
+			dialog = ModoVentaDialog(self)
+			dialog.grab_set()
+
+	def show_lista_precios(self):
+		dialog = ListaPreciosDialog(self)
+		dialog.grab_set()
+
+	def show_historial(self):
+		if not self.is_admin:
+			messagebox.showerror("Error", "Acceso denegado. Se requieren permisos de administrador.")
+			return
+		dialog = HistorialDialog(self)
+		dialog.grab_set()
+
+	def show_login(self):
+		dialog = LoginDialog(self)
+		dialog.grab_set()
+		self.wait_window(dialog)
+		self.is_admin = dialog.is_admin
+		self.is_empleado = dialog.is_empleado
+		self.update_interface()
+	
+	def update_interface(self):
+		"""Actualizar interfaz según permisos"""
+		self.create_menu()  # Recrear el menú con los botones correspondientes
+		
+		if self.is_admin:
+			# Habilitar modo venta para admin
+			self.modo_venta.configure(state="normal")
+		else:
+			# Deshabilitar modo venta para usuarios normales
+			self.modo_venta.configure(state="normal")
 
 class VerProductosDialog(ctk.CTkToplevel):
 	def __init__(self, parent):
 		super().__init__(parent)
 		self.title("Ver Productos")
-		self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}")
+		self.geometry("1024x768")
 		
 		# Inicializar variables
-		self.productos_seleccionados = []
 		self.productos = []
-		self.productos_frame = None
+		self.productos_seleccionados = []
 		
 		# Frame principal
 		self.main_frame = ctk.CTkFrame(self)
 		self.main_frame.pack(fill="both", expand=True, padx=10, pady=10)
 		
-		# Crear frame de filtros
+		# Crear filtros
 		self.crear_filtros()
 		
-		# Crear frame scrollable inicial
+		# Frame para productos con scroll
 		self.productos_frame = ctk.CTkScrollableFrame(self.main_frame)
 		self.productos_frame.pack(fill="both", expand=True, padx=10, pady=5)
 		
-		# Cargar productos
+		# Cargar productos al inicio
 		self.cargar_productos()
+
+	def cargar_productos(self):
+		"""Cargar productos desde el archivo JSON"""
+		try:
+			with open('html/JS/productos.json', 'r') as archivo:
+				self.productos = json.load(archivo)
+				self.mostrar_productos(self.productos)
+		except FileNotFoundError:
+			self.productos = []
+			messagebox.showerror("Error", "No se encontró el archivo de productos")
 
 	def mostrar_productos(self, productos_filtrados):
 		# Limpiar el frame anterior
-		if self.productos_frame:
-			for widget in self.productos_frame.winfo_children():
-				widget.destroy()
+		for widget in self.productos_frame.winfo_children():
+			widget.destroy()
 		
 		# Configurar el grid
 		self.productos_frame.grid_columnconfigure((0, 1, 2), weight=1, uniform="column")
@@ -416,7 +493,7 @@ class VerProductosDialog(ctk.CTkToplevel):
 		)
 		self.filtro_genero.pack(side="left", padx=5)
 		
-		 # Talles (después del filtro de género)
+		# Talles (después del filtro de género)
 		ctk.CTkLabel(filtro_frame, text="Talle").pack(side="left", padx=5)
 		self.filtro_talle = ctk.CTkOptionMenu(
 			filtro_frame,
@@ -475,11 +552,13 @@ class VerProductosDialog(ctk.CTkToplevel):
 		try:
 			nombre = self.filtro_nombre.get().lower()
 			categoria = self.filtro_categoria.get()
-			disciplina = self.filtro_disciplina.get()  # Obtener valor del filtro de disciplina
+			disciplina = self.filtro_disciplina.get()
 			genero = self.filtro_genero.get()
 			talle = self.filtro_talle.get()
-			precio_min = self.filtro_precio_min.get() or "0"
-			precio_max = self.filtro_precio_max.get() or "999999999"
+			
+			# Obtener precios con valores por defecto
+			precio_min = self.filtro_precio_min.get() or "0"  # Si está vacío, usa "0"
+			precio_max = self.filtro_precio_max.get() or "999999999"  # Si está vacío, usa "999999999"
 			
 			# Filtrar productos
 			productos_filtrados = [p for p in self.productos if
@@ -487,7 +566,7 @@ class VerProductosDialog(ctk.CTkToplevel):
 				(categoria == "Todas" or 
 				 categoria.upper() == p['categoria']['nombre'] or 
 				 categoria.lower() in p['categoria_general'].lower()) and
-				(disciplina == "Todas" or disciplina.lower() == p.get('disciplina', '').lower()) and  # Agregar filtro de disciplina
+				(disciplina == "Todas" or disciplina.lower() == p.get('disciplina', '').lower()) and
 				(genero == "Todos" or genero.lower() == p.get('genero', '').lower()) and
 				(talle == "Todos" or talle in p.get('talles', [])) and
 				float(p['precio']) >= float(precio_min) and
@@ -499,15 +578,6 @@ class VerProductosDialog(ctk.CTkToplevel):
 		except ValueError as e:
 			print(f"Error al aplicar filtros: {e}")
 
-	def cargar_productos(self):
-		try:
-			with open('html/JS/productos.json', 'r') as archivo:
-				self.productos = json.load(archivo)
-		except FileNotFoundError:
-			self.productos = []
-			
-		self.mostrar_productos(self.productos)
-		
 	def crear_producto_card(self, parent, producto):
 		# Crear frame para la card
 		card = ctk.CTkFrame(parent)
@@ -602,6 +672,10 @@ class VerProductosDialog(ctk.CTkToplevel):
 		dialog = ctk.CTkToplevel(self)
 		dialog.title("Actualizar Stock")
 		dialog.geometry("400x300")
+		dialog.lift()  # Mantener ventana al frente
+		dialog.transient(self)  # Hacer la ventana dependiente del padre
+		dialog.focus_force()  # Forzar el foco
+		dialog.grab_set()  # Hacer la ventana modal
 
 		# Frame principal
 		frame = ctk.CTkFrame(dialog)
@@ -735,16 +809,24 @@ class VerProductosDialog(ctk.CTkToplevel):
 				with open('html/JS/productos.json', 'r') as archivo:
 					todos_productos = json.load(archivo)
 				
+				detalles_cambios = []
 				for producto, _ in productos_a_actualizar:
 					# Calcular nuevo precio
 					precio_actual = float(producto['precio'])
 					if tipo_actualizacion.get() == "porcentaje":
 						nuevo_precio = precio_actual * (1 + valor/100)
+						tipo_cambio = f"{valor}%"
 					else:  # monto
 						nuevo_precio = precio_actual + valor
+						tipo_cambio = f"${valor}"
 					
 					# Redondear y actualizar precio
 					producto['precio'] = redondear_precio(str(nuevo_precio))
+					
+					# Registrar detalle del cambio
+					detalles_cambios.append(
+						f"{producto['titulo']}: ${precio_actual} -> ${producto['precio']} ({tipo_cambio})"
+					)
 					
 					# Actualizar en la lista completa
 					for i, p in enumerate(todos_productos):
@@ -755,6 +837,13 @@ class VerProductosDialog(ctk.CTkToplevel):
 				# Guardar cambios
 				with open('html/JS/productos.json', 'w') as archivo:
 					json.dump(todos_productos, archivo, indent=2)
+				
+				# Registrar acción en el historial
+				HistorialDialog.registrar_accion(
+					accion="Precio Actualizado",
+					producto="Varios productos",
+					detalles="\n".join(detalles_cambios)
+				)
 				
 				messagebox.showinfo("Éxito", "Precios actualizados correctamente")
 				dialog.destroy()
@@ -858,7 +947,10 @@ class VerProductosDialog(ctk.CTkToplevel):
 		dialog = ctk.CTkToplevel(self)
 		dialog.title("Confirmar eliminación")
 		dialog.geometry("400x150")
-		dialog.transient(self)  # Hacer el diálogo modal
+		dialog.lift()  # Mantener ventana al frente
+		dialog.transient(self)  # Hacer la ventana dependiente del padre
+		dialog.focus_force()  # Forzar el foco
+		dialog.grab_set()  # Hacer la ventana modal
 		
 		# Frame principal
 		frame = ctk.CTkFrame(dialog)
@@ -888,6 +980,13 @@ class VerProductosDialog(ctk.CTkToplevel):
 				with open('html/JS/productos.json', 'w') as archivo:
 					json.dump(productos, archivo, indent=2)
 				
+				 # Registrar acción en el historial
+				HistorialDialog.registrar_accion(
+					accion="Eliminado",
+					producto=producto['titulo'],
+					detalles=f"Producto eliminado con código: {producto['codigo_barras']}"
+				)
+
 				# Actualizar la vista
 				self.productos = productos
 				self.cargar_productos()
@@ -931,6 +1030,10 @@ class VerProductosDialog(ctk.CTkToplevel):
 		dialog = ctk.CTkToplevel(self)
 		dialog.title("Modificar Producto")
 		dialog.geometry("400x300")
+		dialog.lift()  # Mantener ventana al frente
+		dialog.transient(self)  # Hacer la ventana dependiente del padre
+		dialog.focus_force()  # Forzar el foco
+		dialog.grab_set()  # Hacer la ventana modal
 		
 		# Frame principal
 		frame = ctk.CTkFrame(dialog)
@@ -950,28 +1053,40 @@ class VerProductosDialog(ctk.CTkToplevel):
 		
 		def guardar_cambios():
 			try:
+				# Obtener datos anteriores
+				precio_anterior = producto['precio']
+				titulo_anterior = producto['titulo']
+
 				# Actualizar datos del producto
 				producto['titulo'] = entry_nombre.get()
 				producto['precio'] = redondear_precio(entry_precio.get())
-				
+
 				# Leer todos los productos
 				with open('html/JS/productos.json', 'r') as archivo:
 					productos = json.load(archivo)
-				
+
 				# Encontrar y actualizar el producto
 				for i, p in enumerate(productos):
 					if p['id'] == producto['id']:
 						productos[i] = producto
 						break
-				
+
 				# Guardar cambios
 				with open('html/JS/productos.json', 'w') as archivo:
 					json.dump(productos, archivo, indent=2)
-				
+
+				# Registrar acción en el historial
+				HistorialDialog.registrar_accion(
+					accion="Modificado",
+					producto=producto['titulo'],
+					detalles=f"Nombre: {titulo_anterior} -> {producto['titulo']}, "
+							 f"Precio: ${precio_anterior} -> ${producto['precio']}"
+				)
+
 				messagebox.showinfo("Éxito", "Producto modificado correctamente")
 				dialog.destroy()
 				self.cargar_productos()  # Recargar vista
-				
+
 			except Exception as e:
 				messagebox.showerror("Error", f"No se pudo modificar el producto: {str(e)}")
 		
@@ -987,7 +1102,11 @@ class ModoVentaDialog(ctk.CTkToplevel):
 	def __init__(self, parent):
 		super().__init__(parent)
 		self.title("Modo Venta")
-		self.geometry("800x600")  # Tamaño más razonable
+		self.geometry("1000x600")  # Tamaño más razonable
+
+		# Variables
+		self.productos_seleccionados = []  # Lista de productos seleccionados
+		self.total_venta = 0  # Total acumulado
 
 		# Frame principal con dos columnas
 		self.main_frame = ctk.CTkFrame(self)
@@ -1010,21 +1129,62 @@ class ModoVentaDialog(ctk.CTkToplevel):
 		self.entry_codigo_barras.bind("<Return>", self.procesar_codigo)
 		self.entry_codigo_barras.focus()  # Foco automático
 
-		# Lista de códigos escaneados
-		ctk.CTkLabel(self.list_frame, 
-					text="Códigos Escaneados",
-					font=("", 14, "bold")).pack(pady=10)
-		
-		# Frame scrollable para la lista
+		# Total acumulado
+		self.total_label = ctk.CTkLabel(self.input_frame, 
+										text="Total: $0",
+										font=("", 16, "bold"),
+										text_color="green")
+		self.total_label.pack(pady=10)
+
+		# Botón "Restablecer Lista" al lado del título
+		productos_label_frame = ctk.CTkFrame(self.list_frame)
+		productos_label_frame.pack(fill="x", padx=10, pady=5)
+
+		ctk.CTkLabel(
+			productos_label_frame,
+			text="Productos Escaneados",
+			font=("", 14, "bold")
+		).pack(side="left", padx=5)
+
+		self.restablecer_button = ctk.CTkButton(
+			productos_label_frame,
+			text="Restablecer Lista",
+			command=self.restablecer_lista,
+			fg_color="red"
+		)
+		self.restablecer_button.pack(side="right", padx=5)
+
+		# Lista de productos escaneados
 		self.lista_frame = ctk.CTkScrollableFrame(self.list_frame)
 		self.lista_frame.pack(fill="both", expand=True)
 
-		# Lista para mantener registro de códigos escaneados
-		self.codigos_escaneados = []
+		# Frame inferior para el botón "Vender"
+		self.bottom_frame = ctk.CTkFrame(self)
+		self.bottom_frame.pack(side="bottom", fill="x", padx=20, pady=10, anchor="se")
+
+		# Botón "Vender"
+		self.vender_button = ctk.CTkButton(
+			self.bottom_frame,
+			text="Vender",
+			command=self.vender_productos,
+			fg_color="blue"
+		)
+		self.vender_button.pack(side="right", padx=10)
+
+		# Slide switch para deseleccionar productos después de vender
+		self.deseleccionar_switch = ctk.CTkSwitch(
+			self.input_frame,
+			text="Deseleccionar después de vender",
+			onvalue=True,
+			offvalue=False,
+			font=("", 12)
+		)
+		self.deseleccionar_switch.pack(pady=10)
 
 	def procesar_codigo(self, event=None):
-		codigo = self.entry_codigo_barras.get()
+		codigo = self.entry_codigo_barras.get().strip()
 		if not codigo:
+			messagebox.showwarning("Advertencia", "Ingrese un código de barras.")
 			return
 
 		# Limpiar entrada
@@ -1037,88 +1197,144 @@ class ModoVentaDialog(ctk.CTkToplevel):
 
 			# Buscar producto con ese código
 			producto = None
-			producto_index = -1
-			for i, p in enumerate(productos):
-				if p.get('codigo_barras') == codigo:
+			for p in productos:
+				if str(p.get('codigo_barras')) == codigo:
 					producto = p
-					producto_index = i
 					break
 
-			# Crear frame para el código escaneado
-			item_frame = ctk.CTkFrame(self.lista_frame)
-			item_frame.pack(fill="x", padx=5, pady=2)
-
 			if producto:
+				# Crear un frame para mostrar el producto escaneado
+				item_frame = ctk.CTkFrame(self.lista_frame)
+				item_frame.pack(fill="x", padx=5, pady=2)
+
 				# Verificar stock
 				if producto.get('stock', 0) > 0:
-					# Restar stock
-					productos[producto_index]['stock'] -= 1
-					
-					# Guardar cambios en el archivo
-					with open('html/JS/productos.json', 'w') as archivo:
-						json.dump(productos, archivo, indent=2)
-					
-					# Mostrar información del producto
-					ctk.CTkLabel(item_frame, 
-							   text=f"Código: {codigo}",
-							   font=("", 12)).pack(side="left", padx=5)
-					ctk.CTkLabel(item_frame,
-							   text=f"Producto: {producto['titulo']}",
-							   font=("", 12, "bold"),
-							   text_color="green").pack(side="left", padx=5)
-					ctk.CTkLabel(item_frame,
-							   text=f"${producto['precio']}",
-							   font=("", 12)).pack(side="right", padx=5)
-					ctk.CTkLabel(item_frame,
-							   text=f"Stock restante: {producto['stock']}",
-							   font=("", 12)).pack(side="right", padx=5)
+					stock_text = f"Stock: {producto['stock']}"
+					stock_color = "green"
+					checkbox_state = "normal"  # Habilitar checkbox
 				else:
-					# Producto sin stock
-					ctk.CTkLabel(item_frame, 
-							   text=f"Código: {codigo}",
-							   font=("", 12)).pack(side="left", padx=5)
-					ctk.CTkLabel(item_frame,
-							   text=f"Producto: {producto['titulo']} - SIN STOCK",
-							   font=("", 12),
-							   text_color="orange").pack(side="left", padx=5)
+					stock_text = "SIN STOCK"
+					stock_color = "red"
+					checkbox_state = "disabled"  # Deshabilitar checkbox
+
+				# Mostrar información del producto
+				ctk.CTkLabel(item_frame, text=f"Código: {producto['codigo_barras']}", font=("", 12)).pack(side="left", padx=5)
+				ctk.CTkLabel(item_frame, text=f"Producto: {producto['titulo']}", font=("", 12, "bold"), text_color="blue").pack(side="left", padx=5)
+				ctk.CTkLabel(item_frame, text=f"${producto['precio']}", font=("", 12)).pack(side="right", padx=5)
+				ctk.CTkLabel(item_frame, text=stock_text, font=("", 12), text_color=stock_color).pack(side="right", padx=5)
+
+				# Checkbox para seleccionar/desseleccionar el producto
+				var = ctk.BooleanVar()
+				checkbox = ctk.CTkCheckBox(
+					item_frame,
+					text="Seleccionar",
+					variable=var,
+					command=lambda: self.actualizar_total(var, producto),
+					state=checkbox_state  # Habilitar o deshabilitar según el stock
+				)
+				checkbox.pack(side="right", padx=5)
+
+				# Desplazar el scroll hacia el final
+				self.lista_frame._parent_canvas.yview_moveto(1.0)
+
 			else:
 				# Producto no encontrado
-				ctk.CTkLabel(item_frame, 
-						   text=f"Código: {codigo}",
-						   font=("", 12)).pack(side="left", padx=5)
-				ctk.CTkLabel(item_frame,
-						   text="Producto no encontrado",
-						   font=("", 12),
-						   text_color="red").pack(side="left", padx=5)
-
-			# Agregar botón para eliminar y restaurar stock
-			def eliminar_item():
-				if producto and hasattr(item_frame, 'stock_restado'):
-					# Restaurar stock
-					with open('html/JS/productos.json', 'r') as archivo:
-						productos_actuales = json.load(archivo)
-					for i, p in enumerate(productos_actuales):
-						if p['id'] == producto['id']:
-							productos_actuales[i]['stock'] += 1
-							break
-					with open('html/JS/productos.json', 'w') as archivo:
-						json.dump(productos_actuales, archivo, indent=2)
-				item_frame.destroy()
-
-			ctk.CTkButton(
-				item_frame,
-				text="X",
-				width=30,
-				command=eliminar_item,
-				fg_color="red"
-			).pack(side="right", padx=5)
-
-			# Marcar que se restó stock
-			if producto and producto.get('stock', 0) > 0:
-				item_frame.stock_restado = True
+				messagebox.showerror("Error", f"No se encontró un producto con el código de barras: {codigo}")
 
 		except Exception as e:
-			messagebox.showerror("Error", f"Error al procesar código: {str(e)}")
+			messagebox.showerror("Error", f"Error al procesar el código de barras: {str(e)}")
+
+	def actualizar_total(self, var, producto):
+		if var.get():
+			# Seleccionar producto
+			self.productos_seleccionados.append(producto)
+			self.total_venta += float(producto['precio'])
+		else:
+			# Deseleccionar producto
+			self.productos_seleccionados.remove(producto)
+			self.total_venta -= float(producto['precio'])
+
+		# Actualizar el total en la etiqueta
+		self.total_label.configure(text=f"Total: ${self.total_venta:.2f}")
+
+	def restablecer_lista(self):
+			# Limpiar la lista de productos seleccionados y el total
+			self.productos_seleccionados.clear()
+			self.total_venta = 0
+			self.total_label.configure(text="Total: $0")
+
+			# Limpiar la lista de productos escaneados en la interfaz
+			for widget in self.lista_frame.winfo_children():
+				widget.destroy()
+
+	def vender_productos(self):
+		if not self.productos_seleccionados:
+			messagebox.showwarning("Advertencia", "No hay productos seleccionados para la venta.")
+			return
+
+		try:
+			# Cargar todos los productos
+			with open('html/JS/productos.json', 'r') as archivo:
+				productos = json.load(archivo)
+
+			# Actualizar el stock de los productos seleccionados
+			detalles_venta = []
+			for producto_seleccionado in self.productos_seleccionados:
+				for producto in productos:
+					if producto['id'] == producto_seleccionado['id']:
+						if producto['stock'] > 0:
+							producto['stock'] -= 1
+							detalles_venta.append(
+								f"{producto['titulo']} (Código: {producto['codigo_barras']}, Precio: ${producto['precio']})"
+								)
+							# Actualizar el stock en la interfaz
+							self._actualizar_stock_interfaz(producto)
+						else:
+							messagebox.showerror(
+								"Error",
+								f"El producto '{producto['titulo']}' no tiene suficiente stock."
+							)
+							return
+
+			# Guardar los cambios en el archivo JSON
+			with open('html/JS/productos.json', 'w') as archivo:
+				json.dump(productos, archivo, indent=2)
+
+			# Registrar la acción en el historial
+			HistorialDialog.registrar_accion(
+				accion="Venta",
+				producto="Productos vendidos",
+				detalles="\n".join(detalles_venta)
+			)
+
+			# Mostrar mensaje de éxito
+			messagebox.showinfo("Éxito", "Venta realizada correctamente.")
+			self.total_venta = 0
+			self.total_label.configure(text="Total: $0")
+
+			# Deseleccionar productos si el switch está activado
+			if self.deseleccionar_switch.get():
+				self.productos_seleccionados.clear()
+				for widget in self.lista_frame.winfo_children():
+					if isinstance(widget, ctk.CTkFrame):
+						checkbox = widget.winfo_children()[-1]  # El último widget es el checkbox
+						if isinstance(checkbox, ctk.CTkCheckBox):
+							checkbox.deselect()
+
+		except Exception as e:
+			messagebox.showerror("Error", f"Error al realizar la venta: {str(e)}")
+
+	def _actualizar_stock_interfaz(self, producto):
+		# Buscar el frame correspondiente al producto en la lista
+		for widget in self.lista_frame.winfo_children():
+			if isinstance(widget, ctk.CTkFrame):
+				labels = widget.winfo_children()
+				if labels and producto['codigo_barras'] in labels[0].cget("text"):
+					# Actualizar el texto del stock
+					for label in labels:
+						if "Stock:" in label.cget("text"):
+							label.configure(text=f"Stock: {producto['stock']}")
+							break
 
 class ProductoDialog(ctk.CTkToplevel):
 	def __init__(self, parent, codigo_barras=None):
@@ -1294,16 +1510,33 @@ class ProductoDialog(ctk.CTkToplevel):
 				pass  # Si no se puede cambiar el color de fondo
 
 	def guardar(self):
-		# Obtener los valores
-		nombre_producto = self.entry_nombre.get()
+		# Validar campos requeridos
+		nombre_producto = self.entry_nombre.get().strip()
 		categoria_producto = self.variable_unidad.get()
-		precio = redondear_precio(self.entry_precio.get())
+		precio = self.entry_precio.get().strip()
 		es_variante = self.var_es_variante.get()
 		genero = self.variable_gen.get()
-		talles = [talle for talle, var in self.talle_vars.items() if var.get()]
 		disciplina = self.variable_disciplina.get()
-		codigo_barras = self.entry_codigo_barras.get()
-
+		codigo_barras = self.entry_codigo_barras.get().strip()
+		
+		# Validaciones básicas
+		if not nombre_producto:
+			messagebox.showerror("Error", "El nombre del producto es obligatorio")
+			return
+			
+		if not precio:
+			messagebox.showerror("Error", "El precio es obligatorio")
+			return
+			
+		if categoria_producto == "Categoria Producto":
+			messagebox.showerror("Error", "Seleccione una categoría")
+			return
+		
+		if not codigo_barras:
+			messagebox.showerror("Error", "El código de barras es obligatorio")
+			return
+			
+		# Cargar productos existentes
 		try:
 			with open('html/JS/productos.json', 'r') as archivo:
 				contenido = archivo.read().strip()
@@ -1311,157 +1544,146 @@ class ProductoDialog(ctk.CTkToplevel):
 		except (FileNotFoundError, json.JSONDecodeError):
 			productos = []
 
-		# Clasificar las categorías
+		# Clasificar categorías
 		categoria_general = "Indumentaria" if categoria_producto.lower() in ["remeras", "pantalones", "abrigos"] else "Accesorios"
 
 		# Generar ID único
 		base_id = f"{categoria_producto.lower()}_{nombre_producto.replace(' ', '_').lower()}"
 		id_producto = generate_unique_id(base_id, productos)
 
-		# Procesar imagen si fue seleccionada
+		# Procesar imagen
 		imagen_ruta = ""
 		if hasattr(self, 'selected_image_path') and self.selected_image_path:
 			imagen_nombre = os.path.basename(self.selected_image_path)
 			destino = os.path.join('html', 'img', imagen_nombre)
+			
+			try:
+				os.makedirs(os.path.join('html', 'img'), exist_ok=True)
+				shutil.copy2(self.selected_image_path, destino)
+				imagen_ruta = f"./img/{imagen_nombre}"
+			except Exception as e:
 
-			if not os.path.exists(destino):
-				try:
-					os.makedirs(os.path.join('html', 'img'), exist_ok=True)
-					shutil.copy2(self.selected_image_path, destino)
-				except Exception as e:
-					messagebox.showerror("Error", f"No se pudo copiar la imagen: {str(e)}")
-					return
+				# Crear producto
+				producto = {
+					"id": id_producto,
+					"titulo": nombre_producto,
+					"imagen": imagen_ruta,
+					"categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
+					"categoria_general": categoria_general.lower(),
+					"precio": redondear_precio(precio),
+					"es_variante": es_variante,
+					"genero": genero,
+					"talles": [talle for talle, var in self.talle_vars.items() if var.get()],
+					"color": self.color_label.cget("text") if hasattr(self, 'color_label') else "No especificado",
+					"disciplina": disciplina,
+					"stock": 0,
+					"codigo_barras": int(codigo_barras)
+				}
 
-			imagen_ruta = f"./img/{imagen_nombre}"
-
-		producto = {
-			"id": id_producto,
-			"titulo": nombre_producto,
-			"imagen": imagen_ruta,
-			"categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
-			"categoria_general": categoria_general.lower(),
-			"precio": precio,
-			"es_variante": es_variante,
-			"genero": genero,
-			"talles": talles,
-			"color": self.color_label.cget("text") if hasattr(self, 'color_label') else "No especificado",
-			"disciplina": disciplina,
-			"stock": 0,
-			"codigo_barras": codigo_barras
-		}
-
-		# Normalizar el producto
+		# Normalizar producto
 		producto = normalizar_diccionario(producto)
 
-		# Verificar si es variante y si existe producto principal
-		if es_variante:
-			producto_principal_existe = any(p['titulo'] == nombre_producto and p['es_variante'] for p in productos)
-			if not producto_principal_existe:
+		# Guardar producto
+		try:
+			productos.append(producto)
+			with open('html/JS/productos.json', 'w') as archivo:
+				json.dump(productos, archivo, indent=2)
 
-				if hasattr(self, 'image_label'):
-					self.image_label.configure(image='')
-				self.color_label.configure(text="Color")
-				for var in self.talle_vars.values():
-					var.set(False)
+			# Registrar acción en el historial
+			HistorialDialog.registrar_accion(
+				accion="Agregado",
+				producto=producto['titulo'],
+				detalles=f"Producto agregado con código: {producto['codigo_barras']}, Precio: ${producto['precio']}"
+			)
+
+			messagebox.showinfo("Éxito", "Producto guardado correctamente")
+			
+			# Limpiar formulario
+			self.entry_nombre.delete(0, 'end')
+			self.entry_precio.delete(0, 'end')
+			self.entry_codigo_barras.delete(0, 'end')
+			self.variable_unidad.set("Categoria Producto")
+			self.variable_gen.set("Genero")
+			self.variable_disciplina.set("Deportes")
+			self.var_es_variante.set(False)
+			if hasattr(self, 'image_label'):
+				self.image_label.configure(image='')
+			self.color_label.configure(text="Color")
+			for var in self.talle_vars.values():
+				var.set(False)
+				
+		except Exception as e:
+			messagebox.showerror("Error", f"No se pudo guardar el producto: {str(e)}")
 
 class ListaPreciosDialog(ctk.CTkToplevel):
 	def __init__(self, parent):
 		super().__init__(parent)
 		self.title("Lista de Precios")
-		
-		# Optimización 1: Usar geometría más pequeña por defecto
 		self.geometry("1024x768")
-		
-		# Optimización 2: Cachear productos y filtrados
+
+		# Inicializar variables primero
+		self.columna_orden = None
+		self.orden_actual = None
 		self.cached_productos = []
 		self.cached_filtrados = []
 		self.last_search = ""
 		self.last_category = "Todas"
-		
-		# Inicializar variables antes de crear los frames
-		self.selected_row = None
-		self.seleccion = {}  # Diccionario para mantener el estado de selección
-		self.productos = []  # Lista de productos
-		
+		self.seleccion = {}
+		self.productos = []
+
 		# Frame principal
 		self.main_frame = ctk.CTkFrame(self)
 		self.main_frame.pack(fill="both", expand=True, padx=10, pady=10)
-		
+
 		# Crear barra de búsqueda
 		self.crear_barra_busqueda()
-		
-		# Crear tabla de productos
-		self.crear_tabla()
-		
-		# Cargar productos
-		self.cargar_productos()
 
-		# Agregar bind al frame principal para deseleccionar
-		self.main_frame.bind("<Button-1>", self.deseleccionar_todo)
-		self.tabla_frame.bind("<Button-1>", self.deseleccionar_todo)
-
-	def deseleccionar_todo(self, event=None):
-		# Solo deseleccionar si el clic fue directamente en el frame y no en una fila
-		if event and event.widget in (self.main_frame, self.tabla_frame):
-			for producto_id in list(self.seleccion.keys()):
-				for widget in self.tabla_frame.winfo_children():
-					if isinstance(widget, ctk.CTkFrame) and hasattr(widget, 'producto_id'):
-						if widget.producto_id == producto_id:
-							widget.configure(fg_color=("gray86", "gray17"))
-			self.seleccion.clear()
-
-	def crear_barra_busqueda(self):
-		busqueda_frame = ctk.CTkFrame(self.main_frame)
-		busqueda_frame.pack(fill="x", padx=10, pady=5)
-		
-		# Búsqueda por nombre
-		ctk.CTkLabel(busqueda_frame, text="Buscar:").pack(side="left", padx=5)
-		self.entry_busqueda = ctk.CTkEntry(busqueda_frame, width=200)
-		self.entry_busqueda.pack(side="left", padx=5)
-		self.entry_busqueda.bind('<KeyRelease>', self.filtrar_productos)
-		
-		# Filtro por categoría
-		ctk.CTkLabel(busqueda_frame, text="Categoría:").pack(side="left", padx=5)
-		self.combo_categoria = ctk.CTkOptionMenu(
-			busqueda_frame,
-			values=["Todas", "Indumentaria", "Accesorios", "REMERAS", "PANTALONES", "ABRIGOS"],
-			command=self.filtrar_productos
-		)
-		self.combo_categoria.pack(side="left", padx=5)
-
-	def crear_tabla(self):
 		# Frame para la tabla con scroll
 		self.tabla_frame = ctk.CTkScrollableFrame(self.main_frame)
 		self.tabla_frame.pack(fill="both", expand=True, padx=10, pady=5)
-		
-		# Configurar grid para columnas uniformes
 		self.tabla_frame.grid_columnconfigure((0,1,2,3,4,5), weight=1, uniform="column")
-		
-		# Cabecera de la tabla
-		self._crear_headers()
+
+		# Cargar productos y mostrar
+		self.cargar_productos()
 
 	def mostrar_productos(self, productos_filtrados):
-		# Optimización 3: Limitar número de productos mostrados
-		PRODUCTOS_POR_PAGINA = 50
-		productos_mostrar = productos_filtrados[:PRODUCTOS_POR_PAGINA]
-		
-		# Optimización 4: Reusar widgets existentes
-		existing_frames = [w for w in self.tabla_frame.winfo_children() 
-						 if isinstance(w, ctk.CTkFrame)]
-		
+		# Limpiar tabla primero
 		for widget in self.tabla_frame.winfo_children():
 			widget.destroy()
-			
-		# Headers
+
+		# Crear headers
 		self._crear_headers()
+
+		# Mostrar productos
+		for row, producto in enumerate(productos_filtrados, start=1):
+			self._crear_nueva_fila(producto, row)
+
+	def _crear_headers(self):
+		headers = {
+			"codigo": "Código",
+			"titulo": "Producto", 
+			"categoria": "Categoría",
+			"talle": "Talle",
+			"color": "Color",
+			"precio": "Precio"
+		}
 		
-		# Optimización 5: Crear frames solo cuando sea necesario
-		for row, producto in enumerate(productos_mostrar, start=1):
-			if row < len(existing_frames):
-				row_frame = existing_frames[row]
-				self._actualizar_frame(row_frame, producto, row)
-			else:
-				self._crear_nueva_fila(producto, row)
+		for i, (key, header) in enumerate(headers.items()):
+			header_frame = ctk.CTkFrame(self.tabla_frame)
+			header_frame.grid(row=0, column=i, padx=5, pady=5, sticky="ew")
+			
+			# Texto del header con flecha si está ordenado
+			texto = header
+			if self.columna_orden == key:
+				texto = f"{header} {'▼' if self.orden_actual == 'desc' else '▲'}"
+			
+			label = ctk.CTkLabel(
+				header_frame, 
+				text=texto,
+				font=("Helvetica", 14, "bold"),
+				cursor="hand2"
+			)
+
 
 	def seleccionar_fila(self, row_frame, producto, event=None):
 		# Detener la propagación del evento
@@ -1488,41 +1710,131 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 		try:
 			with open('html/JS/productos.json', 'r') as archivo:
 				self.productos = json.load(archivo)
-			self.cached_productos = self.productos
-			self.mostrar_productos(self.productos)
+				self.cached_productos = self.productos
+				self.cached_filtrados = self.productos  # Inicializar cached_filtrados
+				self.mostrar_productos(self.productos)
 		except FileNotFoundError:
 			self.productos = []
+			self.cached_productos = []
+			self.cached_filtrados = []
 
 	def filtrar_productos(self, *args):
-		# Optimización 6: Throttling de búsqueda
-		busqueda = self.entry_busqueda.get().lower()
+		busqueda = self.entry_busqueda.get().strip().lower()
 		categoria = self.combo_categoria.get()
-		
+
+		# Si no hay cambios en la búsqueda o categoría, no hacer nada
 		if busqueda == self.last_search and categoria == self.last_category:
 			return
-			
+
+		# Actualizar los valores de búsqueda y categoría
 		self.last_search = busqueda
 		self.last_category = categoria
-		
-		# Optimización 7: Caching de resultados
-		productos_filtrados = [p for p in self.cached_productos if
-			busqueda in p['titulo'].lower() and
-			(categoria == "Todas" or 
-			 categoria.upper() == p['categoria']['nombre'] or 
-			 categoria.lower() in p['categoria_general'].lower())]
-		
+
+		productos_filtrados = []
+
+		for p in self.cached_productos:
+			titulo_lower = p['titulo'].lower()
+			codigo = str(p.get('codigo_barras', ''))
+
+			# Verificar si la búsqueda coincide con el código exacto
+			if busqueda.isdigit() and codigo.isdigit() and int(codigo) == int(busqueda):
+				productos_filtrados.append(p)
+				continue
+
+			# Si no es código exacto, buscar en título y código
+			if busqueda in titulo_lower or busqueda in codigo:
+				# Si la categoría es "Todas", incluir todos los productos
+				if categoria == "Todas" or (
+					categoria.upper() == p['categoria']['nombre'].upper() or
+					categoria.lower() in p['categoria_general'].lower()
+				):
+					productos_filtrados.append(p)
+
+		# Ordenar los resultados numéricamente si es posible
+		def get_sort_key(producto):
+			try:
+				# Intentar convertir el código de barras a un número
+				return int(producto.get('codigo_barras', ''))
+			except ValueError:
+				# Si no es un número, usar un valor alto para colocarlo al final
+				return float('inf')
+
+		productos_filtrados.sort(key=get_sort_key)
+
+		# Actualizar la lista filtrada y mostrar los productos
 		self.cached_filtrados = productos_filtrados
 		self.mostrar_productos(productos_filtrados)
 
 	def _crear_headers(self):
-		# Método auxiliar para crear headers
-		headers = ["Código", "Producto", "Categoría", "Talle", "Color", "Precio"]
-		for i, header in enumerate(headers):
-			ctk.CTkLabel(
-				self.tabla_frame, 
-				text=header,
-				font=("Helvetica", 14, "bold")  # Fuente más grande para headers
-			).grid(row=0, column=i, padx=5, pady=5, sticky="ew")
+		# Método auxiliar para crear headers con ordenamiento
+		headers = {
+			"codigo": "Código",
+			"titulo": "Producto", 
+			"categoria": "Categoría",
+			"talle": "Talle",
+			"color": "Color",
+			"precio": "Precio"
+		}
+		
+		for i, (key, header) in enumerate(headers.items()):
+			header_frame = ctk.CTkFrame(self.tabla_frame)
+			header_frame.grid(row=0, column=i, padx=5, pady=5, sticky="ew")
+			
+			label = ctk.CTkLabel(
+				header_frame, 
+				text=f"{header} ▼" if self.columna_orden == key and self.orden_actual == "desc"
+				else f"{header} ▲" if self.columna_orden == key and self.orden_actual == "asc"
+				else header,
+				font=("Helvetica", 14, "bold"),
+				cursor="hand2"  # Cambiar cursor a mano
+			)
+			label.pack(expand=True)
+			label.bind("<Button-1>", lambda e, k=key: self.ordenar_por(k))
+
+	def ordenar_por(self, columna):
+		if not self.cached_filtrados:
+			self.cached_filtrados = self.cached_productos.copy()
+			
+		if self.columna_orden == columna:
+			self.orden_actual = "desc" if self.orden_actual == "asc" else "asc"
+		else:
+			self.columna_orden = columna
+			self.orden_actual = "asc"
+		
+		productos_ordenados = self.cached_filtrados.copy()
+		
+		def get_valor_ordenamiento(producto):
+			try:
+				if columna == "codigo":
+					# Convertir código de barras a entero
+					return int(str(producto.get('codigo_barras', '0')))
+				elif columna == "titulo":
+					return producto['titulo'].lower()
+				elif columna == "categoria":
+					return producto['categoria']['nombre'].lower()
+				elif columna == "talle":
+					return ",".join(producto.get('talles', []))
+				elif columna == "color":
+					return producto.get('color', '')
+				elif columna == "precio":
+					# Convertir precio a entero
+					return int(float(producto['precio']))
+				return ""
+			except (ValueError, TypeError):
+				# Si hay error de conversión, retornar 0
+				if columna in ["codigo", "precio"]:
+					return 0
+				return ""
+		
+		try:
+			productos_ordenados.sort(
+				key=get_valor_ordenamiento,
+				reverse=(self.orden_actual == "desc")
+			)
+		except Exception as e:
+			print(f"Error al ordenar: {e}")
+		
+		self.mostrar_productos(productos_ordenados)
 
 	def _crear_nueva_fila(self, producto, row):
 		# Crear frame para la fila
@@ -1533,21 +1845,16 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 		# Guardar el ID del producto en el frame para referencia
 		row_frame.producto_id = producto['id']
 		
-		# Bind para el clic con stop propagation
-		row_frame.bind("<Button-1>", lambda e, p=producto, rf=row_frame: self.seleccionar_fila(rf, p, e))
-		
-		# Aplicar color si estaba seleccionado
-		if producto['id'] in self.seleccion:
-			row_frame.configure(fg_color=("gray70", "gray30"))
-		
-		# Bind para el clic
-		row_frame.bind("<Button-1>", lambda e, p=producto, rf=row_frame: self.seleccionar_fila(rf, p))
+		 # Código de barras convertido a string
+		codigo_barras = str(producto.get('codigo_barras', ''))
+		if len(codigo_barras) > 8:
+			codigo_barras = codigo_barras[:8]
 		
 		# Código de barras con nueva fuente
 		ctk.CTkLabel(
 			row_frame, 
-			text=producto.get('codigo_barras', '')[:8],
-			font=("Helvetica", 12)  # Fuente normal para el contenido
+			text=codigo_barras,
+			font=("Helvetica", 12)
 		).grid(row=0, column=0, padx=5, pady=2, sticky="ew")
 		
 		# Nombre del producto
@@ -1579,6 +1886,9 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 			row_frame, 
 			text=f"${producto['precio']}"
 		).grid(row=0, column=5, padx=5, pady=2, sticky="ew")
+		
+		# Bind para el clic
+		row_frame.bind("<Button-1>", lambda e, p=producto, rf=row_frame: self.seleccionar_fila(rf, p))
 		
 		# Bind para todos los labels dentro del frame
 		for child in row_frame.winfo_children():
@@ -1615,6 +1925,201 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 		# Bind para todos los labels dentro del frame
 		for child in row_frame.winfo_children():
 			child.bind("<Button-1>", lambda e, p=producto, rf=row_frame: self.seleccionar_fila(rf, p, e))
+
+	def crear_barra_busqueda(self):
+		# Frame para la barra de búsqueda
+		busqueda_frame = ctk.CTkFrame(self.main_frame)
+		busqueda_frame.pack(fill="x", padx=10, pady=5)
+
+		# Búsqueda por nombre
+		ctk.CTkLabel(
+			busqueda_frame, 
+			text="Buscar:",
+			font=self.master.font_normal
+		).pack(side="left", padx=5)
+		
+		self.entry_busqueda = ctk.CTkEntry(busqueda_frame, width=200)
+		self.entry_busqueda.pack(side="left", padx=5)
+		self.entry_busqueda.bind('<KeyRelease>', self.filtrar_productos)
+
+		# Filtro por categoría
+		ctk.CTkLabel(
+			busqueda_frame, 
+			text="Categoría:",
+			font=self.master.font_normal
+		).pack(side="left", padx=5)
+		
+		self.combo_categoria = ctk.CTkOptionMenu(
+			busqueda_frame,
+			values=["Todas", "Indumentaria", "Accesorios", "REMERAS", "PANTALONES", "ABRIGOS"],
+			command=self.filtrar_productos
+		)
+		self.combo_categoria.pack(side="left", padx=5)
+
+class HistorialDialog(ctk.CTkToplevel):
+	def __init__(self, parent):
+		super().__init__(parent)
+		self.title("Historial de Cambios")
+		self.geometry("1024x768")
+
+		# Inicializar variables
+		self.historial = []
+		self.filtrado = []
+
+		# Frame principal
+		self.main_frame = ctk.CTkFrame(self)
+		self.main_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+		# Crear barra de búsqueda
+		self.crear_barra_busqueda()
+
+		# Frame para la tabla con scroll
+		self.tabla_frame = ctk.CTkScrollableFrame(self.main_frame)
+		self.tabla_frame.pack(fill="both", expand=True, padx=10, pady=5)
+		self.tabla_frame.grid_columnconfigure((0, 1, 2, 3), weight=1, uniform="column")
+
+		# Cargar historial
+		self.cargar_historial()
+
+	def crear_barra_busqueda(self):
+		# Frame para la barra de búsqueda
+		busqueda_frame = ctk.CTkFrame(self.main_frame)
+		busqueda_frame.pack(fill="x", padx=10, pady=5)
+
+		# Filtro por tipo de acción
+		ctk.CTkLabel(busqueda_frame, text="Tipo de Acción:").pack(side="left", padx=5)
+		self.combo_tipo_accion = ctk.CTkOptionMenu(
+			busqueda_frame,
+			values=["Todos", "Agregado", "Eliminado", "Modificado", "Precio Actualizado", "Venta"],
+			command=self.filtrar_historial
+		)
+		self.combo_tipo_accion.pack(side="left", padx=5)
+
+		# Filtro por fecha
+		ctk.CTkLabel(busqueda_frame, text="Fecha:").pack(side="left", padx=5)
+		self.entry_fecha = ctk.CTkEntry(busqueda_frame, width=200)
+		self.entry_fecha.pack(side="left", padx=5)
+		self.entry_fecha.bind('<KeyRelease>', lambda e: self.filtrar_historial())
+
+	def cargar_historial(self):
+		try:
+			# Leer el historial desde un archivo JSON
+			with open('html/JS/historial.json', 'r') as archivo:
+				self.historial = json.load(archivo)
+		except FileNotFoundError:
+			self.historial = []
+
+		# Mostrar el historial completo
+		self.mostrar_historial(self.historial)
+
+	def mostrar_historial(self, registros):
+		# Limpiar la tabla
+		for widget in self.tabla_frame.winfo_children():
+			widget.destroy()
+
+		# Crear encabezados
+		headers = ["Fecha", "Tipo de Acción", "Producto", "Detalles"]
+		for i, header in enumerate(headers):
+			ctk.CTkLabel(
+				self.tabla_frame,
+				text=header,
+				font=("Helvetica", 14, "bold")
+			).grid(row=0, column=i, padx=5, pady=5, sticky="ew")
+
+		# Mostrar registros
+		for row, registro in enumerate(registros, start=1):
+			ctk.CTkLabel(self.tabla_frame, text=registro["fecha"]).grid(row=row, column=0, padx=5, pady=2, sticky="ew")
+			ctk.CTkLabel(self.tabla_frame, text=registro["accion"]).grid(row=row, column=1, padx=5, pady=2, sticky="ew")
+			ctk.CTkLabel(self.tabla_frame, text=registro["producto"]).grid(row=row, column=2, padx=5, pady=2, sticky="ew")
+			ctk.CTkLabel(self.tabla_frame, text=registro["detalles"]).grid(row=row, column=3, padx=5, pady=2, sticky="ew")
+
+	def filtrar_historial(self, *args):
+		tipo_accion = self.combo_tipo_accion.get()
+		fecha = self.entry_fecha.get().strip()
+
+		# Filtrar por tipo de acción y fecha
+		self.filtrado = [
+			registro for registro in self.historial
+			if (tipo_accion == "Todos" or registro["accion"] == tipo_accion) and
+			   (not fecha or fecha in registro["fecha"])
+		]
+
+		# Mostrar los registros filtrados
+		self.mostrar_historial(self.filtrado)
+
+	@staticmethod
+	def registrar_accion(accion, producto, detalles):
+		# Crear un registro
+		registro = {
+			"fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+			"accion": accion,
+			"producto": producto,
+			"detalles": detalles
+		}
+
+		# Leer el historial existente
+		try:
+			with open('html/JS/historial.json', 'r') as archivo:
+				historial = json.load(archivo)
+		except FileNotFoundError:
+			historial = []
+
+		# Agregar el nuevo registro
+		historial.append(registro)
+
+		# Guardar el historial actualizado
+		with open('html/JS/historial.json', 'w') as archivo:
+			json.dump(historial, archivo, indent=2)
+
+class LoginDialog(ctk.CTkToplevel):
+	def __init__(self, parent):
+		super().__init__(parent)
+		self.title("Iniciar Sesión")
+		self.geometry("300x200")
+		
+		# Variables
+		self.is_admin = False
+		self.is_empleado = False
+		
+		# Frame principal
+		self.main_frame = ctk.CTkFrame(self)
+		self.main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+		
+		# Usuario
+		ctk.CTkLabel(self.main_frame, text="Usuario:").pack(pady=5)
+		self.entry_usuario = ctk.CTkEntry(self.main_frame)
+		self.entry_usuario.pack(pady=5)
+		
+		# Contraseña
+		ctk.CTkLabel(self.main_frame, text="Contraseña:").pack(pady=5)
+		self.entry_password = ctk.CTkEntry(self.main_frame, show="*")
+		self.entry_password.pack(pady=5)
+		
+		# Botón login
+		ctk.CTkButton(
+			self.main_frame,
+			text="Iniciar Sesión",
+			command=self.login
+		).pack(pady=20)
+
+	def login(self):
+		usuario = self.entry_usuario.get()
+		password = self.entry_password.get()
+		
+		# Credenciales de admin
+		if usuario == "admin" and password == "admin123":
+			self.is_admin = True
+			self.is_empleado = False
+			messagebox.showinfo("Éxito", "Bienvenido Administrador")
+			self.destroy()
+		# Credenciales de empleado
+		elif usuario == "empleado" and password == "empleado123":
+			self.is_admin = False
+			self.is_empleado = True
+			messagebox.showinfo("Éxito", "Bienvenido Empleado")
+			self.destroy()
+		else:
+			messagebox.showerror("Error", "Usuario o contraseña incorrectos")
 
 if __name__ == "__main__":
 	app = App()

@@ -8,17 +8,17 @@
       "id": "remeras"
     },
     "categoria_general": "indumentaria",
-    "precio": "25000",
+    "precio": "23000",
     "es_variante": false,
     "color": "#fd9144",
-    "stock": 1,
+    "stock": 5,
     "genero": "No",
     "talles": [
       "S",
       "M",
       "L"
     ],
-    "codigo_barras": "1234567890123"
+    "codigo_barras": 1234567890123
   },
   {
     "id": "remeras_under_tech_2.0_variante",
@@ -37,7 +37,7 @@
     "talles": [
       "No"
     ],
-    "codigo_barras": "1234567890124"
+    "codigo_barras": 1234567890124
   },
   {
     "id": "accesorios_men1",
@@ -56,7 +56,7 @@
     "talles": [
       "No"
     ],
-    "codigo_barras": "1234567890125"
+    "codigo_barras": 1234567890125
   },
   {
     "id": "accesorios_men1_1",
@@ -75,7 +75,7 @@
     "talles": [
       "No"
     ],
-    "codigo_barras": "1234567890126"
+    "codigo_barras": 1234567890126
   },
   {
     "id": "accesorios_men1_2",
@@ -94,7 +94,7 @@
     "talles": [
       "No"
     ],
-    "codigo_barras": "1234567890127"
+    "codigo_barras": 1234567890127
   },
   {
     "id": "accesorios_men1_3",
@@ -113,7 +113,7 @@
     "talles": [
       "No"
     ],
-    "codigo_barras": "1234567890128"
+    "codigo_barras": 1234567890128
   },
   {
     "id": "remeras_u",
@@ -135,7 +135,7 @@
     ],
     "color": "Gris",
     "stock": 10,
-    "codigo_barras": "1234567890129"
+    "codigo_barras": 1234567890129
   },
   {
     "id": "remeras_u_1",
@@ -152,7 +152,7 @@
     "talles": [],
     "color": "Naranja",
     "stock": 10,
-    "codigo_barras": "1234567890130"
+    "codigo_barras": 1234567890130
   },
   {
     "id": "abrigos_mesi",
@@ -173,7 +173,7 @@
     "color": "Verde Azulado",
     "disciplina": "Running",
     "stock": 0,
-    "codigo_barras": "7792052180702"
+    "codigo_barras": 7792052180702
   },
   {
     "id": "pantalones_mesi1",
@@ -194,8 +194,8 @@
     ],
     "color": "Gris",
     "disciplina": "Running",
-    "stock": 1,
-    "codigo_barras": "6178253"
+    "stock": 12,
+    "codigo_barras": 6178253
   },
   {
     "id": "remeras_sad",
@@ -215,7 +215,7 @@
     "color": "Color",
     "disciplina": "Deportes",
     "stock": 0,
-    "codigo_barras": "1"
+    "codigo_barras": 1
   },
   {
     "id": "accesorios_manco",
@@ -236,7 +236,7 @@
     "color": "Plata",
     "disciplina": "Musculacion",
     "stock": 0,
-    "codigo_barras": "2"
+    "codigo_barras": 2
   },
   {
     "id": "pantalones_oaa",
@@ -256,7 +256,28 @@
     ],
     "color": "Verde Azulado",
     "disciplina": "Musculacion",
-    "stock": 0,
-    "codigo_barras": "23"
+    "stock": 8,
+    "codigo_barras": 23
+  },
+  {
+    "id": "remeras_remera",
+    "titulo": "remera",
+    "imagen": "./img/under_2.png",
+    "categoria": {
+      "nombre": "REMERAS",
+      "id": "remeras"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "8600",
+    "es_variante": false,
+    "genero": "Unisex",
+    "talles": [
+      "L",
+      "XL"
+    ],
+    "color": "Gris",
+    "disciplina": "Deportes",
+    "stock": 5,
+    "codigo_barras": 56
   }
 ]

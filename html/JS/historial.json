@@ -1,0 +1,74 @@
+[
+  {
+    "fecha": "2025-03-26 13:18:31",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "a (C\u00f3digo: 56, Precio: $2)"
+  },
+  {
+    "fecha": "2025-03-27 10:01:37",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "a (C\u00f3digo: 56, Precio: $2)"
+  },
+  {
+    "fecha": "2025-03-27 10:01:42",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "a (C\u00f3digo: 56, Precio: $2)"
+  },
+  {
+    "fecha": "2025-03-27 10:01:45",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "a (C\u00f3digo: 56, Precio: $2)"
+  },
+  {
+    "fecha": "2025-03-27 10:17:32",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "a (C\u00f3digo: 56, Precio: $2)\noaa (C\u00f3digo: 23, Precio: $2020)"
+  },
+  {
+    "fecha": "2025-03-27 10:17:36",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "oaa (C\u00f3digo: 23, Precio: $2020)"
+  },
+  {
+    "fecha": "2025-03-27 10:27:05",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "a (C\u00f3digo: 56, Precio: $2)"
+  },
+  {
+    "fecha": "2025-03-27 10:27:08",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "a (C\u00f3digo: 56, Precio: $2)"
+  },
+  {
+    "fecha": "2025-03-27 10:27:31",
+    "accion": "Modificado",
+    "producto": "under tech 2.0",
+    "detalles": "Nombre: under tech 2.0 -> under tech 2.0, Precio: $25000 -> $23000"
+  },
+  {
+    "fecha": "2025-03-27 10:29:15",
+    "accion": "Eliminado",
+    "producto": "remera",
+    "detalles": "Producto eliminado con c\u00f3digo: 53"
+  },
+  {
+    "fecha": "2025-03-27 10:29:39",
+    "accion": "Eliminado",
+    "producto": "a",
+    "detalles": "Producto eliminado con c\u00f3digo: 56"
+  },
+  {
+    "fecha": "2025-03-27 10:30:30",
+    "accion": "Agregado",
+    "producto": "remera",
+    "detalles": "Producto agregado con c\u00f3digo: 56, Precio: $8600"
+  }
+]
