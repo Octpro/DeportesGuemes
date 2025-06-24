@@ -277,7 +277,28 @@
     ],
     "color": "Gris",
     "disciplina": "Deportes",
-    "stock": 5,
+    "stock": 4,
     "codigo_barras": 56
+  },
+  {
+    "id": "abrigos_tumama",
+    "titulo": "tumama",
+    "imagen": "",
+    "categoria": {
+      "nombre": "ABRIGOS",
+      "id": "abrigos"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "8900",
+    "es_variante": false,
+    "genero": "Nino",
+    "talles": [
+      "S",
+      "M"
+    ],
+    "color": "Color",
+    "disciplina": "Boxeo",
+    "stock": 5,
+    "codigo_barras": 666
   }
 ]

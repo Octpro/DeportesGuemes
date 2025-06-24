@@ -148,18 +148,6 @@ def normalizar_diccionario(diccionario):
 			diccionario[key] = eliminar_acentos(value)
 	return diccionario
 
-def agregar_variante(nombre_producto, categoria_producto, precio):
-	if messagebox.askyesno("Agregar Variante", "¿Desea agregar una variante?"):
-		select_image()
-		
-		# Actualizar el texto de los widgets existentes para cambiar el precio y el color
-		# Entry_1.delete(0, END)
-		# Entry_1.insert(0, nombre_producto)
-		# Entry_3.delete(0, END)
-		# Entry_3.insert(0, precio)
-	else:
-		messagebox.showinfo("Información", "No se agregó ninguna variante.")
-
 def filtrar_productos(productos, nombre=None, categoria=None, precio_min=None, precio_max=None, disciplina=None, genero=None):
 	filtrados = productos
 	if nombre:
@@ -225,19 +213,19 @@ class App(ctk.CTk):
 		self.font_normal = ("Helvetica", 12)
 		self.font_small = ("Helvetica", 10)
 
+		# Menú arriba, en el frame principal
 		self.menu_frame = ctk.CTkFrame(self)
 		self.menu_frame.pack(side="top", fill="x")  # Empaquetar arriba
-		self.create_menu()
-		
-		# Crear contenedor para la imagen
+
+		# Frame para el fondo y las pestañas
 		self.background_frame = ctk.CTkFrame(self)
-		self.background_frame.pack(fill="both", expand=True)  # Empaquetar después del menú
+		self.background_frame.pack(side="bottom",fill="both", expand=True)  # Empaquetar después del menú
 
 		# Crear Tabview para las pestañas principales
 		self.tab_view = ctk.CTkTabview(self.background_frame)
 		self.tab_view.pack(fill="both", expand=True)
 
-		# Cargar imagen de fondo
+		# Cargar imagen de fondo	
 		try:
 			self.original_image = Image.open("html/img/Logo.jpeg")
 			self.actualizar_imagen_fondo()
@@ -414,6 +402,10 @@ class VerProductosDialog(ctk.CTkToplevel):
 		super().__init__(parent)
 		self.title("Ver Productos")
 		self.geometry("1024x768")
+		self.lift()  # Mantener ventana al frente
+		self.transient(parent)  # Hacer la ventana dependiente del padre
+		self.focus_force()  # Forzar el foco
+
 		self.productos = []
 		self.productos_seleccionados = []
 
@@ -1119,6 +1111,9 @@ class ModoVentaDialog(ctk.CTkToplevel):
 		super().__init__(parent)
 		self.title("Modo Venta")
 		self.geometry("1000x600")  # Tamaño más razonable
+		self.lift()  # Mantener ventana al frente
+		self.transient(parent)  # Hacer la ventana dependiente del padre
+		self.focus_force()  # Forzar el foco
 
 		# Variables
 		self.productos_seleccionados = []  # Lista de productos seleccionados
@@ -1224,14 +1219,15 @@ class ModoVentaDialog(ctk.CTkToplevel):
 				item_frame.pack(fill="x", padx=5, pady=2)
 
 				# Verificar stock
-				if producto.get('stock', 0) > 0:
-					stock_text = f"Stock: {producto['stock']}"
+				stock = producto.get('stock', 0)
+				if stock > 0:
+					stock_text = f"Stock: {stock}"
 					stock_color = "green"
-					checkbox_state = "normal"  # Habilitar checkbox
+					checkbox_state = "normal"
 				else:
 					stock_text = "SIN STOCK"
 					stock_color = "red"
-					checkbox_state = "disabled"  # Deshabilitar checkbox
+					checkbox_state = "disabled"
 
 				# Mostrar información del producto
 				ctk.CTkLabel(item_frame, text=f"Código: {producto['codigo_barras']}", font=("", 12)).pack(side="left", padx=5)
@@ -1239,16 +1235,28 @@ class ModoVentaDialog(ctk.CTkToplevel):
 				ctk.CTkLabel(item_frame, text=f"${producto['precio']}", font=("", 12)).pack(side="right", padx=5)
 				ctk.CTkLabel(item_frame, text=stock_text, font=("", 12), text_color=stock_color).pack(side="right", padx=5)
 
-				# Checkbox para seleccionar/desseleccionar el producto
-				var = ctk.BooleanVar()
+				# Campo para cantidad
+				cantidad_var = ctk.IntVar(value=1)
+				ctk.CTkLabel(item_frame, text="Cantidad:").pack(side="right", padx=2)
+				entry_cantidad = ctk.CTkEntry(item_frame, width=40, textvariable=cantidad_var)
+				entry_cantidad.pack(side="right", padx=2)
+
+				# Checkbox para seleccionar/deseleccionar el producto
+				var = ctk.BooleanVar(value=True)  # <-- Esto asegura que siempre esté desmarcado
 				checkbox = ctk.CTkCheckBox(
 					item_frame,
 					text="Seleccionar",
 					variable=var,
-					command=lambda: self.actualizar_total(var, producto),
-					state=checkbox_state  # Habilitar o deshabilitar según el stock
+					state=checkbox_state
 				)
 				checkbox.pack(side="right", padx=5)
+
+				# Guardar la selección con cantidad
+				self.productos_seleccionados.append({
+					"producto": producto,
+					"var": var,
+					"cantidad_var": cantidad_var
+				})
 
 				# Desplazar el scroll hacia el final
 				self.lista_frame._parent_canvas.yview_moveto(1.0)
@@ -1284,26 +1292,30 @@ class ModoVentaDialog(ctk.CTkToplevel):
 				widget.destroy()
 
 	def vender_productos(self):
-		if not self.productos_seleccionados:
+		# Solo productos seleccionados y con cantidad > 0
+		seleccionados = [
+			(item["producto"], item["cantidad_var"].get())
+			for item in self.productos_seleccionados
+			if item["var"].get() and item["cantidad_var"].get() > 0
+		]
+
+		if not seleccionados:
 			messagebox.showwarning("Advertencia", "No hay productos seleccionados para la venta.")
 			return
 
 		try:
-			# Cargar todos los productos
 			with open('html/JS/productos.json', 'r') as archivo:
 				productos = json.load(archivo)
 
-			# Actualizar el stock de los productos seleccionados
 			detalles_venta = []
-			for producto_seleccionado in self.productos_seleccionados:
+			for producto_sel, cantidad in seleccionados:
 				for producto in productos:
-					if producto['id'] == producto_seleccionado['id']:
-						if producto['stock'] > 0:
-							producto['stock'] -= 1
+					if producto['id'] == producto_sel['id']:
+						if producto['stock'] >= cantidad:
+							producto['stock'] -= cantidad
 							detalles_venta.append(
-								f"{producto['titulo']} (Código: {producto['codigo_barras']}, Precio: ${producto['precio']})"
-								)
-							# Actualizar el stock en la interfaz
+								f"{producto['titulo']} (Código: {producto['codigo_barras']}, Cantidad: {cantidad}, Precio: ${producto['precio']})"
+							)
 							self._actualizar_stock_interfaz(producto)
 						else:
 							messagebox.showerror(
@@ -1312,18 +1324,15 @@ class ModoVentaDialog(ctk.CTkToplevel):
 							)
 							return
 
-			# Guardar los cambios en el archivo JSON
 			with open('html/JS/productos.json', 'w') as archivo:
 				json.dump(productos, archivo, indent=2)
 
-			# Registrar la acción en el historial
 			HistorialDialog.registrar_accion(
 				accion="Venta",
 				producto="Productos vendidos",
 				detalles="\n".join(detalles_venta)
 			)
 
-			# Mostrar mensaje de éxito
 			messagebox.showinfo("Éxito", "Venta realizada correctamente.")
 			self.total_venta = 0
 			self.total_label.configure(text="Total: $0")
@@ -1333,7 +1342,7 @@ class ModoVentaDialog(ctk.CTkToplevel):
 				self.productos_seleccionados.clear()
 				for widget in self.lista_frame.winfo_children():
 					if isinstance(widget, ctk.CTkFrame):
-						checkbox = widget.winfo_children()[-1]  # El último widget es el checkbox
+						checkbox = widget.winfo_children()[-1]
 						if isinstance(checkbox, ctk.CTkCheckBox):
 							checkbox.deselect()
 
@@ -1345,7 +1354,7 @@ class ModoVentaDialog(ctk.CTkToplevel):
 		for widget in self.lista_frame.winfo_children():
 			if isinstance(widget, ctk.CTkFrame):
 				labels = widget.winfo_children()
-				if labels and producto['codigo_barras'] in labels[0].cget("text"):
+				if labels and str(producto['codigo_barras']) in labels[0].cget("text"):
 					# Actualizar el texto del stock
 					for label in labels:
 						if "Stock:" in label.cget("text"):
@@ -1358,6 +1367,9 @@ class ProductoDialog(ctk.CTkToplevel):
 		self.title("Ingresar Nuevo Producto")
 		#self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}")
 		self.geometry("800x800")  # Tamaño más razonable para el diálogo
+		self.lift()  # Mantener ventana al frente
+		self.transient(parent)  # Hacer la ventana dependiente del padre
+		self.focus_force()  # Forzar el foco
 
 		# Crear frame principal scrollable
 		self.main_frame = ctk.CTkScrollableFrame(self)
@@ -1579,23 +1591,25 @@ class ProductoDialog(ctk.CTkToplevel):
 				shutil.copy2(self.selected_image_path, destino)
 				imagen_ruta = f"./img/{imagen_nombre}"
 			except Exception as e:
+				print(f"Error copiando imagen: {e}")
+				imagen_ruta = ""  # Si falla, deja la ruta vacía
 
-				# Crear producto
-				producto = {
-					"id": id_producto,
-					"titulo": nombre_producto,
-					"imagen": imagen_ruta,
-					"categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
-					"categoria_general": categoria_general.lower(),
-					"precio": redondear_precio(precio),
-					"es_variante": es_variante,
-					"genero": genero,
-					"talles": [talle for talle, var in self.talle_vars.items() if var.get()],
-					"color": self.color_label.cget("text") if hasattr(self, 'color_label') else "No especificado",
-					"disciplina": disciplina,
-					"stock": 0,
-					"codigo_barras": int(codigo_barras)
-				}
+		# Crear producto SIEMPRE, tenga o no imagen
+		producto = {
+			"id": id_producto,
+			"titulo": nombre_producto,
+			"imagen": imagen_ruta,
+			"categoria": {"nombre": categoria_producto.upper(), "id": categoria_producto.lower()},
+			"categoria_general": categoria_general.lower(),
+			"precio": redondear_precio(precio),
+			"es_variante": es_variante,
+			"genero": genero,
+			"talles": [talle for talle, var in self.talle_vars.items() if var.get()],
+			"color": self.color_label.cget("text") if hasattr(self, 'color_label') else "No especificado",
+			"disciplina": disciplina,
+			"stock": 0,
+			"codigo_barras": int(codigo_barras)
+		}
 
 		# Normalizar producto
 		producto = normalizar_diccionario(producto)
@@ -1637,6 +1651,9 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 		super().__init__(parent)
 		self.title("Lista de Precios")
 		self.geometry("1024x768")
+		self.lift()  # Mantener ventana al frente
+		self.transient(parent)  # Hacer la ventana dependiente del padre
+		self.focus_force()  # Forzar el foco
 
 		# Inicializar variables primero
 		self.columna_orden = None
@@ -1828,6 +1845,7 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 				elif columna == "titulo":
 					return producto['titulo'].lower()
 				elif columna == "categoria":
+
 					return producto['categoria']['nombre'].lower()
 				elif columna == "talle":
 					return ",".join(producto.get('talles', []))
@@ -1978,6 +1996,9 @@ class HistorialDialog(ctk.CTkToplevel):
 		super().__init__(parent)
 		self.title("Historial de Cambios")
 		self.geometry("1024x768")
+		self.lift()  # Mantener ventana al frente
+		self.transient(parent)  # Hacer la ventana dependiente del padre
+		self.focus_force()  # Forzar el foco
 
 		# Inicializar variables
 		self.historial = []

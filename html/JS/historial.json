@@ -70,5 +70,29 @@
     "accion": "Agregado",
     "producto": "remera",
     "detalles": "Producto agregado con c\u00f3digo: 56, Precio: $8600"
+  },
+  {
+    "fecha": "2025-06-24 14:25:53",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "remera (C\u00f3digo: 56, Precio: $8600)"
+  },
+  {
+    "fecha": "2025-06-24 14:36:23",
+    "accion": "Agregado",
+    "producto": "tumama",
+    "detalles": "Producto agregado con c\u00f3digo: 666, Precio: $8900"
+  },
+  {
+    "fecha": "2025-06-24 14:37:33",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "tumama (C\u00f3digo: 666, Precio: $8900)"
+  },
+  {
+    "fecha": "2025-06-24 14:42:20",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "tumama (C\u00f3digo: 666, Cantidad: 4, Precio: $8900)"
   }
 ]
