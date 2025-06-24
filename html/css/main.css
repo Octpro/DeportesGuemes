@@ -1,8 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap');
 
+/* ver el grid del css */
+
 :root {
-    --clr-main: #141eaa;
-    --clr-main-light: #6749e0;
+    --clr-main: #1291da;
+    --clr-main-light: #65acee;
     --clr-white: #ececec;
     --clr-gray: #e2e2e2;
     --clr-red: #961818;

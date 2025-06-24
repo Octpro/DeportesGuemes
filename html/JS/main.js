@@ -168,39 +168,66 @@ function actualizarNumerito() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('toggle-filtros').addEventListener('click', function() {
-        const filtros = document.getElementById('filtros');
-        if (filtros.classList.contains('filtros-ocultos')) {
-            filtros.classList.remove('filtros-ocultos');
-            filtros.classList.add('filtros-mostrados');
-        } else {
-            filtros.classList.remove('filtros-mostrados');
-            filtros.classList.add('filtros-ocultos');
-        }
-    });
+    // Verificar si los elementos existen antes de agregar los eventos
+    const filtroNombre = document.getElementById('filtro-nombre');
+    const filtroPrecioMin = document.getElementById('filtro-precio-min');
+    const filtroPrecioMax = document.getElementById('filtro-precio-max');
+    const filtroTalle = document.getElementById('filtro-talle');
+    const filtroCategoria = document.getElementById('filtro-categoria');
+    const filtroDisciplina = document.getElementById('filtro-disciplina');
+    const filtroGenero = document.getElementById('filtro-genero');
+    const toggleFiltros = document.getElementById('toggle-filtros');
+    const filtros = document.getElementById('filtros');
+    const aplicarFiltroBtn = document.getElementById('aplicar-filtro');
+
+    // Verifica que los elementos existan antes de agregar eventos
+    if (toggleFiltros && filtros) {
+        toggleFiltros.addEventListener('click', function() {
+            if (filtros.classList.contains('filtros-ocultos')) {
+                filtros.classList.remove('filtros-ocultos');
+                filtros.classList.add('filtros-mostrados');
+            } else {
+                filtros.classList.remove('filtros-mostrados');
+                filtros.classList.add('filtros-ocultos');
+            }
+        });
+    }
+
+    // Modificar la función handleKeyEvent para incluir un pequeño retraso
+    const handleKeyEvent = (event) => {
+        clearTimeout(window.filterTimeout);
+        window.filterTimeout = setTimeout(() => {
+            aplicarFiltro();
+        }, 300); // 300ms de retraso
+    };
+
+    // Agregar eventos solo si los elementos existen
+    if (filtroNombre) filtroNombre.addEventListener('keyup', handleKeyEvent);
+    if (filtroPrecioMin) filtroPrecioMin.addEventListener('keyup', handleKeyEvent);
+    if (filtroPrecioMax) filtroPrecioMax.addEventListener('keyup', handleKeyEvent);
+    if (filtroTalle) {
+        filtroTalle.addEventListener('input', handleKeyEvent); // Cambiar 'keyup' por 'input'
+        filtroTalle.addEventListener('change', aplicarFiltro);
+    }
+    
+    if (filtroCategoria) filtroCategoria.addEventListener('change', aplicarFiltro);
+    if (filtroDisciplina) filtroDisciplina.addEventListener('change', aplicarFiltro);
+    if (filtroGenero) filtroGenero.addEventListener('change', aplicarFiltro);
+    if (aplicarFiltroBtn) aplicarFiltroBtn.addEventListener('click', aplicarFiltro);
+
+    // Asegurarse de que los filtros estén en el HTML
+    if (!filtros) {
+        console.error('El contenedor de filtros no existe en el HTML');
+    }
 
     // Close the filters when clicking outside of the filters area
     document.addEventListener('click', function(event) {
-        const filtros = document.getElementById('filtros');
-        const toggleFiltros = document.getElementById('toggle-filtros');
-        if (!filtros.contains(event.target) && !toggleFiltros.contains(event.target)) {
+        if (filtros && toggleFiltros && !filtros.contains(event.target) && !toggleFiltros.contains(event.target)) {
             filtros.classList.remove('filtros-mostrados');
             filtros.classList.add('filtros-ocultos');
         }
     });
 
-    document.getElementById('aplicar-filtro').addEventListener('click', aplicarFiltro);
-
-    const filtros = document.querySelectorAll('#filtro-nombre, #filtro-categoria, #filtro-precio-min, #filtro-precio-max, #filtro-genero, #filtro-talle, #filtro-disciplina');
-    filtros.forEach(filtro => {
-        filtro.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                aplicarFiltro();
-            }
-        });
-    });
-
-    // Asegurarse de que los productos se carguen cuando se cambia de categoría
     botonesCategoria.forEach(boton => {
         boton.addEventListener("click", (e) => {
             botonesCategoria.forEach(boton => boton.classList.remove("active"));
@@ -234,60 +261,104 @@ document.addEventListener('DOMContentLoaded', function() {
     if (botonTodos) {
         botonTodos.click();
     }
-
-    // Agregar eventos para los filtros de texto y número
-    const filtroNombre = document.getElementById('filtro-nombre');
-    const filtroPrecioMin = document.getElementById('filtro-precio-min');
-    const filtroPrecioMax = document.getElementById('filtro-precio-max');
-    const filtroTalle = document.getElementById('filtro-talle');
-
-    // Función para manejar eventos de teclado
-    const handleKeyEvent = (event) => {
-        aplicarFiltro();
-    };
-
-    // Agregar eventos keyup para aplicar filtros automáticamente
-    filtroNombre.addEventListener('keyup', handleKeyEvent);
-    filtroPrecioMin.addEventListener('keyup', handleKeyEvent);
-    filtroPrecioMax.addEventListener('keyup', handleKeyEvent);
-    filtroTalle.addEventListener('keyup', handleKeyEvent);
-
-    // Agregar eventos change para los selectores
-    const filtroCategoria = document.getElementById('filtro-categoria');
-    const filtroDisciplina = document.getElementById('filtro-disciplina');
-    const filtroGenero = document.getElementById('filtro-genero');
-
-    filtroCategoria.addEventListener('change', aplicarFiltro);
-    filtroDisciplina.addEventListener('change', aplicarFiltro);
-    filtroGenero.addEventListener('change', aplicarFiltro);
 });
 
 function aplicarFiltro() {
-    const nombre = document.getElementById('filtro-nombre').value.toLowerCase();
-    const categoria = document.getElementById('filtro-categoria').value.toLowerCase();
-    const precioMin = parseFloat(document.getElementById('filtro-precio-min').value) || 0;
-    const precioMax = parseFloat(document.getElementById('filtro-precio-max').value) || Infinity;
-    const genero = document.getElementById('filtro-genero').value.toLowerCase();
-    const talle = document.getElementById('filtro-talle').value.toLowerCase();
-    const disciplina = document.getElementById('filtro-disciplina').value.toLowerCase();
+    // Agregar logs para depuración
+    console.log('Iniciando aplicación de filtros...');
+    
+    const nombre = document.getElementById('filtro-nombre')?.value.toLowerCase() || '';
+    const categoria = document.getElementById('filtro-categoria')?.value.toLowerCase() || '';
+    const precioMin = parseFloat(document.getElementById('filtro-precio-min')?.value) || 0;
+    const precioMax = parseFloat(document.getElementById('filtro-precio-max')?.value) || Infinity;
+    const genero = document.getElementById('filtro-genero')?.value.toLowerCase() || '';
+    const talle = document.getElementById('filtro-talle')?.value.toLowerCase() || '';
+    const disciplina = document.getElementById('filtro-disciplina')?.value.toLowerCase() || '';
 
-    // Obtener la categoría seleccionada en la pestaña
-    const categoriaSeleccionada = document.querySelector('.boton-categoria.active').id;
-
-    const productosFiltrados = productos.filter(producto => {
-        const nombreMatch = producto.titulo.toLowerCase().includes(nombre);
-        const categoriaMatch = (categoriaSeleccionada === "todos" || 
-            (categoriaSeleccionada === "indumentaria" && ["indumentaria", "remeras", "pantalones", "abrigos"].includes(producto.categoria_general)) ||
-            producto.categoria_general === categoriaSeleccionada) &&
-            (categoria === "" || producto.categoria.nombre.toLowerCase().includes(categoria));
-        const precioMatch = producto.precio >= precioMin && producto.precio <= precioMax;
-        const generoMatch = genero === "" || producto.genero.toLowerCase() === genero;
-        const talleMatch = talle === "" || (producto.talles && producto.talles.map(t => t.toLowerCase()).includes(talle));
-        const disciplinaMatch = disciplina === "" || producto.disciplina.toLowerCase() === disciplina;
-        return nombreMatch && categoriaMatch && precioMatch && generoMatch && talleMatch && disciplinaMatch;
+    // Log de valores de filtros
+    console.log('Valores de filtros:', {
+        nombre,
+        categoria,
+        precioMin,
+        precioMax,
+        genero,
+        talle,
+        disciplina
     });
 
+    // Verificar si hay productos disponibles
+    if (!productos || productos.length === 0) {
+        console.error('No hay productos cargados');
+        return;
+    }
+
+    const productosFiltrados = productos.filter(producto => {
+        if (!producto || producto.es_variante) return false;
+
+        // Filtro por nombre
+        const nombreMatch = !nombre || producto.titulo.toLowerCase().includes(nombre);
+
+        // Filtro por categoría
+        let categoriaMatch = true;
+        if (categoria !== '') {
+            categoriaMatch = producto.categoria && 
+                           producto.categoria.nombre.toLowerCase().includes(categoria);
+        }
+
+        // Filtro por precio
+        const precioMatch = producto.precio >= precioMin && 
+                          (precioMax === Infinity || producto.precio <= precioMax);
+
+        // Filtro por género
+        const generoMatch = !genero || 
+                          (producto.genero && producto.genero.toLowerCase() === genero);
+
+        // Mejorar el filtro por talle
+        const talleMatch = !talle || (producto.talles && producto.talles.some(t => {
+            const talleProd = t.toString().toLowerCase().trim();
+            const talleBuscado = talle.toLowerCase().trim();
+            console.log(`Comparando talle: ${talleProd} con búsqueda: ${talleBuscado}`);
+            return talleProd.includes(talleBuscado);
+        }));
+
+        // Log específico para depuración de talles
+        if (talle && producto.talles) {
+            console.log(`Producto: ${producto.titulo}, Talles: ${producto.talles.join(', ')}, Match: ${talleMatch}`);
+        }
+
+        // Filtro por disciplina
+        const disciplinaMatch = !disciplina || 
+                              (producto.disciplina && 
+                               producto.disciplina.toLowerCase() === disciplina);
+
+        const matches = nombreMatch && categoriaMatch && precioMatch && 
+                       generoMatch && talleMatch && disciplinaMatch;
+
+        // Log de coincidencias para depuración
+        if (matches) {
+            console.log(`Producto coincidente: ${producto.titulo}`, {
+                nombreMatch,
+                categoriaMatch,
+                precioMatch,
+                generoMatch,
+                talleMatch,
+                disciplinaMatch
+            });
+        }
+
+        return matches;
+    });
+
+    console.log(`Productos filtrados: ${productosFiltrados.length}`);
+
+    // Mostrar los productos filtrados
     mostrarProductos(productosFiltrados);
+
+    // Actualizar el título principal
+    const tituloPrincipal = document.querySelector("#titulo-principal");
+    tituloPrincipal.innerText = productosFiltrados.length === 0 
+        ? "No se encontraron productos"
+        : `${productosFiltrados.length} productos encontrados`;
 }
 
 function cargarProductos(productos) {

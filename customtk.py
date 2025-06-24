@@ -209,6 +209,9 @@ class App(ctk.CTk):
 		# Inicializar como no admin
 		self.is_admin = False
 		self.is_empleado = False
+
+		# Inicializar modo_venta como None para evitar errores de atributo
+		self.modo_venta = None
 		
 		# Configurar ventana principal
 		self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}")
@@ -221,14 +224,19 @@ class App(ctk.CTk):
 		self.font_title = ("Helvetica", 16, "bold")
 		self.font_normal = ("Helvetica", 12)
 		self.font_small = ("Helvetica", 10)
-		
-		# Crear menú antes de cualquier otro elemento
+
+		self.menu_frame = ctk.CTkFrame(self)
+		self.menu_frame.pack(side="top", fill="x")  # Empaquetar arriba
 		self.create_menu()
 		
-		# Crear frame principal para el fondo
+		# Crear contenedor para la imagen
 		self.background_frame = ctk.CTkFrame(self)
-		self.background_frame.pack(fill="both", expand=True)
-		
+		self.background_frame.pack(fill="both", expand=True)  # Empaquetar después del menú
+
+		# Crear Tabview para las pestañas principales
+		self.tab_view = ctk.CTkTabview(self.background_frame)
+		self.tab_view.pack(fill="both", expand=True)
+
 		# Cargar imagen de fondo
 		try:
 			self.original_image = Image.open("html/img/Logo.jpeg")
@@ -237,12 +245,12 @@ class App(ctk.CTk):
 		except Exception as e:
 			print(f"Error al cargar la imagen de fondo: {e}")
 		
-		# Mostrar login al inicio (mover al final)
+		# Mostrar login al inicio
 		self.show_login()
 
 	def actualizar_imagen_fondo(self):
-		window_width = self.winfo_width()
-		window_height = self.winfo_height()
+		window_width = self.background_frame.winfo_width()
+		window_height = self.background_frame.winfo_height()
 		
 		if window_width > 1 and window_height > 1:
 			imagen_fondo = self.original_image.copy()
@@ -276,58 +284,57 @@ class App(ctk.CTk):
 		# Crear un único frame para los botones
 		self.menu_frame = ctk.CTkFrame(self)
 		self.menu_frame.pack(side="top", fill="x", pady=10)
-		
-		# Crear un frame contenedor para los botones del lado izquierdo
-		left_buttons_frame = ctk.CTkFrame(self.menu_frame, fg_color="transparent")
-		left_buttons_frame.pack(side="left", fill="x", expand=True)
-		
-		# Botones siempre disponibles para ambos tipos de usuario
-		ctk.CTkButton(
-			left_buttons_frame,
-			text="Lista de Precios",
-			command=self.show_lista_precios,
-			font=self.font_normal
-		).pack(side="left", padx=5)
 
+		# Botón para abrir la pestaña "Lista de Productos"
 		ctk.CTkButton(
-			left_buttons_frame,
-			text="Ver Productos",
+			self.menu_frame,
+			text="Lista de Productos",
 			command=self.show_ver_productos,
 			font=self.font_normal
 		).pack(side="left", padx=5)
-		
-		# Switch de modo venta para empleado y admin
-		self.modo_venta = ctk.CTkSwitch(
-			left_buttons_frame,
-			text="Modo Venta",
+
+		# Botón para abrir la pestaña "Venta"
+		ctk.CTkButton(
+			self.menu_frame,
+			text="Venta",
 			command=self.toggle_modo_venta,
 			font=self.font_normal
-		)
-		self.modo_venta.pack(side="left", padx=5)
-		
-		# Botones adicionales solo para admin
+		).pack(side="left", padx=5)
+
+		# SOLO PARA ADMIN
 		if self.is_admin:
 			ctk.CTkButton(
-				left_buttons_frame,
+				self.menu_frame,
 				text="Ingresar Nuevo Producto",
 				command=self.show_nuevo_producto,
 				font=self.font_normal
 			).pack(side="left", padx=5)
-			
+
 			ctk.CTkButton(
-				left_buttons_frame,
+				self.menu_frame,
 				text="Historial",
 				command=self.show_historial,
 				font=self.font_normal
 			).pack(side="left", padx=5)
-			
-			# Habilitar el switch de modo venta para admin
-			self.modo_venta.configure(state="normal")
-		else:
-			# Deshabilitar el switch de modo venta para empleado
-			self.modo_venta.configure(state="disabled")
-		
-		# Botón de cerrar sesión en el lado derecho
+
+			ctk.CTkButton(
+				self.menu_frame,
+				text="Lista de Precios",
+				command=self.show_lista_precios,
+				font=self.font_normal
+			).pack(side="left", padx=5)
+
+		# Botón de cambiar tema a la derecha
+		ctk.CTkButton(
+			self.menu_frame,
+			text="Cambiar Tema",
+			command=self.toggle_tema,
+			font=self.font_normal,
+			fg_color="purple",
+			hover_color="darkviolet"
+		).pack(side="right", padx=5)
+
+		# Botón de cerrar sesión a la derecha
 		ctk.CTkButton(
 			self.menu_frame,
 			text="Cerrar Sesión",
@@ -337,9 +344,9 @@ class App(ctk.CTk):
 
 	def logout(self):
 		self.is_admin = False
-		self.update_interface()
+		self.is_empleado = False
 		self.menu_frame.destroy()  # Destruir el menú actual
-		self.show_login()
+		self.show_login()          # Volver a mostrar el login
 
 	def toggle_tema(self):
 		if self.tema_actual == "dark":
@@ -353,107 +360,116 @@ class App(ctk.CTk):
 		if not self.is_admin:
 			messagebox.showerror("Error", "Acceso denegado. Se requieren permisos de administrador.")
 			return
-		dialog = ProductoDialog(self)
-		dialog.grab_set()
+		ProductoDialog(self)
 
 	def show_ver_productos(self):
-		dialog = VerProductosDialog(self)
-		dialog.grab_set()
+		VerProductosDialog(self)
 			
 	def toggle_modo_venta(self):
-		if self.modo_venta.get():
-			dialog = ModoVentaDialog(self)
-			dialog.grab_set()
+		#if self.modo_venta.get():
+		ModoVentaDialog(self)
 
 	def show_lista_precios(self):
-		dialog = ListaPreciosDialog(self)
-		dialog.grab_set()
+		ListaPreciosDialog(self)
 
 	def show_historial(self):
 		if not self.is_admin:
 			messagebox.showerror("Error", "Acceso denegado. Se requieren permisos de administrador.")
 			return
-		dialog = HistorialDialog(self)
-		dialog.grab_set()
+		HistorialDialog(self)
 
 	def show_login(self):
 		dialog = LoginDialog(self)
 		dialog.grab_set()
 		self.wait_window(dialog)
+		# Si el usuario no se autenticó, cerrar la app principal
+		if not (dialog.is_admin or dialog.is_empleado):
+			self.destroy()
+			return  # Return immediately to prevent further code execution
 		self.is_admin = dialog.is_admin
 		self.is_empleado = dialog.is_empleado
-		self.update_interface()
-	
+		self.update_interface()  # Esto recrea el menú según el usuario
+
 	def update_interface(self):
-		"""Actualizar interfaz según permisos"""
-		self.create_menu()  # Recrear el menú con los botones correspondientes
-		
-		if self.is_admin:
-			# Habilitar modo venta para admin
-			self.modo_venta.configure(state="normal")
-		else:
-			# Deshabilitar modo venta para usuarios normales
-			self.modo_venta.configure(state="normal")
+		# Recrear el menú y limpiar pestañas si es necesario
+		self.create_menu()
+		# Si querés limpiar las pestañas al cambiar de usuario:
+		for tab in self.tab_view._name_list[1:]:  # Mantener solo la pestaña principal si querés
+			self.tab_view.delete(tab)
+			
+		# # Solo intentar configurar self.modo_venta si ya fue creado
+		# if self.modo_venta is not None:
+		# 	if self.is_admin:
+		# 		# Habilitar modo venta para admin
+		# 		self.modo_venta.configure(state="normal")
+		# 	else:
+		# 		# Deshabilitar modo venta para usuarios normales
+		# 		self.modo_venta.configure(state="disabled")
+		# else:
+		# 	# Deshabilitar modo venta para usuarios normales
+		# 	self.modo_venta.configure(state="normal")
 
 class VerProductosDialog(ctk.CTkToplevel):
 	def __init__(self, parent):
 		super().__init__(parent)
 		self.title("Ver Productos")
 		self.geometry("1024x768")
-		
-		# Inicializar variables
 		self.productos = []
 		self.productos_seleccionados = []
-		
-		# Frame principal
+
 		self.main_frame = ctk.CTkFrame(self)
 		self.main_frame.pack(fill="both", expand=True, padx=10, pady=10)
-		
-		# Crear filtros
+
 		self.crear_filtros()
-		
-		# Frame para productos con scroll
+
 		self.productos_frame = ctk.CTkScrollableFrame(self.main_frame)
 		self.productos_frame.pack(fill="both", expand=True, padx=10, pady=5)
-		
-		# Cargar productos al inicio
+
+		# Guardar productos filtrados actuales
+		self._productos_filtrados = []
+
 		self.cargar_productos()
 
 	def cargar_productos(self):
-		"""Cargar productos desde el archivo JSON"""
 		try:
 			with open('html/JS/productos.json', 'r') as archivo:
 				self.productos = json.load(archivo)
+				self._productos_filtrados = self.productos
 				self.mostrar_productos(self.productos)
 		except FileNotFoundError:
 			self.productos = []
 			messagebox.showerror("Error", "No se encontró el archivo de productos")
 
 	def mostrar_productos(self, productos_filtrados):
-		# Limpiar el frame anterior
-		for widget in self.productos_frame.winfo_children():
-			widget.destroy()
-		
-		# Configurar el grid
-		self.productos_frame.grid_columnconfigure((0, 1, 2), weight=1, uniform="column")
-		
-		# Reiniciar lista de productos seleccionados
-		self.productos_seleccionados = []
-		
-		# Variables para el grid
-		row = 0
-		col = 0
-		
-		# Mostrar productos
-		for producto in productos_filtrados:
-			if not producto.get('es_variante', False):
-				card = self.crear_producto_card(self.productos_frame, producto)
-				card.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
-				
-				col += 1
-				if col >= 3:
-					col = 0
-					row += 1
+		try:
+			# Limpiar el frame anterior
+			for widget in self.productos_frame.winfo_children():
+				widget.destroy()
+
+			# Guardar productos filtrados actuales
+			self._productos_filtrados = productos_filtrados
+
+			columnas = 4  # Fijo: 4 columnas
+			for col in range(columnas):
+				self.productos_frame.grid_columnconfigure(col, weight=1, uniform="column")
+			self.productos_seleccionados = []
+			row = 0
+			col = 0
+
+			for producto in productos_filtrados:
+				try:
+					if not producto.get('es_variante', False):
+						card = self.crear_producto_card(self.productos_frame, producto)
+						card.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
+						col += 1
+						if col >= columnas:
+							col = 0
+							row += 1
+				except Exception as e:
+					print(f"Error mostrando producto: {producto}\n{e}")
+
+		except Exception as e:
+			print(f"Error en mostrar_productos: {e}")
 
 	def crear_filtros(self):
 		filtro_frame = ctk.CTkFrame(self.main_frame)
@@ -1340,7 +1356,8 @@ class ProductoDialog(ctk.CTkToplevel):
 	def __init__(self, parent, codigo_barras=None):
 		super().__init__(parent)
 		self.title("Ingresar Nuevo Producto")
-		self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}")
+		#self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}")
+		self.geometry("800x800")  # Tamaño más razonable para el diálogo
 
 		# Crear frame principal scrollable
 		self.main_frame = ctk.CTkScrollableFrame(self)
@@ -2075,7 +2092,7 @@ class LoginDialog(ctk.CTkToplevel):
 	def __init__(self, parent):
 		super().__init__(parent)
 		self.title("Iniciar Sesión")
-		self.geometry("300x200")
+		self.geometry("400x300")
 		
 		# Variables
 		self.is_admin = False
@@ -2107,13 +2124,13 @@ class LoginDialog(ctk.CTkToplevel):
 		password = self.entry_password.get()
 		
 		# Credenciales de admin
-		if usuario == "admin" and password == "admin123":
+		if usuario == "a" and password == "a":
 			self.is_admin = True
 			self.is_empleado = False
 			messagebox.showinfo("Éxito", "Bienvenido Administrador")
 			self.destroy()
 		# Credenciales de empleado
-		elif usuario == "empleado" and password == "empleado123":
+		elif usuario == "e" and password == "e":
 			self.is_admin = False
 			self.is_empleado = True
 			messagebox.showinfo("Éxito", "Bienvenido Empleado")
@@ -2122,5 +2139,8 @@ class LoginDialog(ctk.CTkToplevel):
 			messagebox.showerror("Error", "Usuario o contraseña incorrectos")
 
 if __name__ == "__main__":
-	app = App()
-	app.mainloop()
+	try:
+		app = App()
+		app.mainloop()
+	except TclError:
+		pass  # Ignora el error al cerrar la app
