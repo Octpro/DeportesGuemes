@@ -247,7 +247,7 @@
       "id": "pantalones"
     },
     "categoria_general": "indumentaria",
-    "precio": "2020",
+    "precio": "2121",
     "es_variante": false,
     "genero": "Nino",
     "talles": [
@@ -256,7 +256,7 @@
     ],
     "color": "Verde Azulado",
     "disciplina": "Musculacion",
-    "stock": 8,
+    "stock": 7,
     "codigo_barras": 23
   },
   {
@@ -277,7 +277,7 @@
     ],
     "color": "Gris",
     "disciplina": "Deportes",
-    "stock": 4,
+    "stock": 3,
     "codigo_barras": 56
   },
   {

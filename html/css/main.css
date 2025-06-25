@@ -557,3 +557,25 @@ pointer-events: none;
       grid-template-columns: 1fr;
    }   
 }
+
+.cinta-no-stock {
+    position: absolute;
+    top: 20px;
+    left: -40px;
+    width: 160px;
+    text-align: center;
+    transform: rotate(-30deg);
+    background: rgba(255,255,255,0.85);
+    color: #d90429;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border: 2px solid #d90429;
+    z-index: 2;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 4px 0;
+    letter-spacing: 2px;
+}
+.producto {
+    position: relative; /* Asegura que la cinta se posicione respecto al producto */
+}

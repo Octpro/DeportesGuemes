@@ -194,6 +194,7 @@ class App(ctk.CTk):
 	def __init__(self):
 		super().__init__()
 		
+		
 		# Inicializar como no admin
 		self.is_admin = False
 		self.is_empleado = False
@@ -224,7 +225,9 @@ class App(ctk.CTk):
 		# Crear Tabview para las pestañas principales
 		self.tab_view = ctk.CTkTabview(self.background_frame)
 		self.tab_view.pack(fill="both", expand=True)
-
+		
+		self.show_login()
+		
 		# Cargar imagen de fondo	
 		try:
 			self.original_image = Image.open("html/img/Logo.jpeg")
@@ -234,7 +237,7 @@ class App(ctk.CTk):
 			print(f"Error al cargar la imagen de fondo: {e}")
 		
 		# Mostrar login al inicio
-		self.show_login()
+		self.state("zoomed")  # Iniciar maximizado	
 
 	def actualizar_imagen_fondo(self):
 		window_width = self.background_frame.winfo_width()
@@ -377,6 +380,7 @@ class App(ctk.CTk):
 		self.is_admin = dialog.is_admin
 		self.is_empleado = dialog.is_empleado
 		self.update_interface()  # Esto recrea el menú según el usuario
+		self.state("zoomed")
 
 	def update_interface(self):
 		# Recrear el menú y limpiar pestañas si es necesario
@@ -384,18 +388,6 @@ class App(ctk.CTk):
 		# Si querés limpiar las pestañas al cambiar de usuario:
 		for tab in self.tab_view._name_list[1:]:  # Mantener solo la pestaña principal si querés
 			self.tab_view.delete(tab)
-			
-		# # Solo intentar configurar self.modo_venta si ya fue creado
-		# if self.modo_venta is not None:
-		# 	if self.is_admin:
-		# 		# Habilitar modo venta para admin
-		# 		self.modo_venta.configure(state="normal")
-		# 	else:
-		# 		# Deshabilitar modo venta para usuarios normales
-		# 		self.modo_venta.configure(state="disabled")
-		# else:
-		# 	# Deshabilitar modo venta para usuarios normales
-		# 	self.modo_venta.configure(state="normal")
 
 class VerProductosDialog(ctk.CTkToplevel):
 	def __init__(self, parent):
@@ -752,6 +744,10 @@ class VerProductosDialog(ctk.CTkToplevel):
 		dialog = ctk.CTkToplevel(self)
 		dialog.title("Actualizar Precios Seleccionados")
 		dialog.geometry("500x300")  # Altura reducida
+		dialog.lift()
+		dialog.transient(self)
+		dialog.focus_force()
+		dialog.grab_set() 
 		
 		# Frame superior para controles
 		control_frame = ctk.CTkFrame(dialog)
@@ -872,6 +868,10 @@ class VerProductosDialog(ctk.CTkToplevel):
 		dialog = ctk.CTkToplevel(self)
 		dialog.title("Actualizar Stock Seleccionados")
 		dialog.geometry("500x400")
+		dialog.lift()
+		dialog.transient(self)
+		dialog.focus_force()
+		dialog.grab_set() 
 		
 		# Frame principal
 		frame = ctk.CTkFrame(dialog)
@@ -1037,28 +1037,103 @@ class VerProductosDialog(ctk.CTkToplevel):
 		# Crear ventana de modificación
 		dialog = ctk.CTkToplevel(self)
 		dialog.title("Modificar Producto")
-		dialog.geometry("400x300")
-		dialog.lift()  # Mantener ventana al frente
-		dialog.transient(self)  # Hacer la ventana dependiente del padre
-		dialog.focus_force()  # Forzar el foco
-		dialog.grab_set()  # Hacer la ventana modal
-		
+		dialog.geometry("600x800")
+		dialog.lift()
+		dialog.transient(self)
+		dialog.focus_force()
+		dialog.grab_set()
+
 		# Frame principal
 		frame = ctk.CTkFrame(dialog)
 		frame.pack(fill="both", expand=True, padx=20, pady=20)
-		
+
 		# Nombre del producto
 		ctk.CTkLabel(frame, text="Nombre Producto").pack(pady=5)
 		entry_nombre = ctk.CTkEntry(frame, width=300)
 		entry_nombre.insert(0, producto['titulo'])
 		entry_nombre.pack(pady=5)
-		
+
 		# Precio
 		ctk.CTkLabel(frame, text="Precio").pack(pady=5)
 		entry_precio = ctk.CTkEntry(frame, width=300)
 		entry_precio.insert(0, producto['precio'])
 		entry_precio.pack(pady=5)
-		
+
+		# Categoría
+		ctk.CTkLabel(frame, text="Categoría").pack(pady=5)
+		categorias = ["Remeras", "Abrigos", "Pantalones", "Accesorios"]
+		variable_categoria = ctk.StringVar(value=producto['categoria']['nombre'].capitalize())
+		categoria_menu = ctk.CTkOptionMenu(frame, values=categorias, variable=variable_categoria)
+		categoria_menu.pack(pady=5)
+
+		# Género
+		ctk.CTkLabel(frame, text="Género").pack(pady=5)
+		generos = ["Femenino", "Masculino", "Niño", "Niña", "Unisex", "No"]
+		variable_genero = ctk.StringVar(value=producto.get('genero', 'No'))
+		genero_menu = ctk.CTkOptionMenu(frame, values=generos, variable=variable_genero)
+		genero_menu.pack(pady=5)
+
+		# Talles
+		ctk.CTkLabel(frame, text="Talles").pack(pady=5)
+		talles = ["No", "S", "M", "L", "XL"]
+		talle_vars = {}
+		talles_frame = ctk.CTkFrame(frame)
+		talles_frame.pack(pady=5)
+		for talle in talles:
+			var = ctk.BooleanVar(value=talle in producto.get('talles', []))
+			talle_vars[talle] = var
+			ctk.CTkCheckBox(talles_frame, text=talle, variable=var).pack(side="left", padx=5)
+
+		# Disciplina
+		ctk.CTkLabel(frame, text="Disciplina").pack(pady=5)
+		disciplinas = ["Futbol", "Basquet", "Tenis", "Natacion", "Running", "Boxeo", "Voley", "Rugby", "Hockey", "Yoga", "Fitness", "Musculacion"]
+		variable_disciplina = ctk.StringVar(value=producto.get('disciplina', ''))
+		disciplina_menu = ctk.CTkOptionMenu(frame, values=disciplinas, variable=variable_disciplina)
+		disciplina_menu.pack(pady=5)
+
+		# Código de Barras
+		ctk.CTkLabel(frame, text="Código de Barras").pack(pady=5)
+		entry_codigo_barras = ctk.CTkEntry(frame, width=300)
+		entry_codigo_barras.insert(0, str(producto.get('codigo_barras', '')))
+		entry_codigo_barras.pack(pady=5)
+
+		# Imagen actual
+		ctk.CTkLabel(frame, text="Imagen actual:").pack(pady=5)
+		img_label = ctk.CTkLabel(frame, text="")
+		img_label.pack(pady=5)
+		ruta_img = os.path.abspath(os.path.join('html', producto['imagen'].replace('./', ''))) if producto['imagen'] else ""
+		if ruta_img and os.path.exists(ruta_img):
+			pil_image = Image.open(ruta_img)
+			pil_image.thumbnail((150, 150))
+			ctk_image = ctk.CTkImage(light_image=pil_image, dark_image=pil_image, size=(150, 150))
+			img_label.configure(image=ctk_image)
+			img_label.image = ctk_image
+
+		# Botón para seleccionar nueva imagen
+		nueva_imagen_path = [producto['imagen']]  # Usar lista para mutabilidad en closure
+
+		def seleccionar_imagen():
+			file_path = filedialog.askopenfilename(
+				title="Seleccione una imagen",
+				filetypes=[("Archivos de imagen", ".png .jpg .jpeg .gif .bmp")]
+			)
+			if file_path:
+				imagen_nombre = os.path.basename(file_path)
+				destino = os.path.join('html', 'img', imagen_nombre)
+				try:
+					os.makedirs(os.path.join('html', 'img'), exist_ok=True)
+					shutil.copy2(file_path, destino)
+					nueva_imagen_path[0] = f"./img/{imagen_nombre}"
+					pil_image = Image.open(destino)
+					pil_image.thumbnail((150, 150))
+					ctk_image = ctk.CTkImage(light_image=pil_image, dark_image=pil_image, size=(150, 150))
+					img_label.configure(image=ctk_image)
+					img_label.image = ctk_image
+				except Exception as e:
+					messagebox.showerror("Error", f"No se pudo copiar la imagen: {e}")
+
+		ctk.CTkButton(frame, text="Cambiar Imagen", command=seleccionar_imagen).pack(pady=5)
+
 		def guardar_cambios():
 			try:
 				# Obtener datos anteriores
@@ -1068,6 +1143,16 @@ class VerProductosDialog(ctk.CTkToplevel):
 				# Actualizar datos del producto
 				producto['titulo'] = entry_nombre.get()
 				producto['precio'] = redondear_precio(entry_precio.get())
+				producto['categoria'] = {
+					"nombre": variable_categoria.get().upper(),
+					"id": variable_categoria.get().lower()
+				}
+				producto['categoria_general'] = "indumentaria" if variable_categoria.get().lower() in ["remeras", "pantalones", "abrigos"] else "accesorios"
+				producto['genero'] = variable_genero.get()
+				producto['talles'] = [talle for talle, var in talle_vars.items() if var.get()]
+				producto['disciplina'] = variable_disciplina.get()
+				producto['codigo_barras'] = int(entry_codigo_barras.get())
+				producto['imagen'] = nueva_imagen_path[0]
 
 				# Leer todos los productos
 				with open('html/JS/productos.json', 'r') as archivo:
@@ -1088,7 +1173,7 @@ class VerProductosDialog(ctk.CTkToplevel):
 					accion="Modificado",
 					producto=producto['titulo'],
 					detalles=f"Nombre: {titulo_anterior} -> {producto['titulo']}, "
-							 f"Precio: ${precio_anterior} -> ${producto['precio']}"
+						 f"Precio: ${precio_anterior} -> ${producto['precio']}"
 				)
 
 				messagebox.showinfo("Éxito", "Producto modificado correctamente")
@@ -1097,7 +1182,7 @@ class VerProductosDialog(ctk.CTkToplevel):
 
 			except Exception as e:
 				messagebox.showerror("Error", f"No se pudo modificar el producto: {str(e)}")
-		
+
 		# Botón de guardar
 		ctk.CTkButton(
 			frame,
@@ -1700,7 +1785,7 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 			"talle": "Talle",
 			"color": "Color",
 			"precio": "Precio"
-		}
+				}
 		
 		for i, (key, header) in enumerate(headers.items()):
 			header_frame = ctk.CTkFrame(self.tabla_frame)
@@ -1717,7 +1802,8 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 				font=("Helvetica", 14, "bold"),
 				cursor="hand2"
 			)
-
+			label.pack(expand=True)
+			label.bind("<Button-1>", lambda e, k=key: self.ordenar_por(k))
 
 	def seleccionar_fila(self, row_frame, producto, event=None):
 		# Detener la propagación del evento

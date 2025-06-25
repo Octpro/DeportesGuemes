@@ -60,8 +60,12 @@ function mostrarProductos(productos) {
                 }
             }
 
+            const imagenSrc = productoAMostrar.imagen && productoAMostrar.imagen.trim() !== ""
+                ? productoAMostrar.imagen
+                : "img/placeholder.png";
+
             div.innerHTML = `
-            <img class="producto-img" src="${productoAMostrar.imagen}" alt="${productoAMostrar.titulo}">
+            <img class="producto-img" src="${imagenSrc}" alt="${productoAMostrar.titulo}">
             <div class="producto-detalles">
                 <h3 class="producto-titulo">${productoAMostrar.titulo}</h3>
                 <p class="producto-precio">$${productoAMostrar.precio}</p>
@@ -93,7 +97,9 @@ function mostrarProductos(productos) {
                 select.addEventListener('change', (e) => {
                     const varianteSeleccionada = productos.find(p => p.id === e.target.value);
                     if (varianteSeleccionada) {
-                        div.querySelector('.producto-img').src = varianteSeleccionada.imagen;
+                        div.querySelector('.producto-img').src = varianteSeleccionada.imagen && varianteSeleccionada.imagen.trim() !== ""
+                            ? varianteSeleccionada.imagen
+                            : "img/placeholder.png";
                         div.querySelector('.producto-precio').innerText = `$${varianteSeleccionada.precio}`;
                         div.querySelector('.producto-talles').innerText = `Talles: ${varianteSeleccionada.talles ? varianteSeleccionada.talles.join(', ') : 'No disponible'}`;
                         div.querySelector('.producto-consultar').id = varianteSeleccionada.id;
@@ -111,6 +117,11 @@ function mostrarProductos(productos) {
             if (productoAMostrar.stock === 0) {
                 div.classList.add('sin-stock');
                 div.querySelector('.producto-consultar').disabled = true;
+                // Agregar cinta "NO STOCK"
+                const cinta = document.createElement('div');
+                cinta.className = 'cinta-no-stock';
+                cinta.innerText = 'NO STOCK';
+                div.appendChild(cinta);
             }
         }
     });
@@ -233,6 +244,13 @@ document.addEventListener('DOMContentLoaded', function() {
             botonesCategoria.forEach(boton => boton.classList.remove("active"));
             e.currentTarget.classList.add("active");
 
+            let titulo = "Todos los productos";
+            if (e.currentTarget.id === "indumentaria") titulo = "Indumentaria";
+            else if (e.currentTarget.id === "accesorios") titulo = "Accesorios";
+            else if (e.currentTarget.id !== "todos") titulo = e.currentTarget.textContent.trim();
+
+            tituloPrincipal.innerText = titulo;
+
             if (e.currentTarget.id !== "todos") {
                 const productosBoton = productos.filter(producto => {
                     if (e.currentTarget.id === "indumentaria") {
@@ -244,8 +262,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
+                // Cambiar el título principal por el nombre de la categoría
                 tituloPrincipal.innerText = productosBoton.length > 0 
-                    ? e.currentTarget.id.charAt(0).toUpperCase() + e.currentTarget.id.slice(1)
+                    ? e.currentTarget.textContent.trim()
                     : "No hay productos";
 
                 cargarProductos(productosBoton);
@@ -264,33 +283,31 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function aplicarFiltro() {
-    // Agregar logs para depuración
-    console.log('Iniciando aplicación de filtros...');
-    
-    const nombre = document.getElementById('filtro-nombre')?.value.toLowerCase() || '';
-    const categoria = document.getElementById('filtro-categoria')?.value.toLowerCase() || '';
-    const precioMin = parseFloat(document.getElementById('filtro-precio-min')?.value) || 0;
-    const precioMax = parseFloat(document.getElementById('filtro-precio-max')?.value) || Infinity;
-    const genero = document.getElementById('filtro-genero')?.value.toLowerCase() || '';
-    const talle = document.getElementById('filtro-talle')?.value.toLowerCase() || '';
-    const disciplina = document.getElementById('filtro-disciplina')?.value.toLowerCase() || '';
-
-    // Log de valores de filtros
-    console.log('Valores de filtros:', {
-        nombre,
-        categoria,
-        precioMin,
-        precioMax,
-        genero,
-        talle,
-        disciplina
-    });
-
-    // Verificar si hay productos disponibles
-    if (!productos || productos.length === 0) {
-        console.error('No hay productos cargados');
-        return;
+    // 1. Leer categoría del botón activo
+    const botonActivo = document.querySelector('.boton-categoria.active');
+    let categoria = "";
+    if (botonActivo) {
+        // Si el botón tiene id, usalo como categoría
+        categoria = botonActivo.id;
+        // O si usás data-categoria: categoria = botonActivo.dataset.categoria;
     }
+
+    // 2. Leer el resto de los filtros
+    const nombre = document.getElementById('filtro-nombre').value.trim().toLowerCase();
+    const categoriaSelect = document.getElementById('filtro-categoria').value;
+    const precioMin = parseFloat(document.getElementById('filtro-precio-min').value) || 0;
+    const precioMax = parseFloat(document.getElementById('filtro-precio-max').value) || Infinity;
+    const genero = document.getElementById('filtro-genero').value;
+    const talle = document.getElementById('filtro-talle').value;
+    const disciplina = document.getElementById('filtro-disciplina').value;
+
+    // Si no hay botón activo, usá el select
+    if (!categoria || categoria === "todos") {
+        categoria = categoriaSelect;
+    }
+
+    // Log para depuración
+    console.log("Valores de filtros: ", { nombre, categoria, precioMin, precioMax, genero, talle, disciplina });
 
     const productosFiltrados = productos.filter(producto => {
         if (!producto || producto.es_variante) return false;
@@ -301,8 +318,12 @@ function aplicarFiltro() {
         // Filtro por categoría
         let categoriaMatch = true;
         if (categoria !== '') {
-            categoriaMatch = producto.categoria && 
-                           producto.categoria.nombre.toLowerCase().includes(categoria);
+            if (categoria === "indumentaria" || categoria === "accesorios") {
+                categoriaMatch = producto.categoria_general === categoria;
+            } else {
+                categoriaMatch = producto.categoria && 
+                                 producto.categoria.id === categoria;
+            }
         }
 
         // Filtro por precio
@@ -354,11 +375,40 @@ function aplicarFiltro() {
     // Mostrar los productos filtrados
     mostrarProductos(productosFiltrados);
 
-    // Actualizar el título principal
+    // Actualizar el título principal SOLO si hay algún filtro activo
     const tituloPrincipal = document.querySelector("#titulo-principal");
-    tituloPrincipal.innerText = productosFiltrados.length === 0 
-        ? "No se encontraron productos"
-        : `${productosFiltrados.length} productos encontrados`;
+
+    // Detectar si hay algún filtro activo (excepto categoría)
+    const hayFiltrosActivos =
+        nombre ||
+        (precioMin && precioMin !== 0) ||
+        (precioMax && precioMax !== Infinity) ||
+        genero ||
+        talle ||
+        disciplina;
+
+    // Si hay filtros activos, mostrar la cantidad
+    if (hayFiltrosActivos) {
+        tituloPrincipal.innerText = productosFiltrados.length === 0 
+            ? "No se encontraron productos"
+            : `${productosFiltrados.length} productos encontrados`;
+    } else {
+        // Si no hay filtros, mostrar el nombre de la categoría seleccionada
+        const botonActivo = document.querySelector('.boton-categoria.active');
+        if (botonActivo) {
+            if (botonActivo.id === "todos") {
+                tituloPrincipal.innerText = "Todos los productos";
+            } else if (botonActivo.id === "indumentaria") {
+                tituloPrincipal.innerText = "Indumentaria";
+            } else if (botonActivo.id === "accesorios") {
+                tituloPrincipal.innerText = "Accesorios";
+            } else {
+                tituloPrincipal.innerText = botonActivo.textContent.trim();
+            }
+        } else {
+            tituloPrincipal.innerText = "Todos los productos";
+        }
+    }
 }
 
 function cargarProductos(productos) {
@@ -370,7 +420,7 @@ function cargarProductos(productos) {
             const div = document.createElement('div');
             div.classList.add('producto');
             const idSanitizado = producto.id.replace(/[^a-zA-Z0-9-_]/g, '_');
-            
+
             // Buscar la primera variante con stock si el producto principal no tiene stock
             let productoAMostrar = producto;
             if (producto.stock === 0) {
@@ -380,8 +430,13 @@ function cargarProductos(productos) {
                 }
             }
 
+            // Usar placeholder si no hay imagen
+            const imagenSrc = productoAMostrar.imagen && productoAMostrar.imagen.trim() !== ""
+                ? productoAMostrar.imagen
+                : "img/placeholder.png";
+
             div.innerHTML = `
-            <img class="producto-img" src="${productoAMostrar.imagen}" alt="${productoAMostrar.titulo}">
+            <img class="producto-img" src="${imagenSrc}" alt="${productoAMostrar.titulo}">
             <div class="producto-detalles">
                 <h3 class="producto-titulo">${productoAMostrar.titulo}</h3>
                 <p class="producto-precio">$${productoAMostrar.precio}</p>
@@ -409,24 +464,36 @@ function cargarProductos(productos) {
                 select.append(option);
             });
 
-            select.addEventListener('change', (e) => {
-                const varianteSeleccionada = productos.find(p => p.id === e.target.value);
-                if (varianteSeleccionada) {
-                    div.querySelector('.producto-img').src = varianteSeleccionada.imagen;
-                    div.querySelector('.producto-precio').innerText = `$${varianteSeleccionada.precio}`;
-                    div.querySelector('.producto-talles').innerText = `Talles: ${varianteSeleccionada.talles ? varianteSeleccionada.talles.join(', ') : 'No disponible'}`;
-                    div.querySelector('.producto-consultar').id = varianteSeleccionada.id;
-                    div.querySelector('.producto-consultar').disabled = varianteSeleccionada.stock === 0;
-                    select.style.backgroundColor = color_hex_map[varianteSeleccionada.color];
-                } 
-            });
-
-            select.style.backgroundColor = color_hex_map[productoAMostrar.color];
+            // Si solo hay una opción, deshabilitar el select
+            if (select.options.length <= 1) {
+                select.disabled = true;
+                select.style.cursor = "not-allowed";
+            } else {
+                select.addEventListener('change', (e) => {
+                    const varianteSeleccionada = productos.find(p => p.id === e.target.value);
+                    if (varianteSeleccionada) {
+                        div.querySelector('.producto-img').src = varianteSeleccionada.imagen && varianteSeleccionada.imagen.trim() !== ""
+                            ? varianteSeleccionada.imagen
+                            : "img/placeholder.png";
+                        div.querySelector('.producto-precio').innerText = `$${varianteSeleccionada.precio}`;
+                        div.querySelector('.producto-talles').innerText = `Talles: ${varianteSeleccionada.talles ? varianteSeleccionada.talles.join(', ') : 'No disponible'}`;
+                        div.querySelector('.producto-consultar').id = varianteSeleccionada.id;
+                        div.querySelector('.producto-consultar').disabled = varianteSeleccionada.stock === 0;
+                        select.style.backgroundColor = color_hex_map[varianteSeleccionada.color];
+                    }
+                });
+                select.style.backgroundColor = color_hex_map[productoAMostrar.color];
+            }
 
             // Si el producto no tiene stock, añadir clase para estilo gris y deshabilitar botón
             if (productoAMostrar.stock === 0) {
                 div.classList.add('sin-stock');
                 div.querySelector('.producto-consultar').disabled = true;
+                // Agregar cinta "NO STOCK"
+                const cinta = document.createElement('div');
+                cinta.className = 'cinta-no-stock';
+                cinta.innerText = 'NO STOCK';
+                div.appendChild(cinta);
             }
         }
     });

@@ -94,5 +94,17 @@
     "accion": "Venta",
     "producto": "Productos vendidos",
     "detalles": "tumama (C\u00f3digo: 666, Cantidad: 4, Precio: $8900)"
+  },
+  {
+    "fecha": "2025-06-25 14:05:00",
+    "accion": "Precio Actualizado",
+    "producto": "Varios productos",
+    "detalles": "oaa: $2020.0 -> $2121 (5.0%)"
+  },
+  {
+    "fecha": "2025-06-25 14:07:20",
+    "accion": "Venta",
+    "producto": "Productos vendidos",
+    "detalles": "oaa (C\u00f3digo: 23, Cantidad: 1, Precio: $2121)\nremera (C\u00f3digo: 56, Cantidad: 1, Precio: $8600)"
   }
 ]
