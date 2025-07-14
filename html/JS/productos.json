@@ -323,27 +323,6 @@
     "codigo_barras": 78
   },
   {
-    "id": "remeras_remera01",
-    "titulo": "Remera01",
-    "imagen": "./img/04.jpg",
-    "categoria": {
-      "nombre": "REMERAS",
-      "id": "remeras"
-    },
-    "categoria_general": "indumentaria",
-    "precio": "9000",
-    "es_variante": false,
-    "genero": "Unisex",
-    "talles": [
-      "M",
-      "L"
-    ],
-    "color": "Rojo",
-    "disciplina": "Deportes",
-    "stock": 0,
-    "codigo_barras": 123
-  },
-  {
     "id": "remeras_puta",
     "titulo": "Puta",
     "imagen": "./img/04.jpg",
