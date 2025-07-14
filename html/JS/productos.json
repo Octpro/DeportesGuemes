@@ -282,27 +282,6 @@
     "codigo_barras": 56
   },
   {
-    "id": "abrigos_tumama",
-    "titulo": "tumamaculo",
-    "imagen": "",
-    "categoria": {
-      "nombre": "Abrigos",
-      "id": "abrigos"
-    },
-    "categoria_general": "indumentaria",
-    "precio": "8900",
-    "es_variante": false,
-    "genero": "Nino",
-    "talles": [
-      "S",
-      "M"
-    ],
-    "color": "Color",
-    "disciplina": "Boxeo",
-    "stock": 9,
-    "codigo_barras": 666
-  },
-  {
     "id": "bolsos_tu_puta_madre",
     "titulo": "TU PUTA MADRE",
     "imagen": "./img/03.jpg",
