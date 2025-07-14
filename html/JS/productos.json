@@ -282,26 +282,6 @@
     "codigo_barras": 56
   },
   {
-    "id": "bolsos_tu_puta_madre",
-    "titulo": "TU PUTA MADRE",
-    "imagen": "./img/03.jpg",
-    "categoria": {
-      "nombre": "BOLSOS",
-      "id": "bolsos"
-    },
-    "categoria_general": "accesorios",
-    "precio": "80000",
-    "es_variante": false,
-    "genero": "No",
-    "talles": [
-      "No"
-    ],
-    "color": "Gris",
-    "disciplina": "Deportes",
-    "stock": 0,
-    "codigo_barras": 78
-  },
-  {
     "id": "remeras_puta",
     "titulo": "Puta",
     "imagen": "./img/04.jpg",
