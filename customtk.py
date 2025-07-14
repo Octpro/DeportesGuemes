@@ -1,4 +1,5 @@
 import customtkinter as ctk
+#from customtkinter import CTkSpinbox
 import json
 from tkinter import *
 from tkinter import filedialog, messagebox, ttk
@@ -8,6 +9,17 @@ import unicodedata
 import shutil 
 import math  # Agregar al inicio del archivo
 from datetime import datetime  # Importar datetime para registrar acciones
+from git import Repo  # Asegúrate de tener gitpython instalado
+
+def commit_y_push(repo_dir, mensaje_commit):
+    try:
+        repo = Repo(repo_dir)
+        repo.git.add('html/JS/productos.json')
+        repo.index.commit(mensaje_commit)
+        repo.remote(name='origin').push()
+        print("\u2705 Cambios subidos a GitHub correctamente.")
+    except Exception as e:
+        print(f"\u274c Error al hacer commit/push: {e}")
 
 def eliminar_acentos(cadena):
 	return ''.join(
@@ -148,25 +160,72 @@ def normalizar_diccionario(diccionario):
 			diccionario[key] = eliminar_acentos(value)
 	return diccionario
 
-def filtrar_productos(productos, nombre=None, categoria=None, precio_min=None, precio_max=None, disciplina=None, genero=None):
-	filtrados = productos
-	if nombre:
-		nombre = eliminar_acentos(nombre.lower())
-		filtrados = [p for p in filtrados if nombre in eliminar_acentos(p['titulo'].lower())]
-	if categoria and categoria != "Todas":
-		categoria = eliminar_acentos(categoria.lower())
-		filtrados = [p for p in filtrados if categoria in eliminar_acentos(p['categoria_general'].lower()) or categoria in eliminar_acentos(p['categoria']['id'])]
-	if precio_min is not None:
-		filtrados = [p for p in filtrados if float(p['precio']) >= float(precio_min)]
-	if precio_max is not None:
-		filtrados = [p for p in filtrados if float(p['precio']) <= float(precio_max)]
-	if disciplina and disciplina != "Todas":
-		disciplina = eliminar_acentos(disciplina.lower())
-		filtrados = [p for p in filtrados if disciplina in eliminar_acentos(p.get('disciplina', '').lower())]
-	if genero and genero != "Todos":
-		genero = eliminar_acentos(genero.lower())
-		filtrados = [p for p in filtrados if genero in eliminar_acentos((p['genero'] or "").lower())]
-	return filtrados
+def filtrar_productos(self, *args):
+    busqueda = self.entry_busqueda.get().strip().lower()
+    categoria = self.combo_categoria.get()
+    disciplina = self.combo_disciplina.get()
+
+    # Si no hay cambios en la búsqueda, categoría o disciplina, no hacer nada
+    if (
+        busqueda == getattr(self, "last_search", "")
+        and categoria == getattr(self, "last_category", "Todas")
+        and disciplina == getattr(self, "last_disciplina", "Todas")
+    ):
+        return
+
+    # Actualizar los valores de búsqueda, categoría y disciplina
+    self.last_search = busqueda
+    self.last_category = categoria
+    self.last_disciplina = disciplina
+
+    productos_filtrados = []
+
+    for p in self.cached_productos:
+        titulo_lower = p['titulo'].lower()
+        codigo = str(p.get('codigo_barras', ''))
+        disciplina_p = p.get('disciplina', '').lower()
+
+        # Verificar si la búsqueda coincide con el código exacto
+        if busqueda.isdigit() and codigo.isdigit() and int(codigo) == int(busqueda):
+            coincide_categoria = (
+                categoria == "Todas"
+                or categoria.upper() == p['categoria']['nombre'].upper()
+                or categoria.lower() in p['categoria_general'].lower()
+            )
+            coincide_disciplina = (
+                disciplina == "Todas"
+                or disciplina.lower() == disciplina_p
+            )
+            if coincide_categoria and coincide_disciplina:
+                productos_filtrados.append(p)
+            continue
+
+        # Si no es código exacto, buscar en título y código
+        if busqueda in titulo_lower or busqueda in codigo:
+            coincide_categoria = (
+                categoria == "Todas"
+                or categoria.upper() == p['categoria']['nombre'].upper()
+                or categoria.lower() in p['categoria_general'].lower()
+            )
+            coincide_disciplina = (
+                disciplina == "Todas"
+                or disciplina.lower() == disciplina_p
+            )
+            if coincide_categoria and coincide_disciplina:
+                productos_filtrados.append(p)
+
+    # Ordenar los resultados numéricamente si es posible
+    def get_sort_key(producto):
+        try:
+            return int(producto.get('codigo_barras', ''))
+        except ValueError:
+            return float('inf')
+
+    productos_filtrados.sort(key=get_sort_key)
+
+    # Actualizar la lista filtrada y mostrar los productos
+    self.cached_filtrados = productos_filtrados
+    self.mostrar_productos(productos_filtrados)
 
 # Crear una clase gestora de datos:
 class DataManager:
@@ -308,12 +367,12 @@ class App(ctk.CTk):
 				font=self.font_normal
 			).pack(side="left", padx=5)
 
-			ctk.CTkButton(
-				self.menu_frame,
-				text="Lista de Precios",
-				command=self.show_lista_precios,
-				font=self.font_normal
-			).pack(side="left", padx=5)
+		ctk.CTkButton(
+			self.menu_frame,
+			text="Lista de Precios",
+			command=self.show_lista_precios,
+			font=self.font_normal
+		).pack(side="left", padx=5)
 
 		# Botón de cambiar tema a la derecha
 		ctk.CTkButton(
@@ -452,8 +511,27 @@ class VerProductosDialog(ctk.CTkToplevel):
 				except Exception as e:
 					print(f"Error mostrando producto: {producto}\n{e}")
 
+			# --- Agrega este bloque al final ---
+			if not productos_filtrados:
+				label = ctk.CTkLabel(
+					self.productos_frame,
+					text="No hay productos para los filtros aplicados.",
+					font=("", 16, "bold"),
+					text_color="red"
+				)
+				label.grid(row=0, column=0, padx=10, pady=30, columnspan=columnas, sticky="nsew")
 		except Exception as e:
 			print(f"Error en mostrar_productos: {e}")
+
+		# --- Agrega este bloque al final ---
+		if not productos_filtrados:
+			label = ctk.CTkLabel(
+				self.productos_frame,
+				text="No hay productos para los filtros aplicados.",
+				font=("", 16, "bold"),
+				text_color="red"
+			)
+			label.grid(row=0, column=0, padx=10, pady=30, columnspan=columnas, sticky="nsew")
 
 	def crear_filtros(self):
 		filtro_frame = ctk.CTkFrame(self.main_frame)
@@ -469,7 +547,7 @@ class VerProductosDialog(ctk.CTkToplevel):
 		ctk.CTkLabel(filtro_frame, text="Categoría").pack(side="left", padx=5)
 		self.filtro_categoria = ctk.CTkOptionMenu(
 			filtro_frame,
-			values=["Todas", "Indumentaria", "Accesorios", "REMERAS", "PANTALONES", "ABRIGOS"],
+			values=["Todas", "Indumentaria", "Accesorios", "Remeras", "Pantalones", "Abrigos", "Marroquineria", "Bolsos", "Pelotas"],
 			command=lambda x: self.aplicar_filtros()
 		)
 		self.filtro_categoria.pack(side="left", padx=5)
@@ -547,6 +625,15 @@ class VerProductosDialog(ctk.CTkToplevel):
 			command=self.actualizar_stock_seleccionados,
 			fg_color="green"
 		).pack(side="left", padx=5)
+
+		# Label para mostrar el precio seleccionado (arriba a la derecha)
+		self.precio_seleccionado_label = ctk.CTkLabel(
+			filtro_frame,
+			text="Precio: -",
+			font=("Helvetica", 14, "bold"),
+			text_color="green"
+		)
+		self.precio_seleccionado_label.pack(side="right", padx=10)
 
 	def aplicar_filtros(self, *args):
 		try:
@@ -1061,7 +1148,7 @@ class VerProductosDialog(ctk.CTkToplevel):
 
 		# Categoría
 		ctk.CTkLabel(frame, text="Categoría").pack(pady=5)
-		categorias = ["Remeras", "Abrigos", "Pantalones", "Accesorios"]
+		categorias = ["Indumentaria", "Accesorios", "Remeras", "Pantalones", "Abrigos", "Marroquineria", "Bolsos", "Pelotas"]
 		variable_categoria = ctk.StringVar(value=producto['categoria']['nombre'].capitalize())
 		categoria_menu = ctk.CTkOptionMenu(frame, values=categorias, variable=variable_categoria)
 		categoria_menu.pack(pady=5)
@@ -1182,14 +1269,6 @@ class VerProductosDialog(ctk.CTkToplevel):
 
 			except Exception as e:
 				messagebox.showerror("Error", f"No se pudo modificar el producto: {str(e)}")
-
-		# Botón de guardar
-		ctk.CTkButton(
-			frame,
-			text="Guardar Cambios",
-			command=guardar_cambios,
-			fg_color="blue"
-		).pack(pady=20)
 
 class ModoVentaDialog(ctk.CTkToplevel):
 	def __init__(self, parent):
@@ -1323,11 +1402,27 @@ class ModoVentaDialog(ctk.CTkToplevel):
 				# Campo para cantidad
 				cantidad_var = ctk.IntVar(value=1)
 				ctk.CTkLabel(item_frame, text="Cantidad:").pack(side="right", padx=2)
-				entry_cantidad = ctk.CTkEntry(item_frame, width=40, textvariable=cantidad_var)
-				entry_cantidad.pack(side="right", padx=2)
+				frame_cantidad = ctk.CTkFrame(item_frame)
+				frame_cantidad.pack(side="right", padx=2)
+
+				def aumentar():
+					if stock == 0:
+						return
+					cantidad_var.set(min(cantidad_var.get() + 1, stock))
+
+				def disminuir():
+					if cantidad_var.get() > 1:
+						cantidad_var.set(cantidad_var.get() - 1)
+
+				btn_menos = ctk.CTkButton(frame_cantidad, text="-", width=20, command=disminuir)
+				btn_menos.pack(side="left")
+				entry_cantidad = ctk.CTkEntry(frame_cantidad, width=30, textvariable=cantidad_var)
+				entry_cantidad.pack(side="left")
+				btn_mas = ctk.CTkButton(frame_cantidad, text="+", width=20, command=aumentar)
+				btn_mas.pack(side="left")
 
 				# Checkbox para seleccionar/deseleccionar el producto
-				var = ctk.BooleanVar(value=True)  # <-- Esto asegura que siempre esté desmarcado
+				var = ctk.BooleanVar(value=stock > 0)
 				checkbox = ctk.CTkCheckBox(
 					item_frame,
 					text="Seleccionar",
@@ -1336,12 +1431,13 @@ class ModoVentaDialog(ctk.CTkToplevel):
 				)
 				checkbox.pack(side="right", padx=5)
 
-				# Guardar la selección con cantidad
-				self.productos_seleccionados.append({
-					"producto": producto,
-					"var": var,
-					"cantidad_var": cantidad_var
-				})
+				# Guardar la selección con cantidad SOLO si tiene stock
+				if stock > 0:
+					self.productos_seleccionados.append({
+						"producto": producto,
+						"var": var,
+						"cantidad_var": cantidad_var
+					})
 
 				# Desplazar el scroll hacia el final
 				self.lista_frame._parent_canvas.yview_moveto(1.0)
@@ -1488,7 +1584,7 @@ class ProductoDialog(ctk.CTkToplevel):
 		self.color_label.pack(pady=5)
 
 		# Categoría Producto
-		opciones_unidades = ["Categoria Producto", "Remeras", "Abrigos", "Pantalones", "Accesorios"]
+		opciones_unidades = ["Categoria Producto","Todas", "Indumentaria", "Accesorios", "Remeras", "Pantalones", "Abrigos", "Marroquineria", "Bolsos", "Pelotas"]
 		self.variable_unidad = ctk.StringVar(value=opciones_unidades[0])
 		self.categoria_menu = ctk.CTkOptionMenu(
 			self.main_frame,
@@ -1704,6 +1800,10 @@ class ProductoDialog(ctk.CTkToplevel):
 			productos.append(producto)
 			with open('html/JS/productos.json', 'w') as archivo:
 				json.dump(productos, archivo, indent=2)
+			
+			# Subir a GitHub
+			commit_y_push(repo_dir='.', mensaje_commit=f"Nuevo producto agregado: {producto['titulo']}")
+
 
 			# Registrar acción en el historial
 			HistorialDialog.registrar_accion(
@@ -1777,6 +1877,16 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 		for row, producto in enumerate(productos_filtrados, start=1):
 			self._crear_nueva_fila(producto, row)
 
+		# --- Agrega este bloque al final ---
+		if not productos_filtrados:
+			label = ctk.CTkLabel(
+				self.tabla_frame,
+				text="No se encontraron productos con los filtros aplicados.",
+				font=("Helvetica", 16, "bold"),
+				text_color="red"
+			)
+			label.grid(row=1, column=0, padx=10, pady=30, columnspan=6, sticky="nsew")
+
 	def _crear_headers(self):
 		headers = {
 			"codigo": "Código",
@@ -1826,6 +1936,11 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 			row_frame.configure(fg_color=("gray70", "gray30"))
 			self.seleccion[producto['id']] = producto
 
+		# Mostrar el precio del producto seleccionado en el label
+		self.precio_seleccionado_label.configure(
+			text=f"Precio: ${producto['precio']}"
+		)
+
 	def cargar_productos(self):
 		try:
 			with open('html/JS/productos.json', 'r') as archivo:
@@ -1841,42 +1956,62 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 	def filtrar_productos(self, *args):
 		busqueda = self.entry_busqueda.get().strip().lower()
 		categoria = self.combo_categoria.get()
+		disciplina = self.combo_disciplina.get()
 
-		# Si no hay cambios en la búsqueda o categoría, no hacer nada
-		if busqueda == self.last_search and categoria == self.last_category:
+		# Si no hay cambios en la búsqueda, categoría o disciplina, no hacer nada
+		if (
+			busqueda == getattr(self, "last_search", "")
+			and categoria == getattr(self, "last_category", "Todas")
+			and disciplina == getattr(self, "last_disciplina", "Todas")
+		):
 			return
 
-		# Actualizar los valores de búsqueda y categoría
+		# Actualizar los valores de búsqueda, categoría y disciplina
 		self.last_search = busqueda
 		self.last_category = categoria
+		self.last_disciplina = disciplina
 
 		productos_filtrados = []
 
 		for p in self.cached_productos:
 			titulo_lower = p['titulo'].lower()
 			codigo = str(p.get('codigo_barras', ''))
+			disciplina_p = p.get('disciplina', '').lower()
 
 			# Verificar si la búsqueda coincide con el código exacto
 			if busqueda.isdigit() and codigo.isdigit() and int(codigo) == int(busqueda):
-				productos_filtrados.append(p)
+				coincide_categoria = (
+					categoria == "Todas"
+					or categoria.upper() == p['categoria']['nombre'].upper()
+					or categoria.lower() in p['categoria_general'].lower()
+				)
+				coincide_disciplina = (
+					disciplina == "Todas"
+					or disciplina.lower() == disciplina_p
+				)
+				if coincide_categoria and coincide_disciplina:
+					productos_filtrados.append(p)
 				continue
 
 			# Si no es código exacto, buscar en título y código
 			if busqueda in titulo_lower or busqueda in codigo:
-				# Si la categoría es "Todas", incluir todos los productos
-				if categoria == "Todas" or (
-					categoria.upper() == p['categoria']['nombre'].upper() or
-					categoria.lower() in p['categoria_general'].lower()
-				):
+				coincide_categoria = (
+					categoria == "Todas"
+					or categoria.upper() == p['categoria']['nombre'].upper()
+					or categoria.lower() in p['categoria_general'].lower()
+				)
+				coincide_disciplina = (
+					disciplina == "Todas"
+					or disciplina.lower() == disciplina_p
+				)
+				if coincide_categoria and coincide_disciplina:
 					productos_filtrados.append(p)
 
 		# Ordenar los resultados numéricamente si es posible
 		def get_sort_key(producto):
 			try:
-				# Intentar convertir el código de barras a un número
 				return int(producto.get('codigo_barras', ''))
 			except ValueError:
-				# Si no es un número, usar un valor alto para colocarlo al final
 				return float('inf')
 
 		productos_filtrados.sort(key=get_sort_key)
@@ -2048,34 +2183,42 @@ class ListaPreciosDialog(ctk.CTkToplevel):
 			child.bind("<Button-1>", lambda e, p=producto, rf=row_frame: self.seleccionar_fila(rf, p, e))
 
 	def crear_barra_busqueda(self):
-		# Frame para la barra de búsqueda
 		busqueda_frame = ctk.CTkFrame(self.main_frame)
 		busqueda_frame.pack(fill="x", padx=10, pady=5)
 
-		# Búsqueda por nombre
-		ctk.CTkLabel(
-			busqueda_frame, 
-			text="Buscar:",
-			font=self.master.font_normal
-		).pack(side="left", padx=5)
-		
+		# Nombre
+		ctk.CTkLabel(busqueda_frame, text="Nombre").pack(side="left", padx=5)
 		self.entry_busqueda = ctk.CTkEntry(busqueda_frame, width=200)
 		self.entry_busqueda.pack(side="left", padx=5)
 		self.entry_busqueda.bind('<KeyRelease>', self.filtrar_productos)
 
 		# Filtro por categoría
-		ctk.CTkLabel(
-			busqueda_frame, 
-			text="Categoría:",
-			font=self.master.font_normal
-		).pack(side="left", padx=5)
-		
+		ctk.CTkLabel(busqueda_frame, text="Categoría:").pack(side="left", padx=5)
 		self.combo_categoria = ctk.CTkOptionMenu(
 			busqueda_frame,
-			values=["Todas", "Indumentaria", "Accesorios", "REMERAS", "PANTALONES", "ABRIGOS"],
+			values=["Todas", "Indumentaria", "Accesorios", "Remeras", "Pantalones", "Abrigos", "Marroquineria", "Bolsos", "Pelotas"],
 			command=self.filtrar_productos
 		)
 		self.combo_categoria.pack(side="left", padx=5)
+
+		# Filtro por disciplina
+		ctk.CTkLabel(busqueda_frame, text="Disciplina:").pack(side="left", padx=5)
+		self.combo_disciplina = ctk.CTkOptionMenu(
+			busqueda_frame,
+			values=["Todas", "Futbol", "Basquet", "Tenis", "Natacion", "Running", 
+					"Boxeo", "Voley", "Rugby", "Hockey", "Yoga", "Fitness", "Musculacion"],
+			command=self.filtrar_productos
+		)
+		self.combo_disciplina.pack(side="left", padx=5)
+
+		# Label para mostrar el precio seleccionado (arriba a la derecha)
+		self.precio_seleccionado_label = ctk.CTkLabel(
+			busqueda_frame,
+			text="Precio: -",
+			font=("Helvetica", 14, "bold"),
+			text_color="green"
+		)
+		self.precio_seleccionado_label.pack(side="right", padx=10)
 
 class HistorialDialog(ctk.CTkToplevel):
 	def __init__(self, parent):
@@ -2142,13 +2285,10 @@ class HistorialDialog(ctk.CTkToplevel):
 			widget.destroy()
 
 		# Crear encabezados
-		headers = ["Fecha", "Tipo de Acción", "Producto", "Detalles"]
-		for i, header in enumerate(headers):
-			ctk.CTkLabel(
-				self.tabla_frame,
-				text=header,
-				font=("Helvetica", 14, "bold")
-			).grid(row=0, column=i, padx=5, pady=5, sticky="ew")
+		ctk.CTkLabel(self.tabla_frame, text="Fecha", font=("Helvetica", 14, "bold")).grid(row=0, column=0, padx=5, pady=2, sticky="ew")
+		ctk.CTkLabel(self.tabla_frame, text="Acción", font=("Helvetica", 14, "bold")).grid(row=0, column=1, padx=5, pady=2, sticky="ew")
+		ctk.CTkLabel(self.tabla_frame, text="Producto", font=("Helvetica", 14, "bold")).grid(row=0, column=2, padx=5, pady=2, sticky="ew")
+		ctk.CTkLabel(self.tabla_frame, text="Detalles", font=("Helvetica", 14, "bold")).grid(row=0, column=3, padx=5, pady=2, sticky="ew")
 
 		# Mostrar registros
 		for row, registro in enumerate(registros, start=1):

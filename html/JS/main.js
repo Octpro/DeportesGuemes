@@ -307,7 +307,7 @@ function aplicarFiltro() {
     }
 
     // Log para depuración
-    console.log("Valores de filtros: ", { nombre, categoria, precioMin, precioMax, genero, talle, disciplina });
+    //console.log("Valores de filtros: ", { nombre, categoria, precioMin, precioMax, genero, talle, disciplina });
 
     const productosFiltrados = productos.filter(producto => {
         if (!producto || producto.es_variante) return false;

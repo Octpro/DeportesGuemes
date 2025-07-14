@@ -153,7 +153,7 @@
    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
    gap: 1rem;
    justify-content: center; 
-   max-width: 1000px;
+   max-width: 1300px;
    margin: 0 auto;
 }
 
@@ -346,6 +346,7 @@ pointer-events: none;
 
 #filtro-widget {
     margin-bottom: 20px;
+    /* margin-right: 15rem; */
     display: flex;
     justify-content: flex-end;
 }
@@ -367,19 +368,19 @@ pointer-events: none;
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
+    right: 1rem;
+    top: 9.5rem;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    /* background-color: rgb(0,0,0); Fallback color */
+    /* background-color: rgba(0,0,0,0.4); Black w/ opacity */
     transition: opacity 0.3s ease-out;
 }
 
 .modal-content {
     background-color: var(--clr-white);
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 0 auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid var(--clr-main);
     width: 80%; /* Could be more or less, depending on screen size */
@@ -396,6 +397,8 @@ pointer-events: none;
     display: block;
     margin-top: 10px;
     max-width: 300px;
+    transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+    overflow: hidden;  /* Hide overflow content during transition */
 }
 
 .filtros-mostrados {
@@ -405,7 +408,7 @@ pointer-events: none;
 }
 
 .filtros-ocultos {
-    display: none;
+    /* display: none; */
     opacity: 0;
     max-height: 0;
 }
@@ -444,118 +447,42 @@ pointer-events: none;
     color: var(--clr-white);
 }
 
-/* MEDIA QUERIES */
-
-@media screen and (max-width: 850px){
-   .contenedor-productos {
-      grid-template-columns: 1fr 1fr, 1fr;
-   }   
+.open-menu,
+.close-menu{
+   background-color: transparent;
+   color: var(--clr-gray);
+   border: 0;
+   font-size: 2rem;
+   cursor: pointer;
+}
+.close-menu {
+   display: block;
+   position: absolute;
+   top: .1rem;
+   right: 1rem;
 }
 
-@media screen and (max-width: 675px){
-   .contenedor-productos {
-      grid-template-columns: 1fr 1fr;
-   }   
+.carrito-producto{
+   gap: 1rem;
+   flex-wrap: wrap;
+   justify-content: flex-start;
+   padding: .5rem;
 }
 
-@media screen and (max-width: 600px){
-   .wrapper{
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-   }
-
-   aside{
-      position: fixed;
-      z-index: 9;
-      background-color: var(--clr-main);
-      left: 0;
-      box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .75);
-      transform: translateX(-100%);
-      opacity: 0;
-      visibility: hidden;
-      transition: .2s;
-   }
-
-   .aside-visible {
-      transform: translateX(0);
-      opacity: 1;
-      visibility: visible;
-   }
-
-   .boton-menu.active::before,
-   .boton-menu.active::after {
-      display: none;
-   }
-
-   main {
-      margin: 1rem;
-      margin-top: 0;
-      padding: 2rem;
-   }
-
-   .contenedor-productos {
-      grid-template-columns: 1fr 1fr;
-   }
-
-   .header-movile {
-      display: flex;
-      padding: 1rem;
-      justify-content: space-between;
-      align-items: center;
-   }
-
-   .header-movile .logo {
-      color: var(--clr-gray);
-      text-decoration: none;
-   }
-.logo{
-   color: var(--clr-main);
-   font-size: 1.5rem;
-   font-weight: 600;
+.carrito-producto-subtotal {
+   display: none;
 }
 
-.logo:hover {
-   color: white;
-
+.carrito-acciones {
+   flex-wrap: wrap;
+   row-gap: 1rem;
 }
 
-   .open-menu,
-   .close-menu{
-      background-color: transparent;
-      color: var(--clr-gray);
-      border: 0;
-      font-size: 2rem;
-      cursor: pointer;
-   }
-   .close-menu {
-      display: block;
-      position: absolute;
-      top: .1rem;
-      right: 1rem;
-   }
-
-   .carrito-producto{
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      padding: .5rem;
-   }
-
-   .carrito-producto-subtotal {
-      display: none;
-   }
-
-   .carrito-acciones {
-      flex-wrap: wrap;
-      row-gap: 1rem;
-   }
-}
-
-@media screen and (max-width: 400px){
-   .contenedor-productos {
-      grid-template-columns: 1fr;
-   }   
+/* Ajuste general para que los productos no sean tan grandes */
+#contenedor-productos > * {
+    max-width: 220px;
+    min-width: 100px;
+    margin: 0 auto;
 }
 
 .cinta-no-stock {
@@ -578,4 +505,225 @@ pointer-events: none;
 }
 .producto {
     position: relative; /* Asegura que la cinta se posicione respecto al producto */
+}
+
+/* ===================== */
+/* 🛠️ AJUSTES RESPONSIVE */
+/* ===================== */
+
+@media screen and (max-width: 768px) {
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 70%;
+    max-width: 300px;
+    height: 100%;
+    background-color: var(--clr-main);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 100;
+    padding-right: 1rem;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.4);
+  }
+
+  .aside-visible {
+    transform: translateX(0);
+  }
+
+  .close-menu {
+    display: block;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    color: var(--clr-white);
+    background: none;
+    border: none;
+  }
+
+  .header-movile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--clr-main);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+  }
+
+  .open-menu {
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: var(--clr-white);
+  }
+
+  main {
+    margin: 1rem;
+    padding: 1.5rem 1rem;
+  }
+
+  #contenedor-productos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  #toggle-filtros {
+    font-size: 1rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .modal-content {
+    width: 95%;
+    margin-top: 25%;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  #contenedor-productos {
+    grid-template-columns: 1fr;
+  }
+
+  .producto-img {
+    aspect-ratio: 1/1;
+  }
+
+  #toggle-filtros {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .modal-content {
+    margin-top: 30%;
+    padding: 1rem;
+  }
+}
+
+/* === PANTALLAS GRANDES: Escritorio 1366px - 1920px === */
+@media screen and (min-width: 1200px) and (max-width: 1920px) {
+    .wrapper {
+        grid-template-columns: 1fr 3.5fr;
+    }
+    #close-menu {
+        display: none;
+    }
+
+    main {
+        padding: 2rem 2.5rem;
+    }
+
+    #contenedor-productos {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+
+    #filtro-widget {
+        justify-content: flex-end;
+        margin-bottom: 1rem;
+        margin-right: 0;
+    }
+
+    #toggle-filtros {
+        font-size: 1rem;
+    }
+}
+
+/* === PANTALLAS MEDIANAS: laptops y notebooks chicos === */
+@media screen and (min-width: 901px) and (max-width: 1199px) {
+    .wrapper {
+        grid-template-columns: 1fr 3fr;
+    }
+    #close-menu {
+        display: none;
+    }
+
+    main {
+        padding: 1.5rem 2rem;
+    }
+
+    #contenedor-productos {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    #filtro-widget {
+        justify-content: flex-end;
+        margin-right: 0;
+    }
+}
+
+/* === TABLETS Y NOTEBOOKS PEQUEÑOS: 768px – 900px === */
+@media screen and (min-width: 768px) and (max-width: 900px) {
+    .wrapper {
+        flex-direction: column;
+    }
+
+    main {
+        padding: 1.5rem;
+        margin: 0 auto;
+    }
+
+    #contenedor-productos {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    #filtro-widget {
+        justify-content: center;
+    }
+}
+
+/* === CELULARES GRANDES === */
+@media screen and (max-width: 767px) {
+    #contenedor-productos {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    #filtro-widget {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    main {
+        padding: 1rem;
+    }
+}
+
+/* === CELULARES CHICOS === */
+@media screen and (max-width: 480px) {
+    #contenedor-productos {
+        grid-template-columns: 1fr;
+    }
+
+    #filtro-widget {
+        justify-content: center;
+    }
+
+    .modal-content {
+        width: 90%;
+    }
+
+    #toggle-filtros {
+        width: 100%;
+    }
+}
+
+#contenedor-productos {
+    padding: 0 1rem;
+    box-sizing: border-box;
+    width: 100%;
+}
+/* Ajuste para que el contenedor de productos no se desborde */
+#contenedor-productos > * {
+    max-width: 100%;
+    box-sizing: border-box;
 }

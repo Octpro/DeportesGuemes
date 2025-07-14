@@ -4,7 +4,7 @@
     "titulo": "under tech 2.0",
     "imagen": "./img/under_1.png",
     "categoria": {
-      "nombre": "REMERAS",
+      "nombre": "Remeras",
       "id": "remeras"
     },
     "categoria_general": "indumentaria",
@@ -25,7 +25,7 @@
     "titulo": "under tech 2.0",
     "imagen": "./img/under_2.png",
     "categoria": {
-      "nombre": "REMERAS",
+      "nombre": "Remeras",
       "id": "remeras"
     },
     "categoria_general": "indumentaria",
@@ -41,29 +41,30 @@
   },
   {
     "id": "accesorios_men1",
-    "titulo": "men1",
+    "titulo": "culo octa",
     "imagen": "./img/287290_5.jpg",
     "categoria": {
-      "nombre": "ACCESORIOS",
+      "nombre": "Accesorios",
       "id": "accesorios"
     },
     "categoria_general": "accesorios",
-    "precio": "1100",
+    "precio": "8",
     "es_variante": false,
     "color": "#a29677",
-    "stock": 10,
+    "stock": 0,
     "genero": "No",
     "talles": [
       "No"
     ],
-    "codigo_barras": 1234567890125
+    "codigo_barras": 1234567890125,
+    "disciplina": ""
   },
   {
     "id": "accesorios_men1_1",
     "titulo": "men1",
     "imagen": "./img/2709570_11.jpg",
     "categoria": {
-      "nombre": "ACCESORIOS",
+      "nombre": "Accesorios",
       "id": "accesorios"
     },
     "categoria_general": "accesorios",
@@ -82,7 +83,7 @@
     "titulo": "men1",
     "imagen": "./img/2709570_12.jpg",
     "categoria": {
-      "nombre": "ACCESORIOS",
+      "nombre": "Accesorios",
       "id": "accesorios"
     },
     "categoria_general": "accesorios",
@@ -101,7 +102,7 @@
     "titulo": "men1",
     "imagen": "./img/escritorio.png",
     "categoria": {
-      "nombre": "ACCESORIOS",
+      "nombre": "Accesorios",
       "id": "accesorios"
     },
     "categoria_general": "accesorios",
@@ -120,7 +121,7 @@
     "titulo": "u",
     "imagen": "./img/under_2.png",
     "categoria": {
-      "nombre": "REMERAS",
+      "nombre": "Remeras",
       "id": "remeras"
     },
     "categoria_general": "indumentaria",
@@ -142,7 +143,7 @@
     "titulo": "u",
     "imagen": "./img/under_1.png",
     "categoria": {
-      "nombre": "REMERAS",
+      "nombre": "Remeras",
       "id": "remeras"
     },
     "categoria_general": "indumentaria",
@@ -159,7 +160,7 @@
     "titulo": "mesi",
     "imagen": "./img/2709570_11.jpg",
     "categoria": {
-      "nombre": "ABRIGOS",
+      "nombre": "Abrigos",
       "id": "abrigos"
     },
     "categoria_general": "indumentaria",
@@ -172,7 +173,7 @@
     ],
     "color": "Verde Azulado",
     "disciplina": "Running",
-    "stock": 0,
+    "stock": 4,
     "codigo_barras": 7792052180702
   },
   {
@@ -180,7 +181,7 @@
     "titulo": "mesi1",
     "imagen": "./img/graf.jpg",
     "categoria": {
-      "nombre": "PANTALONES",
+      "nombre": "Pantalones",
       "id": "pantalones"
     },
     "categoria_general": "indumentaria",
@@ -202,7 +203,7 @@
     "titulo": "sad",
     "imagen": "./img/images.jpg",
     "categoria": {
-      "nombre": "REMERAS",
+      "nombre": "Remeras",
       "id": "remeras"
     },
     "categoria_general": "indumentaria",
@@ -222,7 +223,7 @@
     "titulo": "manco",
     "imagen": "./img/images.jpg",
     "categoria": {
-      "nombre": "ACCESORIOS",
+      "nombre": "Accesorios",
       "id": "accesorios"
     },
     "categoria_general": "accesorios",
@@ -243,7 +244,7 @@
     "titulo": "oaa",
     "imagen": "./img/2709570_11.jpg",
     "categoria": {
-      "nombre": "PANTALONES",
+      "nombre": "Pantalones",
       "id": "pantalones"
     },
     "categoria_general": "indumentaria",
@@ -264,7 +265,7 @@
     "titulo": "remera",
     "imagen": "./img/under_2.png",
     "categoria": {
-      "nombre": "REMERAS",
+      "nombre": "Remeras",
       "id": "remeras"
     },
     "categoria_general": "indumentaria",
@@ -282,10 +283,10 @@
   },
   {
     "id": "abrigos_tumama",
-    "titulo": "tumama",
+    "titulo": "tumamaculo",
     "imagen": "",
     "categoria": {
-      "nombre": "ABRIGOS",
+      "nombre": "Abrigos",
       "id": "abrigos"
     },
     "categoria_general": "indumentaria",
@@ -298,7 +299,27 @@
     ],
     "color": "Color",
     "disciplina": "Boxeo",
-    "stock": 5,
+    "stock": 9,
     "codigo_barras": 666
+  },
+  {
+    "id": "bolsos_tu_puta_madre",
+    "titulo": "TU PUTA MADRE",
+    "imagen": "./img/03.jpg",
+    "categoria": {
+      "nombre": "BOLSOS",
+      "id": "bolsos"
+    },
+    "categoria_general": "accesorios",
+    "precio": "80000",
+    "es_variante": false,
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
+    "color": "Gris",
+    "disciplina": "Deportes",
+    "stock": 0,
+    "codigo_barras": 78
   }
 ]

@@ -106,5 +106,23 @@
     "accion": "Venta",
     "producto": "Productos vendidos",
     "detalles": "oaa (C\u00f3digo: 23, Cantidad: 1, Precio: $2121)\nremera (C\u00f3digo: 56, Cantidad: 1, Precio: $8600)"
+  },
+  {
+    "fecha": "2025-06-25 15:43:50",
+    "accion": "Modificado",
+    "producto": "culo octa",
+    "detalles": "Nombre: men1 -> culo octa, Precio: $1100 -> $8"
+  },
+  {
+    "fecha": "2025-06-25 15:46:49",
+    "accion": "Modificado",
+    "producto": "tumamaculo",
+    "detalles": "Nombre: tumama -> tumamaculo, Precio: $8900 -> $8900"
+  },
+  {
+    "fecha": "2025-07-07 20:04:54",
+    "accion": "Agregado",
+    "producto": "TU PUTA MADRE",
+    "detalles": "Producto agregado con c\u00f3digo: 78, Precio: $80000"
   }
 ]
