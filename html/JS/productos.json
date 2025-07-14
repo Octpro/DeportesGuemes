@@ -280,26 +280,5 @@
     "disciplina": "Deportes",
     "stock": 3,
     "codigo_barras": 56
-  },
-  {
-    "id": "remeras_puta",
-    "titulo": "Puta",
-    "imagen": "./img/04.jpg",
-    "categoria": {
-      "nombre": "REMERAS",
-      "id": "remeras"
-    },
-    "categoria_general": "indumentaria",
-    "precio": "9000",
-    "es_variante": false,
-    "genero": "Unisex",
-    "talles": [
-      "M",
-      "L"
-    ],
-    "color": "Rojo",
-    "disciplina": "Deportes",
-    "stock": 0,
-    "codigo_barras": 123
   }
 ]
