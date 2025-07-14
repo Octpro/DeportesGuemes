@@ -935,7 +935,9 @@ class VerProductosDialog(ctk.CTkToplevel):
 					producto="Varios productos",
 					detalles="\n".join(detalles_cambios)
 				)
-				
+
+				commit_y_push(repo_dir='.', mensaje_commit="Actualización de precios masiva")
+
 				messagebox.showinfo("Éxito", "Precios actualizados correctamente")
 				dialog.destroy()
 				self.cargar_productos()  # Recargar vista
@@ -1020,6 +1022,8 @@ class VerProductosDialog(ctk.CTkToplevel):
 				# Guardar cambios
 				with open('html/JS/productos.json', 'w') as archivo:
 					json.dump(todos_productos, archivo, indent=2)
+
+				commit_y_push(repo_dir='.', mensaje_commit="Actualización de stock masiva")
 				
 				messagebox.showinfo("Éxito", "Stock actualizado correctamente")
 				dialog.destroy()
@@ -1081,6 +1085,7 @@ class VerProductosDialog(ctk.CTkToplevel):
 					producto=producto['titulo'],
 					detalles=f"Producto eliminado con código: {producto['codigo_barras']}"
 				)
+				commit_y_push(repo_dir='.', mensaje_commit=f"Producto eliminado: {producto['titulo']}")
 
 				# Actualizar la vista
 				self.productos = productos
@@ -1254,6 +1259,8 @@ class VerProductosDialog(ctk.CTkToplevel):
 				# Guardar cambios
 				with open('html/JS/productos.json', 'w') as archivo:
 					json.dump(productos, archivo, indent=2)
+				
+				commit_y_push(repo_dir='.', mensaje_commit=f"Producto modificado: {producto['titulo']}")
 
 				# Registrar acción en el historial
 				HistorialDialog.registrar_accion(
