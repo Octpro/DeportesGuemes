@@ -157,14 +157,14 @@
   },
   {
     "id": "abrigos_mesi",
-    "titulo": "mesi",
+    "titulo": "mesi1",
     "imagen": "./img/2709570_11.jpg",
     "categoria": {
-      "nombre": "Abrigos",
+      "nombre": "ABRIGOS",
       "id": "abrigos"
     },
     "categoria_general": "indumentaria",
-    "precio": "123456789",
+    "precio": "12345",
     "es_variante": false,
     "genero": "Unisex",
     "talles": [
