@@ -127,7 +127,7 @@
     "categoria_general": "indumentaria",
     "precio": "12000",
     "es_variante": false,
-    "genero": "G\u00c3\u00a9nero",
+    "genero": "G\u00c3\u0192\u00c2\u00a9nero",
     "talles": [
       "S",
       "M",
@@ -149,7 +149,7 @@
     "categoria_general": "indumentaria",
     "precio": "9000",
     "es_variante": true,
-    "genero": "G\u00c3\u00a9nero",
+    "genero": "G\u00c3\u0192\u00c2\u00a9nero",
     "talles": [],
     "color": "Naranja",
     "stock": 10,
@@ -203,11 +203,11 @@
     "titulo": "sad",
     "imagen": "./img/images.jpg",
     "categoria": {
-      "nombre": "Remeras",
+      "nombre": "REMERAS",
       "id": "remeras"
     },
     "categoria_general": "indumentaria",
-    "precio": "123123",
+    "precio": "123",
     "es_variante": false,
     "genero": "No",
     "talles": [
