@@ -51,7 +51,7 @@
     "precio": "8",
     "es_variante": false,
     "color": "#a29677",
-    "stock": 0,
+    "stock": 5,
     "genero": "No",
     "talles": [
       "No"
@@ -236,7 +236,7 @@
     ],
     "color": "Plata",
     "disciplina": "Musculacion",
-    "stock": 0,
+    "stock": 5,
     "codigo_barras": 2
   },
   {
