@@ -1,362 +1,284 @@
 [
   {
-    "id": "cam001",
-    "titulo": "Camiseta Deportiva Básica",
-    "imagen": "img/camisetas/01.jpg",
+    "id": "remeras_under_tech_2.0",
+    "titulo": "under tech 2.0",
+    "imagen": "./img/under_1.png",
     "categoria": {
-      "id": "remeras",
-      "nombre": "Remeras"
+      "nombre": "Remeras",
+      "id": "remeras"
     },
     "categoria_general": "indumentaria",
-    "precio": 15999,
-    "stock": 25,
-    "genero": "Unisex",
-    "disciplina": "running",
-    "talles": ["S", "M", "L", "XL"],
-    "descripcion": "Camiseta deportiva de alta calidad, perfecta para running y entrenamientos",
-    "es_variante": false
+    "precio": "23000",
+    "es_variante": false,
+    "color": "#fd9144",
+    "stock": 5,
+    "genero": "No",
+    "talles": [
+      "S",
+      "M",
+      "L"
+    ],
+    "codigo_barras": 1234567890123
   },
   {
-    "id": "cam002",
-    "titulo": "Remera Técnica Pro",
-    "imagen": "img/camisetas/02.jpg",
+    "id": "remeras_under_tech_2.0_variante",
+    "titulo": "under tech 2.0",
+    "imagen": "./img/under_2.png",
     "categoria": {
-      "id": "remeras",
-      "nombre": "Remeras"
+      "nombre": "Remeras",
+      "id": "remeras"
     },
     "categoria_general": "indumentaria",
-    "precio": 22500,
-    "stock": 18,
-    "genero": "Masculino",
-    "disciplina": "fitness",
-    "talles": ["M", "L", "XL"],
-    "descripcion": "Remera técnica con tecnología de secado rápido",
-    "es_variante": false
-  },
-  {
-    "id": "cam003",
-    "titulo": "Camiseta Fútbol Clásica",
-    "imagen": "img/camisetas/03.jpg",
-    "categoria": {
-      "id": "remeras",
-      "nombre": "Remeras"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 18750,
-    "stock": 30,
-    "genero": "Masculino",
-    "disciplina": "futbol",
-    "talles": ["S", "M", "L", "XL"],
-    "descripcion": "Camiseta de fútbol con diseño clásico y materiales transpirables",
-    "es_variante": false
-  },
-  {
-    "id": "cam004_azul",
-    "titulo": "Remera Training - Azul",
-    "imagen": "img/camisetas/04.jpg",
-    "categoria": {
-      "id": "remeras",
-      "nombre": "Remeras"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 19999,
-    "stock": 15,
-    "genero": "Femenino",
-    "disciplina": "yoga",
-    "talles": ["S", "M", "L"],
-    "descripcion": "Remera de training en color azul, ideal para yoga y pilates",
+    "precio": "38500.0",
     "es_variante": true,
-    "producto_padre": "cam004",
-    "variante": {
-      "tipo": "color",
-      "valor": "Azul"
-    }
+    "color": null,
+    "stock": 0,
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
+    "codigo_barras": 1234567890124
   },
   {
-    "id": "cam004_rosa",
-    "titulo": "Remera Training - Rosa",
-    "imagen": "img/camisetas/05.jpg",
+    "id": "accesorios_men1",
+    "titulo": "culo octa",
+    "imagen": "./img/287290_5.jpg",
     "categoria": {
-      "id": "remeras",
-      "nombre": "Remeras"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 19999,
-    "stock": 12,
-    "genero": "Femenino",
-    "disciplina": "yoga",
-    "talles": ["S", "M", "L"],
-    "descripcion": "Remera de training en color rosa, ideal para yoga y pilates",
-    "es_variante": true,
-    "producto_padre": "cam004",
-    "variante": {
-      "tipo": "color",
-      "valor": "Rosa"
-    }
-  },
-  {
-    "id": "cam005",
-    "titulo": "Camiseta Básquet Pro",
-    "imagen": "img/camisetas/06.jpg",
-    "categoria": {
-      "id": "remeras",
-      "nombre": "Remeras"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 24999,
-    "stock": 20,
-    "genero": "Masculino",
-    "disciplina": "basquet",
-    "talles": ["M", "L", "XL"],
-    "descripcion": "Camiseta profesional de básquet con tecnología anti-sudor",
-    "es_variante": false
-  },
-  {
-    "id": "cam006",
-    "titulo": "Remera Casual Sport",
-    "imagen": "img/camisetas/07.jpg",
-    "categoria": {
-      "id": "remeras",
-      "nombre": "Remeras"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 16500,
-    "stock": 35,
-    "genero": "Unisex",
-    "disciplina": "fitness",
-    "talles": ["S", "M", "L", "XL"],
-    "descripcion": "Remera casual deportiva para uso diario y entrenamientos ligeros",
-    "es_variante": false
-  },
-  {
-    "id": "cam007",
-    "titulo": "Camiseta Tenis Elite",
-    "imagen": "img/camisetas/08.jpg",
-    "categoria": {
-      "id": "remeras",
-      "nombre": "Remeras"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 27500,
-    "stock": 14,
-    "genero": "Femenino",
-    "disciplina": "tenis",
-    "talles": ["S", "M", "L"],
-    "descripcion": "Camiseta de tenis de alta gama con protección UV",
-    "es_variante": false
-  },
-  {
-    "id": "pant001",
-    "titulo": "Pantalón Deportivo Clásico",
-    "imagen": "img/pantalones/01.jpg",
-    "categoria": {
-      "id": "pantalones",
-      "nombre": "Pantalones"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 32999,
-    "stock": 22,
-    "genero": "Masculino",
-    "disciplina": "running",
-    "talles": ["M", "L", "XL"],
-    "descripcion": "Pantalón deportivo clásico con bolsillos laterales",
-    "es_variante": false
-  },
-  {
-    "id": "pant002",
-    "titulo": "Jogger Fitness Pro",
-    "imagen": "img/pantalones/02.jpg",
-    "categoria": {
-      "id": "pantalones",
-      "nombre": "Pantalones"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 28750,
-    "stock": 18,
-    "genero": "Unisex",
-    "disciplina": "fitness",
-    "talles": ["S", "M", "L", "XL"],
-    "descripcion": "Jogger moderno para entrenamientos de fitness y gym",
-    "es_variante": false
-  },
-  {
-    "id": "pant003_negro",
-    "titulo": "Short Running - Negro",
-    "imagen": "img/pantalones/03.jpg",
-    "categoria": {
-      "id": "pantalones",
-      "nombre": "Pantalones"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 21999,
-    "stock": 25,
-    "genero": "Masculino",
-    "disciplina": "running",
-    "talles": ["S", "M", "L", "XL"],
-    "descripcion": "Short de running en color negro con tecnología de secado rápido",
-    "es_variante": true,
-    "producto_padre": "pant003",
-    "variante": {
-      "tipo": "color",
-      "valor": "Negro"
-    }
-  },
-  {
-    "id": "pant003_azul",
-    "titulo": "Short Running - Azul",
-    "imagen": "img/pantalones/04.jpg",
-    "categoria": {
-      "id": "pantalones",
-      "nombre": "Pantalones"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 21999,
-    "stock": 20,
-    "genero": "Masculino",
-    "disciplina": "running",
-    "talles": ["S", "M", "L", "XL"],
-    "descripcion": "Short de running en color azul con tecnología de secado rápido",
-    "es_variante": true,
-    "producto_padre": "pant003",
-    "variante": {
-      "tipo": "color",
-      "valor": "Azul"
-    }
-  },
-  {
-    "id": "pant004",
-    "titulo": "Leggings Yoga Premium",
-    "imagen": "img/pantalones/05.jpg",
-    "categoria": {
-      "id": "pantalones",
-      "nombre": "Pantalones"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 35500,
-    "stock": 16,
-    "genero": "Femenino",
-    "disciplina": "yoga",
-    "talles": ["S", "M", "L"],
-    "descripcion": "Leggings premium para yoga con cintura alta y máxima comodidad",
-    "es_variante": false
-  },
-  {
-    "id": "abr001",
-    "titulo": "Campera Deportiva Térmica",
-    "imagen": "img/abrigos/01.jpg",
-    "categoria": {
-      "id": "abrigos",
-      "nombre": "Abrigos"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 45999,
-    "stock": 12,
-    "genero": "Unisex",
-    "disciplina": "running",
-    "talles": ["M", "L", "XL"],
-    "descripcion": "Campera térmica resistente al viento para entrenamientos al aire libre",
-    "es_variante": false
-  },
-  {
-    "id": "abr002",
-    "titulo": "Hoodie Training",
-    "imagen": "img/abrigos/02.jpg",
-    "categoria": {
-      "id": "abrigos",
-      "nombre": "Abrigos"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 38750,
-    "stock": 20,
-    "genero": "Masculino",
-    "disciplina": "fitness",
-    "talles": ["S", "M", "L", "XL"],
-    "descripcion": "Hoodie cómodo para entrenamientos y uso casual",
-    "es_variante": false
-  },
-  {
-    "id": "abr003",
-    "titulo": "Chaqueta Impermeable",
-    "imagen": "img/abrigos/03.jpg",
-    "categoria": {
-      "id": "abrigos",
-      "nombre": "Abrigos"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 52500,
-    "stock": 8,
-    "genero": "Unisex",
-    "disciplina": "running",
-    "talles": ["M", "L", "XL"],
-    "descripcion": "Chaqueta impermeable ideal para correr bajo la lluvia",
-    "es_variante": false
-  },
-  {
-    "id": "abr004",
-    "titulo": "Chaleco Reflectivo",
-    "imagen": "img/abrigos/04.jpg",
-    "categoria": {
-      "id": "abrigos",
-      "nombre": "Abrigos"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 29999,
-    "stock": 15,
-    "genero": "Unisex",
-    "disciplina": "running",
-    "talles": ["S", "M", "L", "XL"],
-    "descripcion": "Chaleco reflectivo para mayor seguridad en entrenamientos nocturnos",
-    "es_variante": false
-  },
-  {
-    "id": "abr005",
-    "titulo": "Rompevientos Ligero",
-    "imagen": "img/abrigos/05.jpg",
-    "categoria": {
-      "id": "abrigos",
-      "nombre": "Abrigos"
-    },
-    "categoria_general": "indumentaria",
-    "precio": 33750,
-    "stock": 18,
-    "genero": "Femenino",
-    "disciplina": "yoga",
-    "talles": ["S", "M", "L"],
-    "descripcion": "Rompevientos ultraligero perfecto para actividades al aire libre",
-    "es_variante": false
-  },
-  {
-    "id": "acc001",
-    "titulo": "Pelota de Fútbol Profesional",
-    "imagen": "img/03.jpg",
-    "categoria": {
-      "id": "pelotas",
-      "nombre": "Pelotas"
+      "nombre": "Accesorios",
+      "id": "accesorios"
     },
     "categoria_general": "accesorios",
-    "precio": 12500,
-    "stock": 40,
-    "genero": "Unisex",
-    "disciplina": "futbol",
-    "talles": ["No"],
-    "descripcion": "Pelota de fútbol oficial con certificación FIFA",
-    "es_variante": false
+    "precio": "8",
+    "es_variante": false,
+    "color": "#a29677",
+    "stock": 5,
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
+    "codigo_barras": 1234567890125,
+    "disciplina": ""
   },
   {
-    "id": "acc002",
-    "titulo": "Mochila Deportiva Grande",
-    "imagen": "img/04.jpg",
+    "id": "accesorios_men1_1",
+    "titulo": "men1",
+    "imagen": "./img/2709570_11.jpg",
     "categoria": {
-      "id": "bolsos",
-      "nombre": "Bolsos"
+      "nombre": "Accesorios",
+      "id": "accesorios"
     },
     "categoria_general": "accesorios",
-    "precio": 18999,
-    "stock": 25,
+    "precio": "2300.0",
+    "es_variante": true,
+    "color": "#1462a7",
+    "stock": 1,
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
+    "codigo_barras": 1234567890126
+  },
+  {
+    "id": "accesorios_men1_2",
+    "titulo": "men1",
+    "imagen": "./img/2709570_12.jpg",
+    "categoria": {
+      "nombre": "Accesorios",
+      "id": "accesorios"
+    },
+    "categoria_general": "accesorios",
+    "precio": "3500",
+    "es_variante": true,
+    "color": "#a25e1a",
+    "stock": -199,
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
+    "codigo_barras": 1234567890127
+  },
+  {
+    "id": "accesorios_men1_3",
+    "titulo": "men1",
+    "imagen": "./img/escritorio.png",
+    "categoria": {
+      "nombre": "Accesorios",
+      "id": "accesorios"
+    },
+    "categoria_general": "accesorios",
+    "precio": "4600.0",
+    "es_variante": true,
+    "color": "#a88c73",
+    "stock": 1,
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
+    "codigo_barras": 1234567890128
+  },
+  {
+    "id": "remeras_u",
+    "titulo": "u",
+    "imagen": "./img/under_2.png",
+    "categoria": {
+      "nombre": "Remeras",
+      "id": "remeras"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "12000",
+    "es_variante": false,
+    "genero": "G\u00c3\u0192\u00c2\u00a9nero",
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "color": "Gris",
+    "stock": 10,
+    "codigo_barras": 1234567890129
+  },
+  {
+    "id": "remeras_u_1",
+    "titulo": "u",
+    "imagen": "./img/under_1.png",
+    "categoria": {
+      "nombre": "Remeras",
+      "id": "remeras"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "9000",
+    "es_variante": true,
+    "genero": "G\u00c3\u0192\u00c2\u00a9nero",
+    "talles": [],
+    "color": "Naranja",
+    "stock": 10,
+    "codigo_barras": 1234567890130
+  },
+  {
+    "id": "abrigos_mesi",
+    "titulo": "mesi1",
+    "imagen": "./img/2709570_11.jpg",
+    "categoria": {
+      "nombre": "ABRIGOS",
+      "id": "abrigos"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "12345",
+    "es_variante": false,
     "genero": "Unisex",
-    "disciplina": "fitness",
-    "talles": ["No"],
-    "descripcion": "Mochila deportiva con múltiples compartimentos y diseño ergonómico",
-    "es_variante": false
+    "talles": [
+      "S",
+      "M"
+    ],
+    "color": "Verde Azulado",
+    "disciplina": "Running",
+    "stock": 4,
+    "codigo_barras": 7792052180702
+  },
+  {
+    "id": "pantalones_mesi1",
+    "titulo": "mesi1",
+    "imagen": "./img/graf.jpg",
+    "categoria": {
+      "nombre": "Pantalones",
+      "id": "pantalones"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "76213",
+    "es_variante": false,
+    "genero": "Masculino",
+    "talles": [
+      "S",
+      "M",
+      "L"
+    ],
+    "color": "Gris",
+    "disciplina": "Running",
+    "stock": 12,
+    "codigo_barras": 6178253
+  },
+  {
+    "id": "remeras_sad",
+    "titulo": "sad",
+    "imagen": "./img/images.jpg",
+    "categoria": {
+      "nombre": "REMERAS",
+      "id": "remeras"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "123",
+    "es_variante": false,
+    "genero": "No",
+    "talles": [
+      "No"
+    ],
+    "color": "Color",
+    "disciplina": "Deportes",
+    "stock": 0,
+    "codigo_barras": 1
+  },
+  {
+    "id": "accesorios_manco",
+    "titulo": "manco",
+    "imagen": "./img/images.jpg",
+    "categoria": {
+      "nombre": "Accesorios",
+      "id": "accesorios"
+    },
+    "categoria_general": "accesorios",
+    "precio": "2",
+    "es_variante": false,
+    "genero": "Genero",
+    "talles": [
+      "S",
+      "M"
+    ],
+    "color": "Plata",
+    "disciplina": "Musculacion",
+    "stock": 5,
+    "codigo_barras": 2
+  },
+  {
+    "id": "pantalones_oaa",
+    "titulo": "oaa",
+    "imagen": "./img/2709570_11.jpg",
+    "categoria": {
+      "nombre": "Pantalones",
+      "id": "pantalones"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "2121",
+    "es_variante": false,
+    "genero": "Nino",
+    "talles": [
+      "M",
+      "XL"
+    ],
+    "color": "Verde Azulado",
+    "disciplina": "Musculacion",
+    "stock": 7,
+    "codigo_barras": 23
+  },
+  {
+    "id": "remeras_remera",
+    "titulo": "remera",
+    "imagen": "./img/under_2.png",
+    "categoria": {
+      "nombre": "Remeras",
+      "id": "remeras"
+    },
+    "categoria_general": "indumentaria",
+    "precio": "8600",
+    "es_variante": false,
+    "genero": "Unisex",
+    "talles": [
+      "L",
+      "XL"
+    ],
+    "color": "Gris",
+    "disciplina": "Deportes",
+    "stock": 3,
+    "codigo_barras": 56
   }
 ]
