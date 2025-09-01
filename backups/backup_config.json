@@ -1,7 +1,0 @@
-{
-  "interval_hours": 24,
-  "max_backups": 30,
-  "compression_enabled": true,
-  "incremental_enabled": true,
-  "auto_backup_enabled": true
-}

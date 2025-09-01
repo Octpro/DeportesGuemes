@@ -1,284 +1,188 @@
 [
-  {
-    "id": "remeras_under_tech_2.0",
-    "titulo": "under tech 2.0",
-    "imagen": "./img/under_1.png",
-    "categoria": {
-      "nombre": "Remeras",
-      "id": "remeras"
+
+    {
+        "id": "abrigo-01",
+        "titulo": "Abrigo 01",
+        "imagen": "./img/abrigos/01.jpg",
+        "categoria": {
+            "nombre": "Abrigos",
+            "id": "abrigos"
+        },
+        "precio": 1000
     },
-    "categoria_general": "indumentaria",
-    "precio": "23000",
-    "es_variante": false,
-    "color": "#fd9144",
-    "stock": 5,
-    "genero": "No",
-    "talles": [
-      "S",
-      "M",
-      "L"
-    ],
-    "codigo_barras": 1234567890123
-  },
-  {
-    "id": "remeras_under_tech_2.0_variante",
-    "titulo": "under tech 2.0",
-    "imagen": "./img/under_2.png",
-    "categoria": {
-      "nombre": "Remeras",
-      "id": "remeras"
+    {
+        "id": "abrigo-02",
+        "titulo": "Abrigo 02",
+        "imagen": "./img/abrigos/02.jpg",
+        "categoria": {
+            "nombre": "Abrigos",
+            "id": "abrigos"
+        },
+        "precio": 1000
     },
-    "categoria_general": "indumentaria",
-    "precio": "38500.0",
-    "es_variante": true,
-    "color": null,
-    "stock": 0,
-    "genero": "No",
-    "talles": [
-      "No"
-    ],
-    "codigo_barras": 1234567890124
-  },
-  {
-    "id": "accesorios_men1",
-    "titulo": "culo octa",
-    "imagen": "./img/287290_5.jpg",
-    "categoria": {
-      "nombre": "Accesorios",
-      "id": "accesorios"
+    {
+        "id": "abrigo-03",
+        "titulo": "Abrigo 03",
+        "imagen": "./img/abrigos/03.jpg",
+        "categoria": {
+            "nombre": "Abrigos",
+            "id": "abrigos"
+        },
+        "precio": 1000
     },
-    "categoria_general": "accesorios",
-    "precio": "8",
-    "es_variante": false,
-    "color": "#a29677",
-    "stock": 5,
-    "genero": "No",
-    "talles": [
-      "No"
-    ],
-    "codigo_barras": 1234567890125,
-    "disciplina": ""
-  },
-  {
-    "id": "accesorios_men1_1",
-    "titulo": "men1",
-    "imagen": "./img/2709570_11.jpg",
-    "categoria": {
-      "nombre": "Accesorios",
-      "id": "accesorios"
+    {
+        "id": "abrigo-04",
+        "titulo": "Abrigo 04",
+        "imagen": "./img/abrigos/04.jpg",
+        "categoria": {
+            "nombre": "Abrigos",
+            "id": "abrigos"
+        },
+        "precio": 1000
     },
-    "categoria_general": "accesorios",
-    "precio": "2300.0",
-    "es_variante": true,
-    "color": "#1462a7",
-    "stock": 1,
-    "genero": "No",
-    "talles": [
-      "No"
-    ],
-    "codigo_barras": 1234567890126
-  },
-  {
-    "id": "accesorios_men1_2",
-    "titulo": "men1",
-    "imagen": "./img/2709570_12.jpg",
-    "categoria": {
-      "nombre": "Accesorios",
-      "id": "accesorios"
+    {
+        "id": "abrigo-05",
+        "titulo": "Abrigo 05",
+        "imagen": "./img/abrigos/05.jpg",
+        "categoria": {
+            "nombre": "Abrigos",
+            "id": "abrigos"
+        },
+        "precio": 1000
     },
-    "categoria_general": "accesorios",
-    "precio": "3500",
-    "es_variante": true,
-    "color": "#a25e1a",
-    "stock": -199,
-    "genero": "No",
-    "talles": [
-      "No"
-    ],
-    "codigo_barras": 1234567890127
-  },
-  {
-    "id": "accesorios_men1_3",
-    "titulo": "men1",
-    "imagen": "./img/escritorio.png",
-    "categoria": {
-      "nombre": "Accesorios",
-      "id": "accesorios"
+
+    {
+        "id": "camiseta-01",
+        "titulo": "Camiseta 01",
+        "imagen": "./img/camisetas/01.jpg",
+        "categoria": {
+            "nombre": "Accesorios",
+            "id": "accesorios"
+        },
+        "precio": 1000
     },
-    "categoria_general": "accesorios",
-    "precio": "4600.0",
-    "es_variante": true,
-    "color": "#a88c73",
-    "stock": 1,
-    "genero": "No",
-    "talles": [
-      "No"
-    ],
-    "codigo_barras": 1234567890128
-  },
-  {
-    "id": "remeras_u",
-    "titulo": "u",
-    "imagen": "./img/under_2.png",
-    "categoria": {
-      "nombre": "Remeras",
-      "id": "remeras"
+    {
+        "id": "camiseta-02",
+        "titulo": "Camiseta 02",
+        "imagen": "./img/camisetas/02.jpg",
+        "categoria": {
+            "nombre": "Accesorios",
+            "id": "accesorios"
+        },
+        "precio": 1000
     },
-    "categoria_general": "indumentaria",
-    "precio": "12000",
-    "es_variante": false,
-    "genero": "GÃƒÂ©nero",
-    "talles": [
-      "S",
-      "M",
-      "L",
-      "XL"
-    ],
-    "color": "Gris",
-    "stock": 10,
-    "codigo_barras": 1234567890129
-  },
-  {
-    "id": "remeras_u_1",
-    "titulo": "u",
-    "imagen": "./img/under_1.png",
-    "categoria": {
-      "nombre": "Remeras",
-      "id": "remeras"
+    {
+        "id": "camiseta-03",
+        "titulo": "Camiseta 03",
+        "imagen": "./img/camisetas/03.jpg",
+        "categoria": {
+            "nombre": "Accesorios",
+            "id": "accesorios"
+        },
+        "precio": 1000
     },
-    "categoria_general": "indumentaria",
-    "precio": "9000",
-    "es_variante": true,
-    "genero": "GÃƒÂ©nero",
-    "talles": [],
-    "color": "Naranja",
-    "stock": 10,
-    "codigo_barras": 1234567890130
-  },
-  {
-    "id": "abrigos_mesi",
-    "titulo": "mesi1",
-    "imagen": "./img/2709570_11.jpg",
-    "categoria": {
-      "nombre": "ABRIGOS",
-      "id": "abrigos"
+    {
+        "id": "camiseta-04",
+        "titulo": "Camiseta 04",
+        "imagen": "./img/camisetas/04.jpg",
+        "categoria": {
+            "nombre": "Accesorios",
+            "id": "accesorios"
+        },
+        "precio": 1000
     },
-    "categoria_general": "indumentaria",
-    "precio": "12345",
-    "es_variante": false,
-    "genero": "Unisex",
-    "talles": [
-      "S",
-      "M"
-    ],
-    "color": "Verde Azulado",
-    "disciplina": "Running",
-    "stock": 4,
-    "codigo_barras": 7792052180702
-  },
-  {
-    "id": "pantalones_mesi1",
-    "titulo": "mesi1",
-    "imagen": "./img/graf.jpg",
-    "categoria": {
-      "nombre": "Pantalones",
-      "id": "pantalones"
+    {
+        "id": "camiseta-05",
+        "titulo": "Camiseta 05",
+        "imagen": "./img/camisetas/05.jpg",
+        "categoria": {
+            "nombre": "Accesorios",
+            "id": "accesorios"
+        },
+        "precio": 1000
     },
-    "categoria_general": "indumentaria",
-    "precio": "76213",
-    "es_variante": false,
-    "genero": "Masculino",
-    "talles": [
-      "S",
-      "M",
-      "L"
-    ],
-    "color": "Gris",
-    "disciplina": "Running",
-    "stock": 12,
-    "codigo_barras": 6178253
-  },
-  {
-    "id": "remeras_sad",
-    "titulo": "sad",
-    "imagen": "./img/images.jpg",
-    "categoria": {
-      "nombre": "REMERAS",
-      "id": "remeras"
+    {
+        "id": "camiseta-06",
+        "titulo": "Camiseta 06",
+        "imagen": "./img/camisetas/06.jpg",
+        "categoria": {
+            "nombre": "Accesorios",
+            "id": "accesorios"
+        },
+        "precio": 1000
     },
-    "categoria_general": "indumentaria",
-    "precio": "123",
-    "es_variante": false,
-    "genero": "No",
-    "talles": [
-      "No"
-    ],
-    "color": "Color",
-    "disciplina": "Deportes",
-    "stock": 0,
-    "codigo_barras": 1
-  },
-  {
-    "id": "accesorios_manco",
-    "titulo": "manco",
-    "imagen": "./img/images.jpg",
-    "categoria": {
-      "nombre": "Accesorios",
-      "id": "accesorios"
+    {
+        "id": "camiseta-07",
+        "titulo": "Camiseta 07",
+        "imagen": "./img/camisetas/07.jpg",
+        "categoria": {
+            "nombre": "Accesorios",
+            "id": "accesorios"
+        },
+        "precio": 1000
     },
-    "categoria_general": "accesorios",
-    "precio": "2",
-    "es_variante": false,
-    "genero": "Genero",
-    "talles": [
-      "S",
-      "M"
-    ],
-    "color": "Plata",
-    "disciplina": "Musculacion",
-    "stock": 5,
-    "codigo_barras": 2
-  },
-  {
-    "id": "pantalones_oaa",
-    "titulo": "oaa",
-    "imagen": "./img/2709570_11.jpg",
-    "categoria": {
-      "nombre": "Pantalones",
-      "id": "pantalones"
+    {
+        "id": "camiseta-08",
+        "titulo": "Camiseta 08",
+        "imagen": "./img/camisetas/08.jpg",
+        "categoria": {
+            "nombre": "Accesorios",
+            "id": "accesorios"
+        },
+        "precio": 1000
     },
-    "categoria_general": "indumentaria",
-    "precio": "2121",
-    "es_variante": false,
-    "genero": "Nino",
-    "talles": [
-      "M",
-      "XL"
-    ],
-    "color": "Verde Azulado",
-    "disciplina": "Musculacion",
-    "stock": 7,
-    "codigo_barras": 23
-  },
-  {
-    "id": "remeras_remera",
-    "titulo": "remera",
-    "imagen": "./img/under_2.png",
-    "categoria": {
-      "nombre": "Remeras",
-      "id": "remeras"
+
+    {
+        "id": "pantalon-01",
+        "titulo": "Pantalón 01",
+        "imagen": "./img/pantalones/01.jpg",
+        "categoria": {
+            "nombre": "Pantalones",
+            "id": "pantalones"
+        },
+        "precio": 1000
     },
-    "categoria_general": "indumentaria",
-    "precio": "8600",
-    "es_variante": false,
-    "genero": "Unisex",
-    "talles": [
-      "L",
-      "XL"
-    ],
-    "color": "Gris",
-    "disciplina": "Deportes",
-    "stock": 3,
-    "codigo_barras": 56
-  }
+    {
+        "id": "pantalon-02",
+        "titulo": "Pantalón 02",
+        "imagen": "./img/pantalones/02.jpg",
+        "categoria": {
+            "nombre": "Pantalones",
+            "id": "pantalones"
+        },
+        "precio": 1000
+    },
+    {
+        "id": "pantalon-03",
+        "titulo": "Pantalón 03",
+        "imagen": "./img/pantalones/03.jpg",
+        "categoria": {
+            "nombre": "Pantalones",
+            "id": "pantalones"
+        },
+        "precio": 1000
+    },
+    {
+        "id": "pantalon-04",
+        "titulo": "Pantalón 04",
+        "imagen": "./img/pantalones/04.jpg",
+        "categoria": {
+            "nombre": "Pantalones",
+            "id": "pantalones"
+        },
+        "precio": 1000
+    },
+    {
+        "id": "pantalon-05",
+        "titulo": "Pantalón 05",
+        "imagen": "./img/pantalones/05.jpg",
+        "categoria": {
+            "nombre": "Pantalones",
+            "id": "pantalones"
+        },
+        "precio": 1000
+    },
+    {"id": "buzo 02", "titulo": "buzo 02", "imagen": "./img/pantalones/287290_5.jpg", "categoria": {"nombre": "Buzos", "id": "Buzos"}, "precio": "213543"},
+    {"id": "buzo 03", "titulo": "buzo 03", "imagen": "C:/Users/octpr/Documents/Negocio Dani/html/img/pantalones/graf.jpg", "categoria": {"nombre": "Buzos", "id": "Buzos"}, "precio": "123"}
 ]
+
