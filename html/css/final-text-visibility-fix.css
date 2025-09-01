@@ -1,0 +1,243 @@
+/**
+ * FINAL TEXT VISIBILITY FIX
+ * Ultimate solution for all text visibility issues
+ * Uses maximum CSS specificity and covers all edge cases
+ */
+
+/* ===== RESET ALL TEXT TO VISIBLE DEFAULTS ===== */
+
+/* Force all text elements to have proper contrast - EXCEPT sidebar */
+html body *:not(aside):not(aside *) {
+    color: #333333 !important;
+}
+
+/* Override for elements that should keep their original colors - HIGHEST PRIORITY */
+html body aside,
+html body aside *,
+html body .btn-primary,
+html body .btn-primary *,
+html body .producto-consultar,
+html body .boton-menu,
+html body .boton-carrito,
+html body .logo,
+html body .numerito,
+html body .text-footer {
+    color: #ffffff !important;
+}
+
+/* Active menu buttons should have blue text */
+html body .boton-menu.active,
+html body .boton-carrito.active {
+    color: #1291da !important;
+    background-color: #ffffff !important;
+}
+
+html body .btn-danger,
+html body .btn-danger *,
+html body .carrito-producto-eliminar {
+    color: #ffffff !important;
+}
+
+/* Ensure all backgrounds are appropriate */
+html body {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+}
+
+html body main {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+}
+
+/* ===== SPECIFIC ELEMENT OVERRIDES ===== */
+
+/* Product elements */
+html body .producto,
+html body .producto * {
+    color: #333333 !important;
+    background: transparent !important;
+}
+
+html body .producto-titulo {
+    color: #212529 !important;
+    font-weight: 600 !important;
+}
+
+html body .producto-precio {
+    color: #0d6eaa !important;
+    font-weight: 700 !important;
+}
+
+html body .producto-genero,
+html body .producto-color,
+html body .producto-talles,
+html body .producto-detalles,
+html body .producto-info {
+    color: #495057 !important;
+}
+
+/* Cart elements */
+html body .carrito-producto,
+html body .carrito-producto * {
+    color: #333333 !important;
+    background: transparent !important;
+}
+
+html body .carrito-producto-titulo {
+    color: #212529 !important;
+    font-weight: 600 !important;
+}
+
+html body .carrito-producto-precio {
+    color: #0d6eaa !important;
+    font-weight: 700 !important;
+}
+
+/* Form elements */
+html body input,
+html body select,
+html body textarea,
+html body option {
+    color: #333333 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* Filter elements */
+html body #filtros,
+html body #filtros *,
+html body .filter-modal-content,
+html body .filter-modal-content * {
+    color: #333333 !important;
+    background: transparent !important;
+}
+
+html body .filter-input,
+html body .filter-select,
+html body .filter-label {
+    color: #333333 !important;
+    background-color: #ffffff !important;
+}
+
+/* ===== OVERRIDE ALL INLINE STYLES ===== */
+
+/* Maximum specificity selectors to override inline styles */
+html body *[style*="color: white"]:not(.btn-primary):not(.boton-menu):not(.logo):not(.numerito),
+html body *[style*="color:#ffffff"]:not(.btn-primary):not(.boton-menu):not(.logo):not(.numerito),
+html body *[style*="color: #fff"]:not(.btn-primary):not(.boton-menu):not(.logo):not(.numerito),
+html body *[style*="color:white"]:not(.btn-primary):not(.boton-menu):not(.logo):not(.numerito),
+html body *[style*="color:#fff"]:not(.btn-primary):not(.boton-menu):not(.logo):not(.numerito) {
+    color: #333333 !important;
+    text-shadow: none !important;
+}
+
+/* Specific overrides for select options */
+html body select option[style*="color: white"],
+html body select option[style*="color:#ffffff"],
+html body select option[style*="color: #fff"] {
+    color: #333333 !important;
+    background-color: #ffffff !important;
+}
+
+/* Override any problematic background colors */
+html body *[style*="background-color: transparent"]:not(.btn-primary):not(.btn-secondary):not(.btn-danger) {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* ===== TEST PAGE SPECIFIC FIXES ===== */
+
+html body .test-section,
+html body .test-section * {
+    color: #333333 !important;
+}
+
+html body .problematic-element {
+    color: #333333 !important;
+    background-color: #ffffff !important;
+}
+
+html body *[data-dynamic="true"],
+html body *[data-test-id] {
+    color: #333333 !important;
+    background-color: #ffffff !important;
+}
+
+/* ===== ACCESSIBILITY ENHANCEMENTS ===== */
+
+/* Ensure minimum font sizes */
+html body * {
+    font-size: max(14px, 1rem) !important;
+}
+
+html body small,
+html body .small-text,
+html body .text-sm {
+    font-size: max(12px, 0.875rem) !important;
+}
+
+/* Ensure focus indicators */
+html body *:focus {
+    outline: 2px solid #1291da !important;
+    outline-offset: 2px !important;
+}
+
+/* ===== HIGH CONTRAST MODE ===== */
+
+@media (prefers-contrast: high) {
+    html body * {
+        color: #000000 !important;
+        background-color: #ffffff !important;
+    }
+    
+    html body .btn-primary,
+    html body .producto-consultar {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+    
+    html body aside,
+    html body aside * {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+}
+
+/* ===== PRINT STYLES ===== */
+
+@media print {
+    html body * {
+        color: #000000 !important;
+        background: #ffffff !important;
+        text-shadow: none !important;
+    }
+}
+
+/* ===== FINAL NUCLEAR OPTION ===== */
+
+/* If all else fails, use the most specific selectors possible */
+html body div.wrapper main.main-content *:not(.btn-primary):not(.boton-menu):not(.logo),
+html body div.wrapper main *:not(.btn-primary):not(.boton-menu):not(.logo),
+html body main *:not(.btn-primary):not(.boton-menu):not(.logo) {
+    color: #333333 !important;
+}
+
+/* Ensure sidebar keeps white text */
+html body div.wrapper aside,
+html body div.wrapper aside * {
+    color: #ffffff !important;
+}
+
+/* Ensure buttons keep proper colors */
+html body .btn-primary,
+html body .producto-consultar,
+html body button.btn-primary {
+    color: #ffffff !important;
+    background-color: #1291da !important;
+}
+
+html body .btn-danger,
+html body .carrito-producto-eliminar,
+html body button.btn-danger {
+    color: #ffffff !important;
+    background-color: #dc3545 !important;
+}
