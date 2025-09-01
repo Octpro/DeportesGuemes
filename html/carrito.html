@@ -1,77 +1,193 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <!-- <meta> http-equiv="X-UA-Compatible" content = "IE-edge" -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deportes Guemes</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/color-system.css">
+    <link rel="stylesheet" href="./css/text-visibility-fixes.css">
+    <link rel="stylesheet" href="./css/systematic-overrides.css">
+    <link rel="stylesheet" href="./css/animations.css">
+    <link rel="stylesheet" href="./css/emergency-overrides.css">
+    <link rel="stylesheet" href="./css/final-text-visibility-fix.css">
+    <link rel="stylesheet" href="./css/interactive-states.css">
+    <link rel="stylesheet" href="./css/accessibility-test-ui.css">
+    <link rel="stylesheet" href="./css/menu-buttons-fix.css">
+    <link rel="stylesheet" href="./css/cart-products.css">
+
 </head>
+
 <body>
+    <!-- Skip Navigation Links -->
+    <a href="#main-content" class="skip-nav">Saltar al contenido principal</a>
+    <a href="#navigation" class="skip-nav">Saltar a la navegación</a>
     
+    <!-- Live Region for Screen Reader Announcements -->
+    <div id="live-region" class="live-region" aria-live="polite" aria-atomic="true"></div>
+
     <div class="wrapper">
-        <header class="header-movile">
-            <a href="index.html"><h1 class="logo">Deportes Güemes</h1></a>
-            <button class="open-menu" id="open-menu">
-                <i class="bi bi-list"></i>
+        <header class="header-movile" role="banner">
+            <a href="index.html" aria-label="Deportes Güemes - Ir a página principal">
+                <h1 class="logo">Deportes Güemes</h1>
+            </a>
+            <button class="open-menu" id="open-menu" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="navigation">
+                <i class="bi bi-list" aria-hidden="true"></i>
             </button>
         </header>
-        <aside>
-            <button class="close-menu" id="close-menu">
-                <i class="bi bi-x"></i>
+        <aside role="complementary">
+            <button class="close-menu" id="close-menu" aria-label="Cerrar menú de navegación">
+                <i class="bi bi-x" aria-hidden="true"></i>
             </button>
 
             <header>
-                <a href="index.html"><h1 class="logo">Deportes Güemes</h1></a>
+                <a href="index.html" aria-label="Deportes Güemes - Ir a página principal">
+                    <h1 class="logo">Deportes Güemes</h1>
+                </a>
             </header>
-            <nav>
-                <ul>
-                    <li>
-                        <a class="boton-menu boton-volver" href="index.html"><i class="bi bi-arrow-return-left"></i> Seguir comprando</a>
+            <nav id="navigation" role="navigation" aria-label="Navegación principal">
+                <ul role="menubar">
+                    <li role="none">
+                        <a class="boton-menu boton-volver" href="index.html" role="menuitem" aria-describedby="volver-desc">
+                            <i class="bi bi-arrow-return-left" aria-hidden="true"></i>
+                            Seguir comprando
+                        </a>
+                        <span id="volver-desc" class="sr-only">Volver a la tienda para seguir comprando</span>
                     </li>
-                    <li>
-                        <a class="boton-menu boton-carrito active" href="carrito.html"><i class="bi bi-cart-fill"></i> Carrito</a>
+                    <li role="none">
+                        <a class="boton-menu boton-carrito active" href="carrito.html" role="menuitem" aria-current="page" aria-describedby="carrito-desc">
+                            <i class="bi bi-cart-fill" aria-hidden="true"></i>
+                            Carrito
+                        </a>
+                        <span id="carrito-desc" class="sr-only">Página actual: carrito de compras</span>
                     </li>
                 </ul>
             </nav>
-            
+
             <footer>
                 <p class="text-footer">© 2025 Tienda Guemes</p>
             </footer>
         </aside>
 
-        <main>
-            <h2 class="titulo-principal">Carrito</h2>
-            <div class="contenedor-carrito">
-               <p id="carrito-vacio" class="carrito-vacio">Tu carrito esta vacio <i class="bi bi-emoji-frown"></i> </p>
-               
-               <div id="carrito-productos" class="carrito-productos disabled"> 
-                    <!-- Esto se va a llenar con el JS -->
-                </div>
-                
-                <div id="carrito-acciones" class="carrito-acciones disabled">
-                    <div class="carrito-acciones-izq">
-                        <button id="carrito-acciones-vaciar" class="carrito-acciones-vaciar">Vaciar Carrito</button>
-                    </div>
-                    <div class="carrito-acciones-der">
-                        <div class="carrito-acciones-total">
-                            <p>Total:</p>
-                            <p id="total">$3000</p>
-                        </div>
-                        <button id="carrito-acciones-comprar" class="carrito-acciones-comprar">Comprar ahora</button>
+        <main id="main-content" role="main" aria-labelledby="cart-title">
+            <!-- Enhanced Cart Header -->
+            <header class="cart-header">
+                <div class="cart-title-section">
+                    <h2 class="titulo-principal" id="cart-title">
+                        <i class="bi bi-cart3" aria-hidden="true"></i>
+                        Mi Carrito
+                    </h2>
+                    <div class="cart-summary-badge" id="cart-summary-badge" aria-live="polite">
+                        <span id="cart-item-count" aria-label="cantidad de productos en el carrito">0</span> productos
                     </div>
                 </div>
-                <p id="carrito-comprado" class="carrito-comprado disabled">Muchas gracias por su consulta <i class="bi bi-emoji-laughing"></i> </p>
+                <div class="cart-actions-header" role="group" aria-label="Acciones del carrito">
+                    <button id="save-for-later" class="btn-secondary btn-icon" aria-label="Guardar carrito para después">
+                        <i class="bi bi-bookmark" aria-hidden="true"></i>
+                    </button>
+                    <button id="share-cart" class="btn-secondary btn-icon" aria-label="Compartir carrito">
+                        <i class="bi bi-share" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </header>
 
+            <div class="contenedor-carrito">
+                <!-- Empty Cart State -->
+                <section id="carrito-vacio" class="carrito-vacio-modern" role="status" aria-labelledby="empty-cart-title">
+                    <div class="empty-cart-illustration" aria-hidden="true">
+                        <i class="bi bi-cart-x"></i>
+                    </div>
+                    <h3 id="empty-cart-title">Tu carrito está vacío</h3>
+                    <p>¡Descubre nuestros productos deportivos y encuentra lo que necesitas!</p>
+                    <a href="index.html" class="btn-primary btn-large" aria-describedby="continue-shopping-desc">
+                        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                        Seguir comprando
+                    </a>
+                    <span id="continue-shopping-desc" class="sr-only">Volver a la tienda para explorar productos</span>
+                </section>
+
+                <!-- Cart Products Container -->
+                <section id="carrito-productos" class="carrito-productos-modern disabled" role="region" aria-labelledby="cart-products-title" aria-live="polite">
+                    <h3 id="cart-products-title" class="sr-only">Productos en el carrito</h3>
+                    <!-- Dynamic content will be inserted here -->
+                </section>
+
+                <!-- Cart Summary Sidebar -->
+                <aside id="carrito-resumen" class="carrito-resumen disabled" role="complementary" aria-labelledby="resumen-title">
+                    <div class="resumen-card">
+                        <h3 class="resumen-title" id="resumen-title">
+                            <i class="bi bi-receipt" aria-hidden="true"></i>
+                            Resumen del pedido
+                        </h3>
+
+                        <div class="resumen-details" role="region" aria-live="polite">
+                            <div class="resumen-line">
+                                <span>Subtotal (<span id="resumen-cantidad" aria-label="cantidad de productos">0</span> productos)</span>
+                                <span id="resumen-subtotal" aria-label="subtotal del pedido">$0</span>
+                            </div>
+
+
+                            <hr class="resumen-divider" role="separator">
+                            <div class="resumen-line total-line">
+                                <span class="total-label">Total</span>
+                                <span class="total-amount" id="total" aria-label="total del pedido">$0</span>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Action Buttons -->
+                        <div class="cart-actions-main" role="group" aria-label="Acciones principales del carrito">
+                            <button id="carrito-acciones-comprar" class="btn-primary btn-large btn-checkout" aria-describedby="whatsapp-help">
+                                <i class="bi bi-whatsapp" aria-hidden="true"></i>
+                                Consultar por WhatsApp
+                            </button>
+                            <span id="whatsapp-help" class="sr-only">Envía tu consulta por WhatsApp para finalizar la compra</span>
+                            <button id="carrito-acciones-vaciar" class="btn-secondary btn-clear" aria-describedby="vaciar-help">
+                                <i class="bi bi-trash3" aria-hidden="true"></i>
+                                Vaciar carrito
+                            </button>
+                            <span id="vaciar-help" class="sr-only">Elimina todos los productos del carrito</span>
+                        </div>
+
+
+                    </div>
+                </aside>
+
+                <!-- Success State -->
+                <section id="carrito-comprado" class="carrito-comprado-modern disabled" role="status" aria-labelledby="success-title">
+                    <div class="success-illustration" aria-hidden="true">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <h3 id="success-title">¡Consulta enviada!</h3>
+                    <p>Te contactaremos pronto por WhatsApp para confirmar tu pedido.</p>
+                    <div class="success-actions" role="group" aria-label="Acciones después de la consulta">
+                        <a href="index.html" class="btn-primary" aria-describedby="continue-desc">Seguir comprando</a>
+                        <span id="continue-desc" class="sr-only">Volver a la tienda para seguir comprando</span>
+                        <button id="new-consultation" class="btn-secondary" aria-describedby="new-consultation-desc">Nueva consulta</button>
+                        <span id="new-consultation-desc" class="sr-only">Iniciar una nueva consulta de productos</span>
+                    </div>
+                </section>
             </div>
+
+            <!-- Recommended Products Section -->
+            <section id="productos-recomendados" class="productos-recomendados disabled" role="region" aria-labelledby="recommended-title">
+                <h3 id="recommended-title">También te puede interesar</h3>
+                <div class="productos-recomendados-grid" id="productos-recomendados-grid" role="list">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </section>
         </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script src="JS/carrito.js"></script>
-    <script src="JS/menus.js"></script>
+
+    <!-- Essential Scripts for Cart -->
+    <script src="JS/simple-cart-manager.js"></script>
+    <script src="JS/carrito-fixed.js"></script>
 </body>
+
 </html>

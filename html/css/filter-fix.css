@@ -1,0 +1,124 @@
+/* CSS específico para arreglar los filtros */
+
+/* Resetear cualquier regla conflictiva */
+#filtros {
+    position: absolute !important;
+    top: 100% !important;
+    right: 0 !important;
+    left: auto !important;
+    z-index: 9999 !important;
+    background: white !important;
+    border: 2px solid #ddd !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2) !important;
+    min-width: 350px !important;
+    max-width: 450px !important;
+    margin-top: 5px !important;
+}
+
+/* Estados de visibilidad - REGLAS FINALES */
+#filtros.filtros-ocultos {
+    display: none !important;
+}
+
+#filtros.filtros-mostrados {
+    display: block !important;
+}
+
+/* Asegurar que el contenido sea visible */
+#filtros * {
+    display: block !important;
+}
+
+#filtros .filter-modal-content {
+    background: white !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+#filtros .filter-modal-header {
+    background: #f8f9fa !important;
+    padding: 15px 20px !important;
+    border-bottom: 1px solid #ddd !important;
+}
+
+#filtros .filter-modal-body {
+    padding: 20px !important;
+    max-height: 400px !important;
+    overflow-y: auto !important;
+}
+
+#filtros .filter-modal-footer {
+    background: #f8f9fa !important;
+    padding: 15px 20px !important;
+    border-top: 1px solid #ddd !important;
+}
+
+/* Asegurar que los inputs sean visibles */
+#filtros input,
+#filtros select,
+#filtros button {
+    display: inline-block !important;
+    width: 100% !important;
+    margin-bottom: 10px !important;
+    padding: 8px 12px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+}
+
+#filtros .filter-group {
+    margin-bottom: 15px !important;
+}
+
+#filtros .filter-label {
+    display: block !important;
+    margin-bottom: 5px !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+}
+
+/* Botones del footer */
+#filtros .btn-secondary,
+#filtros .btn-primary {
+    display: inline-block !important;
+    width: auto !important;
+    margin: 0 5px !important;
+    padding: 8px 16px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+}
+
+#filtros .btn-secondary {
+    background: #6c757d !important;
+    color: white !important;
+    border: none !important;
+}
+
+#filtros .btn-primary {
+    background: #007bff !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* Posicionamiento del widget */
+.filter-widget {
+    position: relative !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    margin-bottom: 20px !important;
+}
+
+/* Botón de toggle */
+#toggle-filtros {
+    background: #1291da !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    font-weight: 500 !important;
+}
+
+#toggle-filtros:hover {
+    background: #0f7bc4 !important;
+}

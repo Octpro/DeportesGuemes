@@ -1,0 +1,106 @@
+/* Estilos para productos sin stock */
+
+.producto-imagen-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.producto-sin-stock {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.producto-sin-stock .producto-img {
+    filter: grayscale(50%) brightness(0.8);
+    transition: all 0.3s ease;
+}
+
+.sin-stock-overlay {
+    position: absolute;
+    top: 15px;
+    right: -25px;
+    transform: rotate(45deg);
+    background: #dc3545;
+    color: white;
+    padding: 6px 35px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border: 2px solid #b02a37;
+    white-space: nowrap;
+}
+
+.sin-stock-text {
+    /* El texto ahora está directamente en el overlay */
+}
+
+.producto-consultar.disabled {
+    background: #6c757d !important;
+    color: white !important;
+    cursor: not-allowed !important;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.producto-consultar.disabled:hover {
+    background: #6c757d !important;
+    transform: none !important;
+}
+
+/* Animación sutil para el overlay */
+.sin-stock-overlay {
+    animation: pulseOverlay 2s ease-in-out infinite;
+}
+
+@keyframes pulseOverlay {
+    0%, 100% {
+        background: #dc3545;
+        transform: rotate(45deg) scale(1);
+    }
+    50% {
+        background: #c82333;
+        transform: rotate(45deg) scale(1.05);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sin-stock-text {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sin-stock-text {
+        font-size: 0.75rem;
+        padding: 5px 10px;
+    }
+}
+
+/* Hover effect para productos con stock (para diferenciar) */
+.producto:not(.producto-sin-stock):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.producto:not(.producto-sin-stock):hover .producto-img {
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+}
+
+/* Asegurar que los productos sin stock no tengan hover */
+.producto-sin-stock:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.producto-sin-stock:hover .producto-img {
+    transform: none !important;
+}

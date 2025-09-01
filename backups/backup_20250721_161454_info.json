@@ -1,0 +1,10 @@
+{
+  "id": "backup_20250721_161454",
+  "timestamp": "2025-07-21T16:14:54.938307",
+  "type": "incremental",
+  "version": "1.0",
+  "base_backup_id": "backup_20250715_233840",
+  "checksum": "5b295ee50a3b541af4264f3024847a3f",
+  "compressed": true,
+  "size": 9117
+}
