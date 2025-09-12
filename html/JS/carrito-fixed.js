@@ -231,6 +231,7 @@ function setupCartControls() {
     }
 }
 
+<<<<<<< Updated upstream
 // Update item quantity
 function updateQuantity(cartId, change) {
     try {
@@ -250,11 +251,197 @@ function updateQuantity(cartId, change) {
             // Refresh display
             displayCartItems(productosEnCarrito);
         }
+=======
+// Update item quantity with stock validation
+function updateQuantity(cartId, change) {
+    try {
+        console.log('🔄 Updating quantity for:', cartId, 'change:', change);
+        
+        // Use CartDataManager if available
+        if (cartDataManager && change === 1) {
+            console.log('📈 Using CartDataManager for increase');
+            const success = cartDataManager.increaseQuantity(cartId);
+            if (success) {
+                // Refresh display
+                loadAndDisplayCart();
+            }
+            return;
+        } else if (cartDataManager && change === -1) {
+            console.log('📉 Using CartDataManager for decrease');
+            const success = cartDataManager.decreaseQuantity(cartId);
+            if (success) {
+                // Refresh display
+                loadAndDisplayCart();
+            }
+            return;
+        }
+        
+        // Fallback to manual validation
+        console.log('⚠️ Using fallback validation method');
+        
+        let productosEnCarrito = JSON.parse(localStorage.getItem("productos-en-carrito") || "[]");
+        const item = productosEnCarrito.find(p => (p.cartId || p.id) === cartId);
+        
+        if (!item) {
+            console.warn('❌ Item not found in cart:', cartId);
+            return;
+        }
+        
+        const currentQuantity = item.cantidad || 1;
+        const newQuantity = currentQuantity + change;
+        
+        console.log('📊 Quantity change:', currentQuantity, '->', newQuantity);
+        
+        if (newQuantity <= 0) {
+            console.log('🗑️ Removing item (quantity <= 0)');
+            removeFromCart(cartId);
+            return;
+        }
+        
+        // Validate stock if increasing quantity
+        if (change > 0) {
+            console.log('📈 Increasing quantity, validating stock...');
+            const producto = findProductById(cartId);
+            
+            if (!producto) {
+                console.error('❌ Product data not found for stock validation:', cartId);
+                console.warn('⚠️ Cannot validate stock - blocking increase');
+                return; // Block the change if we can't validate
+            } else {
+                console.log('📦 Product found for validation:', producto.titulo, 'Stock:', producto.stock);
+                
+                if (newQuantity > producto.stock) {
+                    console.warn('🚫 Stock limit exceeded:', newQuantity, '>', producto.stock);
+                    showStockMessage(producto.titulo, producto.stock);
+                    return; // Don't update quantity
+                }
+                
+                console.log('✅ Stock validation passed');
+            }
+        }
+        
+        // Update quantity
+        item.cantidad = newQuantity;
+        localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
+        
+        console.log('💾 Cart updated, refreshing display');
+        
+        // Refresh display
+        displayCartItems(productosEnCarrito);
+        
+>>>>>>> Stashed changes
     } catch (error) {
         console.error('❌ Error updating quantity:', error);
     }
 }
 
+<<<<<<< Updated upstream
+=======
+// Find product by ID in the products data
+function findProductById(productId) {
+    try {
+        console.log('🔍 Looking for product ID:', productId);
+        
+        // Check in grouped products first
+        if (typeof productosAgrupados !== 'undefined' && productosAgrupados.length > 0) {
+            console.log('📦 Searching in productosAgrupados:', productosAgrupados.length, 'products');
+            for (const producto of productosAgrupados) {
+                if (producto.id === productId) {
+                    const result = producto.hasVariants ? 
+                        producto.variantes[producto.selectedVariant] : producto;
+                    console.log('✅ Found product in grouped:', result);
+                    return result;
+                }
+                
+                // Check variants
+                if (producto.hasVariants && producto.variantes) {
+                    for (const variant of producto.variantes) {
+                        if (variant.id === productId) {
+                            console.log('✅ Found variant:', variant);
+                            return variant;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Fallback: search in original products array
+        if (typeof productos !== 'undefined' && productos.length > 0) {
+            console.log('📦 Searching in productos array:', productos.length, 'products');
+            const result = productos.find(p => p.id === productId);
+            if (result) {
+                console.log('✅ Found product in array:', result);
+                return result;
+            }
+        }
+
+        console.warn('❌ Product not found:', productId);
+        console.log('Available products:', typeof productos !== 'undefined' ? productos.map(p => p.id) : 'productos not defined');
+        return null;
+    } catch (error) {
+        console.error('Error finding product by ID:', error);
+        return null;
+    }
+}
+
+// Show stock limit message
+function showStockMessage(productTitle, availableStock) {
+    try {
+        const message = document.createElement('div');
+        message.className = 'stock-limit-message';
+        message.innerHTML = `
+            <div class="stock-message-content">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>Solo hay ${availableStock} unidades disponibles de "${productTitle}"</span>
+            </div>
+        `;
+
+        // Add styles
+        message.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff6b35;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+        `;
+
+        // Add animation styles if not already present
+        if (!document.querySelector('#stock-message-styles')) {
+            const style = document.createElement('style');
+            style.id = 'stock-message-styles';
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        document.body.appendChild(message);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            message.remove();
+        }, 3000);
+
+        console.log(`⚠️ Stock limit reached for ${productTitle}: ${availableStock} units`);
+    } catch (error) {
+        console.error('Error showing stock message:', error);
+    }
+}
+
+>>>>>>> Stashed changes
 // Remove item from cart
 function removeFromCart(cartId) {
     try {
@@ -322,10 +509,32 @@ function sendWhatsAppMessage() {
     }
 }
 
+<<<<<<< Updated upstream
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeCart);
 } else {
+=======
+// Initialize cart data manager
+let cartDataManager;
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize cart data manager
+        if (typeof CartDataManager !== 'undefined') {
+            cartDataManager = new CartDataManager();
+            console.log('✅ CartDataManager initialized in cart page');
+        }
+        initializeCart();
+    });
+} else {
+    // Initialize cart data manager
+    if (typeof CartDataManager !== 'undefined') {
+        cartDataManager = new CartDataManager();
+        console.log('✅ CartDataManager initialized in cart page');
+    }
+>>>>>>> Stashed changes
     initializeCart();
 }
 

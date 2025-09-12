@@ -812,6 +812,207 @@ class CartDataManager {
     }
 
     /**
+<<<<<<< Updated upstream
+=======
+     * Find product by ID in the global products array
+     * @param {string} productId - The product ID to find
+     * @returns {Object|null} Product object or null if not found
+     */
+    findProductById(productId) {
+        try {
+            // Check in grouped products first
+            if (typeof productosAgrupados !== 'undefined' && productosAgrupados.length > 0) {
+                for (const producto of productosAgrupados) {
+                    if (producto.id === productId) {
+                        return producto.hasVariants ? 
+                            producto.variantes[producto.selectedVariant] : producto;
+                    }
+                    
+                    // Check variants
+                    if (producto.hasVariants && producto.variantes) {
+                        for (const variant of producto.variantes) {
+                            if (variant.id === productId) {
+                                return variant;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Fallback: search in original products array
+            if (typeof productos !== 'undefined') {
+                return productos.find(p => p.id === productId);
+            }
+
+            return null;
+        } catch (error) {
+            console.error('Error finding product by ID:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Show stock limit message to user
+     * @param {string} productTitle - Product title
+     * @param {number} availableStock - Available stock
+     */
+    showStockMessage(productTitle, availableStock) {
+        try {
+            const message = document.createElement('div');
+            message.className = 'stock-limit-message';
+            message.innerHTML = `
+                <div class="stock-message-content">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Solo hay ${availableStock} unidades disponibles de "${productTitle}"</span>
+                </div>
+            `;
+
+            // Add styles
+            message.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ff6b35;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 1001;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+                max-width: 400px;
+            `;
+
+            document.body.appendChild(message);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                message.remove();
+            }, 3000);
+
+            console.log(`⚠️ Stock limit reached for ${productTitle}: ${availableStock} units`);
+        } catch (error) {
+            console.error('Error showing stock message:', error);
+        }
+    }
+
+    /**
+     * Increase product quantity with stock validation
+     * @param {string} productId - The product ID
+     * @returns {boolean} Success status
+     */
+    increaseQuantity(productId) {
+        try {
+            const cart = this.loadCart();
+            const item = cart.find(p => p.id === productId);
+            
+            if (!item) {
+                console.warn('Product not found in cart for quantity increase');
+                return false;
+            }
+
+            // Find product data to check stock
+            const producto = this.findProductById(productId);
+            if (!producto) {
+                console.warn('Product data not found for stock validation');
+                return false;
+            }
+
+            // Check stock limit
+            if (item.cantidad >= producto.stock) {
+                this.showStockMessage(producto.titulo, producto.stock);
+                return false;
+            }
+
+            // Increase quantity
+            item.cantidad++;
+            const success = this.saveCart(cart);
+            
+            if (success) {
+                console.log(`✅ Increased quantity for ${producto.titulo}: ${item.cantidad}`);
+            }
+            
+            return success;
+        } catch (error) {
+            console.error('Error increasing quantity:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Decrease product quantity
+     * @param {string} productId - The product ID
+     * @returns {boolean} Success status
+     */
+    decreaseQuantity(productId) {
+        try {
+            const cart = this.loadCart();
+            const item = cart.find(p => p.id === productId);
+            
+            if (!item) {
+                console.warn('Product not found in cart for quantity decrease');
+                return false;
+            }
+
+            if (item.cantidad <= 1) {
+                // Remove item if quantity would be 0
+                return this.removeProduct(productId);
+            }
+
+            // Decrease quantity
+            item.cantidad--;
+            const success = this.saveCart(cart);
+            
+            if (success) {
+                console.log(`✅ Decreased quantity for ${item.titulo}: ${item.cantidad}`);
+            }
+            
+            return success;
+        } catch (error) {
+            console.error('Error decreasing quantity:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Validate cart quantities against current stock
+     * @returns {Array} Validated cart array
+     */
+    validateCartStock() {
+        try {
+            const cart = this.loadCart();
+            let hasChanges = false;
+            
+            const validatedCart = cart.map(item => {
+                const producto = this.findProductById(item.id);
+                if (producto && item.cantidad > producto.stock) {
+                    console.warn(`Adjusting quantity for ${item.titulo}: ${item.cantidad} -> ${producto.stock}`);
+                    hasChanges = true;
+                    return {
+                        ...item,
+                        cantidad: Math.max(1, producto.stock)
+                    };
+                }
+                return item;
+            });
+
+            if (hasChanges) {
+                this.saveCart(validatedCart);
+                console.log('✅ Cart quantities validated and adjusted');
+            }
+
+            return validatedCart;
+        } catch (error) {
+            console.error('Error validating cart stock:', error);
+            return this.loadCart();
+        }
+    }
+
+    /**
+>>>>>>> Stashed changes
      * Get cart summary with totals and counts
      */
     getCartSummary() {

@@ -237,8 +237,12 @@ a {
 
 .wrapper {
     display: grid;
-    grid-template-columns: 1fr 4fr;
+    grid-template-columns: 280px 1fr;
     background-color: var(--clr-main);
+<<<<<<< Updated upstream
+=======
+    min-height: 100vh;
+>>>>>>> Stashed changes
 }
 
 aside {
@@ -959,6 +963,21 @@ main {
 /* 🛠️ AJUSTES RESPONSIVE */
 /* ===================== */
 
+/* Desktop: aside fijo */
+@media screen and (min-width: 769px) {
+    .wrapper {
+        display: grid !important;
+        grid-template-columns: 280px 1fr !important;
+    }
+    
+    aside {
+        position: sticky !important;
+        top: 0 !important;
+        height: 100vh !important;
+        overflow-y: auto !important;
+    }
+}
+
 @media screen and (max-width: 768px) {
     .wrapper {
         display: flex;
@@ -1016,6 +1035,10 @@ main {
 
     main {
         margin: 1rem;
+<<<<<<< Updated upstream
+=======
+        margin-left: 1rem;
+>>>>>>> Stashed changes
         padding: 1.5rem 1rem;
     }
 
