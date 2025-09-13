@@ -31,11 +31,7 @@
     },
     "categoria_general": "indumentaria",
     "precio": 22500,
-<<<<<<< Updated upstream
-    "stock": 18,
-=======
     "stock": 3,
->>>>>>> Stashed changes
     "genero": "Masculino",
     "disciplina": "fitness",
     "talles": [

@@ -812,8 +812,6 @@ class CartDataManager {
     }
 
     /**
-<<<<<<< Updated upstream
-=======
      * Find product by ID in the global products array
      * @param {string} productId - The product ID to find
      * @returns {Object|null} Product object or null if not found
@@ -1012,7 +1010,6 @@ class CartDataManager {
     }
 
     /**
->>>>>>> Stashed changes
      * Get cart summary with totals and counts
      */
     getCartSummary() {

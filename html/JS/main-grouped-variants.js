@@ -614,15 +614,10 @@ function mostrarModalProducto(productoId) {
         talleSelector.style.display = 'none';
     }
 
-<<<<<<< Updated upstream
-    // Reset quantity
-    document.getElementById('cantidad').value = 1;
-=======
     // Reset quantity and set max to product stock
     const cantidadInput = document.getElementById('cantidad');
     cantidadInput.value = 1;
     cantidadInput.max = producto.stock;
->>>>>>> Stashed changes
 
     // Show modal
     document.getElementById('modal-producto').style.display = 'flex';
@@ -638,10 +633,7 @@ function setupModalEvents(producto) {
     const cantidadInput = document.getElementById('cantidad');
     const btnMenos = document.getElementById('btn-menos');
     const btnMas = document.getElementById('btn-mas');
-<<<<<<< Updated upstream
-=======
     const btnMasExtra = document.getElementById('btn-mas-extra');
->>>>>>> Stashed changes
     const btnAgregar = document.getElementById('btn-agregar-carrito');
 
     // Close modal
@@ -664,9 +656,6 @@ function setupModalEvents(producto) {
 
     btnMas.onclick = () => {
         const current = parseInt(cantidadInput.value);
-<<<<<<< Updated upstream
-        const maxStock = Math.min(producto.stock, 10);
-=======
         const maxStock = producto.stock; // Usar todo el stock disponible
         if (current < maxStock) {
             cantidadInput.value = current + 1;
@@ -677,7 +666,6 @@ function setupModalEvents(producto) {
     btnMasExtra.onclick = () => {
         const current = parseInt(cantidadInput.value);
         const maxStock = producto.stock; // Usar todo el stock disponible
->>>>>>> Stashed changes
         if (current < maxStock) {
             cantidadInput.value = current + 1;
         }

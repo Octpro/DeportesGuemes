@@ -231,27 +231,6 @@ function setupCartControls() {
     }
 }
 
-<<<<<<< Updated upstream
-// Update item quantity
-function updateQuantity(cartId, change) {
-    try {
-        let productosEnCarrito = JSON.parse(localStorage.getItem("productos-en-carrito") || "[]");
-        const item = productosEnCarrito.find(p => (p.cartId || p.id) === cartId);
-        
-        if (item) {
-            const newQuantity = item.cantidad + change;
-            if (newQuantity <= 0) {
-                removeFromCart(cartId);
-                return;
-            }
-            
-            item.cantidad = newQuantity;
-            localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
-            
-            // Refresh display
-            displayCartItems(productosEnCarrito);
-        }
-=======
 // Update item quantity with stock validation
 function updateQuantity(cartId, change) {
     try {
@@ -329,14 +308,11 @@ function updateQuantity(cartId, change) {
         // Refresh display
         displayCartItems(productosEnCarrito);
         
->>>>>>> Stashed changes
     } catch (error) {
         console.error('❌ Error updating quantity:', error);
     }
 }
 
-<<<<<<< Updated upstream
-=======
 // Find product by ID in the products data
 function findProductById(productId) {
     try {
@@ -441,7 +417,6 @@ function showStockMessage(productTitle, availableStock) {
     }
 }
 
->>>>>>> Stashed changes
 // Remove item from cart
 function removeFromCart(cartId) {
     try {
@@ -509,12 +484,6 @@ function sendWhatsAppMessage() {
     }
 }
 
-<<<<<<< Updated upstream
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeCart);
-} else {
-=======
 // Initialize cart data manager
 let cartDataManager;
 
@@ -534,7 +503,6 @@ if (document.readyState === 'loading') {
         cartDataManager = new CartDataManager();
         console.log('✅ CartDataManager initialized in cart page');
     }
->>>>>>> Stashed changes
     initializeCart();
 }
 
