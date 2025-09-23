@@ -1,0 +1,202 @@
+/**
+ * Cart Mobile Fix - Soluciona problemas de layout en móviles
+ */
+
+/* ===== MOBILE CART LAYOUT FIXES ===== */
+
+@media screen and (max-width: 768px) {
+    /* Fix main container */
+    .wrapper {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+    }
+    
+    /* Fix cart container */
+    .contenedor-carrito {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 1rem !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Fix cart summary positioning */
+    .carrito-resumen {
+        position: static !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        order: 2 !important; /* Put summary after products */
+        margin: 1rem 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Fix summary card */
+    .carrito-resumen .resumen-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 1rem !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Fix cart products container */
+    .carrito-productos-modern {
+        width: 100% !important;
+        max-width: 100% !important;
+        order: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Fix individual cart products */
+    .carrito-producto {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 1rem 0 !important;
+        padding: 1rem !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Fix action buttons */
+    .cart-actions-main {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+        margin-top: 1rem !important;
+    }
+    
+    /* Fix WhatsApp button */
+    .btn-checkout {
+        width: 100% !important;
+        padding: 1rem !important;
+        font-size: 1rem !important;
+        text-align: center !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* Fix clear cart button */
+    .btn-clear {
+        width: 100% !important;
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+        text-align: center !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* Fix empty cart state */
+    .carrito-vacio-modern {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 2rem 1rem !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Remove any fixed positioning that might cause issues */
+    * {
+        position: static !important;
+    }
+    
+    /* Exception for header and navigation */
+    .header-movile,
+    aside[role="complementary"] {
+        position: fixed !important;
+    }
+    
+    /* Fix main content area */
+    main {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Fix any blue bars or unwanted elements */
+    .wrapper::before,
+    .wrapper::after,
+    .contenedor-carrito::before,
+    .contenedor-carrito::after {
+        display: none !important;
+    }
+    
+    /* Ensure buttons are visible and accessible */
+    .cart-actions-main button {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: flex !important;
+        z-index: 10 !important;
+    }
+    
+    /* Fix any overflow issues */
+    body {
+        overflow-x: hidden !important;
+    }
+    
+    /* Fix cart header */
+    .cart-header {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 1rem !important;
+        margin: 0 0 1rem 0 !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* ===== EXTRA SMALL SCREENS ===== */
+@media screen and (max-width: 480px) {
+    .contenedor-carrito {
+        padding: 0 0.5rem !important;
+    }
+    
+    .carrito-resumen .resumen-card {
+        padding: 0.75rem !important;
+    }
+    
+    .carrito-producto {
+        padding: 0.75rem !important;
+    }
+    
+    .btn-checkout {
+        padding: 0.875rem !important;
+        font-size: 0.95rem !important;
+    }
+    
+    .btn-clear {
+        padding: 0.625rem !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+/* ===== FORCE VISIBILITY FOR BUTTONS ===== */
+@media screen and (max-width: 768px) {
+    #carrito-acciones-comprar,
+    #carrito-acciones-vaciar {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 100 !important;
+        width: 100% !important;
+        margin: 0.5rem 0 !important;
+    }
+    
+    /* Ensure the container is visible */
+    .cart-actions-main {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 100 !important;
+    }
+}

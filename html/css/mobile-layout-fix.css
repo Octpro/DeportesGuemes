@@ -1,0 +1,169 @@
+/**
+ * Mobile Layout Fix - Elimina barras azules y problemas de layout
+ */
+
+/* ===== REMOVE BLUE BARS AND LAYOUT ISSUES ===== */
+
+@media screen and (max-width: 768px) {
+    /* Remove any pseudo-elements that might create blue bars */
+    *::before,
+    *::after {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Fix body and html */
+    html, body {
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Fix wrapper */
+    .wrapper {
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+        position: relative !important;
+        background: transparent !important;
+    }
+    
+    /* Remove any blue backgrounds or borders */
+    .wrapper,
+    .contenedor-carrito,
+    .carrito-resumen,
+    .carrito-productos-modern,
+    main {
+        background: white !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Fix aside/sidebar positioning */
+    aside[role="complementary"] {
+        transform: translateX(-100%) !important;
+        transition: transform 0.3s ease !important;
+    }
+    
+    aside[role="complementary"].aside-visible {
+        transform: translateX(0) !important;
+    }
+    
+    /* Ensure main content takes full width */
+    main {
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Fix any grid layouts that might cause issues */
+    .contenedor-carrito {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
+        width: 100% !important;
+    }
+    
+    /* Remove any fixed elements that might interfere */
+    .carrito-resumen {
+        position: static !important;
+        top: auto !important;
+        right: auto !important;
+        left: auto !important;
+        bottom: auto !important;
+    }
+    
+    /* Ensure buttons container is properly positioned */
+    .cart-actions-main {
+        position: relative !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        background: white !important;
+        padding: 1rem 0 !important;
+        border-top: 1px solid #e9ecef !important;
+        margin-top: 1rem !important;
+    }
+    
+    /* Force buttons to be visible */
+    .cart-actions-main button {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1000 !important;
+    }
+    
+    /* Remove any transforms that might hide content */
+    .carrito-resumen,
+    .cart-actions-main,
+    .cart-actions-main button {
+        transform: none !important;
+    }
+    
+    /* Fix header spacing */
+    .header-movile {
+        margin-bottom: 0 !important;
+    }
+    
+    main {
+        padding-top: 80px !important; /* Space for fixed header */
+    }
+    
+    /* Remove any blue gradients or backgrounds */
+    .wrapper,
+    .contenedor-carrito,
+    main {
+        background: #ffffff !important;
+        background-image: none !important;
+        background-color: #ffffff !important;
+    }
+}
+
+/* ===== SPECIFIC FIX FOR BLUE BAR ISSUE ===== */
+@media screen and (max-width: 768px) {
+    /* Remove any elements that might create vertical bars */
+    .wrapper > *:not(header):not(aside):not(main) {
+        display: none !important;
+    }
+    
+    /* Ensure no element has a blue background */
+    * {
+        background-color: white !important;
+        background-image: none !important;
+    }
+    
+    /* Exception for specific elements that need color */
+    .header-movile,
+    .btn-primary,
+    .boton-menu.active {
+        background-color: #1291da !important;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d !important;
+    }
+    
+    /* Fix any positioning issues */
+    .contenedor-carrito {
+        position: relative !important;
+        z-index: 1 !important;
+    }
+    
+    /* Ensure proper stacking */
+    .carrito-productos-modern {
+        z-index: 2 !important;
+    }
+    
+    .carrito-resumen {
+        z-index: 3 !important;
+    }
+    
+    .cart-actions-main {
+        z-index: 4 !important;
+    }
+}
